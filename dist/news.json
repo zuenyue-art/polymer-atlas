@@ -19,7 +19,8 @@
       "summary": "Parana Materials 将推进 PISA、PISOX、PEIT/PEIF 等植物基聚酯的开发与商业化。FDCA 和 PEF 业务仍留在 Avantium；此次属于业务与技术平台调整，不代表全部产品已经量产。",
       "source_name": "Avantium 官方公告",
       "url": "https://newsroom.avantium.com/avantium-completes-spin-out-of-parana-technology-into-parana-materials/",
-      "source_title": "Avantium Completes Spin-out of Parana Technology into Parana Materials"
+      "source_title": "Avantium Completes Spin-out of Parana Technology into Parana Materials",
+      "focus": "企业与产线"
     },
     {
       "id": "20260930-basf-ultradur-rc1",
@@ -30,11 +31,12 @@
         "PET"
       ],
       "kind": "新品与应用",
-      "title": "BASF 推出含消费后再生 PET 的 PBT/PET 工程塑料",
+      "title": "再生 PET 用于玻纤增强 PBT/PET 配方，面向汽车工程部件",
       "summary": "新 Ultradur RC1 系列采用玻纤增强 PBT/PET 配方，消费后再生 PET 含量最高达 30%，面向汽车支架、壳体和连接器。它展示了包装废 PET 进入工程塑料的利用方向，并非单体回收纯度的新突破。",
       "source_name": "BASF 官方新闻",
       "url": "https://www.basf.com/global/en/media/news-releases/2026/09/p-26-159",
-      "source_title": "BASF expands the Ultradur® portfolio with new grades based on post-consumer recycled PET"
+      "source_title": "BASF expands the Ultradur® portfolio with new grades based on post-consumer recycled PET",
+      "focus": "材料技术"
     },
     {
       "id": "20260928-avantium-fdca",
@@ -50,8 +52,8 @@
       "summary": "公司宣布荷兰 FDCA 旗舰工厂产出首批产品，下一步进行产品资格验证并向连续运行推进。其当时预计于 2026 年底开始商业销售；首批产出不等于装置已达设计产能。",
       "source_name": "Avantium 官方公告",
       "url": "https://newsroom.avantium.com/avantium-announces-the-start-up-of-its-flagship-plant-with-the-first-batch-of-fdca-produced/",
-      "source_title": "Avantium announces the start-up of its Flagship Plant, with the first batch of FDCA produced"
+      "source_title": "Avantium announces the start-up of its Flagship Plant, with the first batch of FDCA produced",
+      "focus": "企业与产线"
     }
-  ],
-  "last_write_verified": true
+  ]
 }

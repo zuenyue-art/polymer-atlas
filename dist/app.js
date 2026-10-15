@@ -1,3 +1,4 @@
+import{structureFigure}from './structures.mjs';
 const $=s=>document.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let DATA,view='materials',category='全部材料',onlyFavorites=false,selected=[],favorites=new Set();
@@ -47,7 +48,7 @@ const detailGroups=[
 ];
 function detail(id,open=true){const m=material(id),f=m.fields,active=detailSelections.get(id)||'overview';$('#detailCategory').textContent=m.category;let body=`<div class="detail-header"><div class="detail-identity"><div class="abbr">${esc(f['英文缩写'])}</div><h2>${esc(f['材料名称'])}</h2></div><div class="detail-actions"><button class="btn" data-star="${id}">${favorites.has(id)?'★ 已收藏':'☆ 收藏材料'}</button><button class="btn" data-compare-button="${id}">${selected.includes(id)?'移出对比':'加入对比'}</button><button class="btn" data-copy="${id}">复制资料</button><button class="btn" id="printDetail">打印</button></div></div>`;
  body+=`<nav class="detail-nav" aria-label="材料资料分组">${detailGroups.map(g=>`<button class="detail-tab ${active===g.id?'active':''}" data-detail-group="${g.id}" data-material-id="${id}" aria-pressed="${active===g.id}" aria-controls="pane-${g.id}">${g.label}</button>`).join('')}</nav>`;
- for(const g of detailGroups){body+=`<div class="detail-pane" id="pane-${g.id}" ${active!==g.id?'hidden':''}><h3 class="print-group-title">${g.label}</h3>`;for(const k of g.fields){const v=f[k];if(v===undefined)continue;if(g.id==='sources'){const url=v.match(/https?:\/\/\S+/)?.[0];body+=section('资料来源与核验范围',v.replace(url||'',''),'source-text');if(url)body+=`<section class="detail-section"><a class="source-link" href="${esc(url)}" target="_blank" rel="noopener noreferrer">查看参考来源 ↗</a></section>`}else{body+=section(k,v,k==='重复单元/结构'?'formula':'')}}body+='</div>'}
+ for(const g of detailGroups){body+=`<div class="detail-pane" id="pane-${g.id}" ${active!==g.id?'hidden':''}><h3 class="print-group-title">${g.label}</h3>`;if(g.id==='structure')body+=structureFigure(f['英文缩写']);for(const k of g.fields){const v=f[k];if(v===undefined)continue;if(g.id==='sources'){const url=v.match(/https?:\/\/\S+/)?.[0];body+=section('资料来源与核验范围',v.replace(url||'',''),'source-text');if(url)body+=`<section class="detail-section"><a class="source-link" href="${esc(url)}" target="_blank" rel="noopener noreferrer">查看参考来源 ↗</a></section>`}else{body+=section(k,v,k==='重复单元/结构'?'formula':'')}}body+='</div>'}
  $('#detailContent').innerHTML=body;if(open){showDialog($('#detailDialog'));$('#detailDialog').scrollTop=0;}
 }
 function selectDetailGroup(id,group){if(!detailGroups.some(g=>g.id===group))return;detailSelections.set(id,group);detail(id,false);document.querySelector(`[data-detail-group="${group}"]`)?.focus({preventScroll:true})}
