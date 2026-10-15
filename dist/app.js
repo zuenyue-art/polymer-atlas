@@ -1,3 +1,5 @@
+import{newsCard}from './news-utils.mjs';
+import{getNewsItems}from './news-store.mjs';
 import{mountNews,NEWS_TEMPLATE}from './news-view.mjs';
 let relatedMarkup,comparisonRows,annotateTerms,recyclingFigure,structureFigure;
 const $=s=>document.querySelector(s);
@@ -7,6 +9,22 @@ try{const saved=JSON.parse(localStorage.getItem('polymer-atlas-favorites')||'[]'
 let toastTimer;
 const detailSelections=new Map();let termCategory='全部知识';let TERM_GUIDE=[];
 function toast(message){$('#toast').textContent=message;$('#toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('show'),2200)}
+
+const NEWS_FAVORITES='polymer-atlas-news-favorites',LIT_FAVORITES='polymer-atlas-literature-favorites';
+function readSaved(key){try{const a=JSON.parse(localStorage.getItem(key)||'[]');return new Set(Array.isArray(a)?a.filter(x=>typeof x==='string'):[])}catch{return new Set()}}
+function toggleSaved(key,id){const set=readSaved(key);set.has(id)?set.delete(id):set.add(id);try{localStorage.setItem(key,JSON.stringify([...set]))}catch{toast('浏览器未允许保存收藏')}if(window.dispatchEvent)window.dispatchEvent(new Event('atlas-favorites-changed'));return set}
+const litKey=x=>x['来源链接']||x['题名/资料'];let favoriteType='全部',favoriteNews=[],favoriteNewsState='idle',favoriteRevision=0;
+function updateFavoriteCount(){const count=favorites.size+readSaved(NEWS_FAVORITES).size+readSaved(LIT_FAVORITES).size;$('#favoriteCount').textContent=count}
+function renderUnifiedFavorites(){const rev=++favoriteRevision,ns=readSaved(NEWS_FAVORITES),ls=readSaved(LIT_FAVORITES),q=$('#search').value.trim().toLocaleLowerCase();let tools=$('#favoriteTools');if(!tools){tools=document.createElement('nav');tools.id='favoriteTools';tools.className='term-categories';tools.setAttribute('aria-label','收藏类型');$('.results-heading').before(tools)}tools.hidden=view!=='favorites';if(view!=='favorites')return;
+const counts={材料:DATA.materials.filter(x=>favorites.has(x.id)).length,动态:ns.size,文献:DATA.literature.filter(x=>ls.has(litKey(x))).length};counts['全部']=counts.材料+counts.动态+counts.文献;
+tools.innerHTML=['全部','材料','动态','文献'].map(type=>`<button data-favorite-type="${type}" aria-pressed="${favoriteType===type}">${type}<small>${counts[type]}</small></button>`).join('');
+const records=[...DATA.materials.filter(x=>favorites.has(x.id)).map(x=>({type:'材料',x,text:Object.values(x.fields).join(' ')})),...favoriteNews.filter(x=>ns.has(x.id)).map(x=>({type:'动态',x,text:[x.title,x.summary,...x.materials].join(' ')})),...DATA.literature.filter(x=>ls.has(litKey(x))).map(x=>({type:'文献',x,text:Object.values(x).join(' ')}))].filter(r=>(favoriteType==='全部'||r.type===favoriteType)&&(!q||r.text.toLocaleLowerCase().includes(q)));
+$('#content').innerHTML=records.map(r=>r.type==='材料'?card(r.x):r.type==='动态'?newsCard(r.x,true):literatureCard(r.x)).join('')||`<div class="empty"><h3>${counts.全部?'当前筛选下没有收藏':'还没有收藏内容'}</h3><p>材料、动态与回收文献都可以收藏，在这里统一回看。</p><button id="reset">浏览材料</button></div>`;
+$('#resultCount').textContent=`${records.length} 项收藏`;$('#resultsTitle').textContent='我的收藏';$('#resultsHint').textContent='材料 · 动态 · 回收文献';
+if(ns.size&&favoriteNewsState==='idle'){favoriteNewsState='loading';$('#resultCount').textContent='正在载入收藏动态…';getNewsItems({all:true}).then(items=>{favoriteNews=items;favoriteNewsState='ready';if(view==='favorites')render()}).catch(()=>{favoriteNewsState='idle';if(view==='favorites'){$('#resultCount').textContent='收藏动态载入失败';$('#content').innerHTML+='<button class="btn" data-retry-favorites="true">重试载入收藏动态</button>'}})}
+}
+window.addEventListener('atlas-favorites-changed',()=>{updateFavoriteCount();if(view==='favorites')render()});
+
 function material(id){return DATA.materials.find(m=>m.id===id)}
 function saveFavorite(id){if(favorites.has(id))favorites.delete(id);else favorites.add(id);try{localStorage.setItem('polymer-atlas-favorites',JSON.stringify([...favorites]))}catch{toast('本次收藏可用，浏览器未允许保存到本地')}render();if($('#detailDialog').open)detail(id,false)}
 function compare(id){if(selected.includes(id))selected=selected.filter(x=>x!==id);else if(selected.length<3)selected.push(id);else toast('最多对比 3 条记录，请先移除一条');render();if($('#detailDialog').open)detail(id,false)}
@@ -21,30 +39,31 @@ function items(){const q=$('#search').value.trim().toLowerCase();if(view==='term
  const score=m=>q&&m.fields['英文缩写'].toLowerCase().split(/[\s/、]+/).includes(q)?2:q&&m.fields['材料名称'].toLowerCase().includes(q)?1:0;return score(b)-score(a);
 })}
 function render(){
+ updateFavoriteCount();$('#content').classList.toggle('unified-favorites',view==='favorites');if($('#favoriteTools'))$('#favoriteTools').hidden=view!=='favorites';
  const news=view==='news';$('#atlasPanel').hidden=news;$('#newsPanel').hidden=!news;
  if(news){if(!newsController){$('#newsPanel').innerHTML=NEWS_TEMPLATE;newsController=mountNews($('#newsPanel'))}document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view===view));$('#breadcrumb').textContent='材料动态';$('#categories').hidden=true;$('.categories-label').hidden=true;$('#compareTray').hidden=true;document.title='材料动态 · 高分子材料图鉴';return}
  document.title=names()[view]+' · 高分子材料图鉴';
  const isMaterial=['materials','favorites'].includes(view),list=items();
  document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view===view));
- $('#favoriteCount').textContent=[...favorites].filter(x=>material(x)).length;
+ updateFavoriteCount();
  const cats=['全部材料',...new Set(DATA.materials.map(m=>m.category))];
  $('#categories').innerHTML=cats.map(c=>`<button class="category ${category===c?'active':''}" data-category="${esc(c)}">${esc(c)}<small>${c==='全部材料'?DATA.materials.length:DATA.materials.filter(m=>m.category===c).length}</small></button>`).join('');
  $('#categories').hidden=!isMaterial;$('.categories-label').hidden=!isMaterial;
  $('#breadcrumb').textContent=names()[view];
- const titles={materials:'材料图鉴' ,favorites:'我的材料收藏',terms:'基础知识',literature:'从回收路线，<br>寻找新的可能。'};
+ const titles={materials:'材料图鉴' ,favorites:'我的收藏',terms:'基础知识',literature:'从回收路线，<br>寻找新的可能。'};
  $('#pageTitle').innerHTML=titles[view];
- $('#pageSubtitle').textContent={materials:'结构、性能、加工与回收，让材料知识更好查，也更好懂。',favorites:'收藏记录保存在当前浏览器，方便随时回看。',terms:'从结构到表征、从加工到回收：按主题查概念，同时看懂容易混淆的地方。',literature:'10 项重点论文与专利，附技术路线、来源和核验范围。'}[view];
+ $('#pageSubtitle').textContent={materials:'结构、性能、加工与回收，让材料知识更好查，也更好懂。',favorites:'材料、动态与回收文献集中回看，收藏保存在当前浏览器。',terms:'从结构到表征、从加工到回收：按主题查概念，同时看懂容易混淆的地方。',literature:'10 项重点论文与专利，附技术路线、来源和核验范围。'}[view];
  $('#search').placeholder=isMaterial?'搜索名称、缩写、特性或用途…':view==='terms'?'搜索术语，例如 Tg、BHPT、水解…':'搜索材料、文献题名或技术路线…';
  $('#latestNews').hidden=view!=='materials';if(view==='materials')import('./news-preview.js');$('#quickFilters').hidden=!isMaterial;$('#favoriteToggle').hidden=!isMaterial||view==='favorites';$('#compareOpen').hidden=!isMaterial;
  $('#favoriteToggle').setAttribute('aria-pressed',onlyFavorites);$('#compareCount').textContent=selected.length;$('#compareOpen').disabled=selected.length<2;
  $('#resultsTitle').textContent=view==='materials'?category:names()[view];$('#resultCount').textContent=`${list.length} ${isMaterial?'条记录':view==='terms'?'个词条':'项资料'}`;
  $('#resultsHint').textContent=isMaterial?'点击卡片，查看完整资料':'点击卡片，阅读说明';
  $('#content').innerHTML=list.length?list.map(x=>isMaterial?card(x):view==='terms'?termCard(x):literatureCard(x)).join(''):`<div class="empty"><h3>${view==='favorites'?'还没有收藏的材料':'没有找到匹配内容'}</h3><p>${view==='favorites'?'点击材料卡片右上角的星标，即可收藏。':'试试更短的关键词，或切换回全部分类。'}</p><button id="reset">${view==='favorites'?'浏览材料':'清除筛选'}</button></div>`;
- renderTermTools();renderTray();
+ renderTermTools();renderTray();if(view==='favorites')renderUnifiedFavorites();
 }
 function card(m){const f=m.fields,abbr=f['英文缩写'];return `<article class="card material-card" tabindex="0" role="button" data-detail="${m.id}" aria-label="查看${esc(f['材料名称'])}详情"><div class="card-top"><span class="badge">${esc(m.category)}</span><button class="icon-btn ${favorites.has(m.id)?'saved':''}" data-star="${m.id}" aria-pressed="${favorites.has(m.id)}" aria-label="${favorites.has(m.id)?'取消收藏':'收藏'}${esc(f['材料名称'])}">${favorites.has(m.id)?'★':'☆'}</button></div><div class="abbr ${abbr.length>12?'long':''}">${esc(abbr)}</div><h3>${esc(f['材料名称'])}</h3><div class="card-facts"><div class="card-fact"><span>特点</span><p>${esc(f['突出特点'])}</p></div><div class="card-fact limitation"><span>局限</span><p>${esc(f['主要弱点'])}</p></div></div><div class="card-bottom"><label class="check"><input type="checkbox" data-compare="${m.id}" ${selected.includes(m.id)?'checked':''}>加入对比</label><span>查看资料 <span class="arrow">↗</span></span></div></article>`}
 function termCard(x){const index=DATA.terms.indexOf(x);return `<article class="card term-card" tabindex="0" role="button" data-term="${index}"><span class="badge">${esc(x['分类']||'基础知识')}</span><h3>${esc(x['术语/阅读规则'])}</h3><p>${esc(x['解释'])}</p><div class="card-bottom">阅读完整解释 <span class="arrow">↗</span></div></article>`}
-function literatureCard(x){const index=DATA.literature.indexOf(x);return `<article class="card literature-card" tabindex="0" role="button" data-literature="${index}"><div class="card-top"><span class="badge">${esc(x['材料'])}</span><span style="font-size:10px;color:var(--muted)">${esc(x['年份或公开日'])}</span></div><h3>${esc(x['题名/资料'])}</h3><p>${esc(x['技术路线/可学习内容'])}</p><div class="card-bottom">技术路线与来源 <span class="arrow">↗</span></div></article>`}
+function literatureCard(x){const index=DATA.literature.indexOf(x);return `<article class="card literature-card" tabindex="0" role="button" data-literature="${index}"><div class="card-top"><span class="badge">${esc(x['材料'])}</span><span style="font-size:10px;color:var(--muted)">${esc(x['年份或公开日'])}</span></div><h3>${esc(x['题名/资料'])}</h3><p>${esc(x['技术路线/可学习内容'])}</p><div class="card-bottom"><button class="btn" data-lit-save="${index}" aria-pressed="${readSaved(LIT_FAVORITES).has(litKey(x))}">${readSaved(LIT_FAVORITES).has(litKey(x))?'★ 已收藏':'☆ 收藏'}</button><span>技术路线与来源 ↗</span></div></article>`}
 function renderTermTools(){let tools=$('#termTools');if(!tools){tools=document.createElement('section');tools.id='termTools';tools.setAttribute('aria-label','基础知识分类与图鉴说明');$('.results-heading').before(tools)}tools.hidden=view!=='terms';if(view!=='terms')return;const categories=['全部知识',...new Set(DATA.terms.map(x=>x['分类']||'其他'))];tools.innerHTML=`<nav class="term-categories" aria-label="知识主题">${categories.map(c=>`<button data-term-category="${esc(c)}" aria-pressed="${termCategory===c}">${esc(c)}<small>${c==='全部知识'?DATA.terms.length:DATA.terms.filter(x=>x['分类']===c).length}</small></button>`).join('')}</nav><details class="atlas-guide"><summary>使用与资料说明 <small>图鉴收录范围、资料口径与阅读方法</small></summary><div>${TERM_GUIDE.map(g=>`<section><h3>${esc(g['标题'])}</h3><p>${esc(g['说明'])}</p></section>`).join('')}</div></details>`;$('#resultsTitle').textContent=termCategory;$('#latestNews').hidden=true}
 function renderTray(){const tray=$('#compareTray');tray.hidden=selected.length===0;$('#compareSelected').innerHTML=selected.map(id=>`<span class="selected-tag">${esc(material(id).fields['英文缩写'])}<button data-remove="${id}" aria-label="移除${esc(material(id).fields['英文缩写'])}">×</button></span>`).join('');$('#compareGo').disabled=selected.length<2;$('#compareGo').textContent=selected.length<2?'再选一种材料':'开始对比'}
 function section(title,text,extra=''){return `<section class="detail-section"><h3>${esc(title)}</h3><p class="${extra}">${esc(text)}</p></section>`}
@@ -71,6 +90,13 @@ async function copyMaterial(id){const m=material(id);const text=`${m.fields['材
 document.addEventListener('click',e=>{
  if(e.target.closest('.check')&&!e.target.matches('input'))return;
  const el=e.target.closest('button,a,input,article');if(!el)return;
+ 
+ if(el.dataset.favoriteType){favoriteType=el.dataset.favoriteType;render();return}
+ if(el.dataset.retryFavorites){favoriteNewsState='idle';render();return}
+ if(el.dataset.litSave!==undefined){const x=DATA.literature[Number(el.dataset.litSave)];if(x){toggleSaved(LIT_FAVORITES,litKey(x));render()}return}
+ if(el.dataset.newsSave&&view==='favorites'){toggleSaved(NEWS_FAVORITES,el.dataset.newsSave);render();return}
+ if(el.dataset.materialTag){const tag=el.dataset.materialTag;toast('正在打开材料资料…');ensureAtlas().then(()=>{const normalized=tag.toUpperCase(),alias={PPO:'PPE',TPAE:'PEBA'};const key=alias[normalized]||normalized;const matches=DATA.materials.filter(m=>m.fields['材料名称']===tag||m.fields['英文缩写'].toUpperCase().split(/[\s/、（）()]+/).includes(key));if(matches.length===1)detail(matches[0].id);else if(matches.length){switchView('materials');category='全部材料';onlyFavorites=false;$('#search').value=key;render()}else toast('图鉴暂未收录“'+tag+'”的独立词条')}).catch(()=>toast('材料资料载入失败，请重试'));return}
+
  if(el.dataset.termCategory){termCategory=el.dataset.termCategory;render();return}
  if(el.dataset.termHelp!==undefined){showTermHelp(Number(el.dataset.termHelp));return}
  if(el.dataset.related){detailSelections.set(el.dataset.related,'overview');detail(el.dataset.related);document.querySelector('.detail-tab.active')?.focus({preventScroll:true});return}
