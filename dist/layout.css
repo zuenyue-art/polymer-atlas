@@ -89,3 +89,35 @@ main{max-width:none}
 #favoriteTools[hidden]{display:none}
 .literature-card .card-bottom .btn{font-size:11px;min-height:30px;padding:4px 8px}
 @media(max-width:1000px){#content.unified-favorites{grid-template-columns:1fr}}
+
+/* Consistent heading rhythm and a clearer reading hierarchy. */
+:root{--muted:#657267}
+.nav-icon{display:inline-flex;align-items:center;justify-content:center;flex:0 0 18px;width:18px;height:20px}
+.nav-icon svg{width:18px;height:18px;display:block}
+.nav{min-height:44px;gap:12px}
+#atlasPanel>.intro,#newsPanel>.news-hero{height:190px;min-height:190px;padding:24px 0;position:relative;box-sizing:border-box}
+#atlasPanel>.intro h1,#newsPanel>.news-hero h1{font-size:32px;line-height:1.35;letter-spacing:-.6px;font-weight:650}
+#atlasPanel>.intro p,#newsPanel>.news-hero p{font-size:14px;color:#657267;line-height:1.8}
+#newsPanel .news-stats{position:absolute;bottom:14px;left:0;margin:0;font-size:11px;color:#718074;gap:18px}
+#newsPanel .news-hero>div:first-child{padding-bottom:20px}
+#newsPanel .news-hero{grid-template-columns:minmax(0,1fr) 330px}
+.news-meta{color:#7b857c;gap:8px 10px}
+.news-meta .news-source{margin-left:auto;max-width:55%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:#7b857c;font-size:10px}
+.news-kind{padding:3px 8px;border-radius:5px;font-size:10px;background:#eef1ec;color:#5f705b}
+.news-kind[data-kind="政策与标准"]{background:#f5efdf;color:#827047}
+.news-kind[data-kind="研究进展"],.news-kind[data-kind="新材料与结构"]{background:#eaf0f5;color:#5c7486}
+.news-kind[data-kind="回收与纯化"]{background:#e9f1e6;color:#53774c}
+.news-kind[data-kind="新品与应用"],.news-kind[data-kind="配方与性能"]{background:#f0edf4;color:#796884}
+#newsPanel .news-item,.unified-favorites .news-item{padding:24px 26px;border-color:#e0e6dc;box-shadow:0 2px 9px #273e2d03}
+#newsPanel .news-item h3,.unified-favorites .news-item h3{font-size:18px;font-weight:650;line-height:1.65;color:#293b30;margin:14px 0 11px}
+#newsPanel .news-item p,.unified-favorites .news-item p{font-size:14px;line-height:1.9;color:#536155}
+#newsPanel .news-bottom,.unified-favorites .news-bottom{border-top:1px solid #edf0e9;margin-top:20px;padding-top:14px;gap:10px}
+.news-bottom>a{font-size:12px;font-weight:500}
+.term-card>p,.literature-card>p{font-size:14px;color:#566357;line-height:1.85}
+.card .card-fact p{font-size:13px;color:#536155}
+.card .card-fact.limitation p{color:#747a6d}
+@media(max-width:1100px) and (min-width:761px){#newsPanel .news-hero{grid-template-columns:minmax(0,1fr) 220px}}
+@media(max-width:760px){#atlasPanel>.intro,#newsPanel>.news-hero{height:174px;min-height:174px;padding:22px 0}#atlasPanel>.intro h1,#newsPanel>.news-hero h1{font-size:25px}#atlasPanel>.intro p,#newsPanel>.news-hero p{font-size:12px}#newsPanel .news-stats{font-size:10px;gap:6px 12px;bottom:10px}#newsPanel .news-item,.unified-favorites .news-item{padding:19px}#newsPanel .news-item h3,.unified-favorites .news-item h3{font-size:16px}#newsPanel .news-item p,.unified-favorites .news-item p{font-size:13px}.news-meta .news-source{max-width:100%;margin-left:0}.nav{min-height:36px;gap:7px}}
+@media(max-width:400px){#atlasPanel>.intro,#newsPanel>.news-hero{height:auto;min-height:190px}#newsPanel .news-hero>div:first-child{padding-bottom:36px}#newsPanel .news-stats{flex-wrap:wrap}}
+
+@media(min-width:761px) and (max-width:1100px){#newsPanel .news-hero{grid-template-columns:minmax(0,1fr)}#newsPanel .polymer-motion{display:none}}
