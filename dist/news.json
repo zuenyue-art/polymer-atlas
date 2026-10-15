@@ -54,6 +54,68 @@
       "url": "https://newsroom.avantium.com/avantium-announces-the-start-up-of-its-flagship-plant-with-the-first-batch-of-fdca-produced/",
       "source_title": "Avantium announces the start-up of its Flagship Plant, with the first batch of FDCA produced",
       "focus": "企业与产线"
+    },
+    {
+      "id": "20260729-pet-beads",
+      "published_at": "2026-07-29",
+      "added_at": "2026-10-15",
+      "materials": [
+        "PET"
+      ],
+      "kind": "回收与纯化",
+      "title": "PET醇解：大孔聚阴离子微球兼顾催化、过滤回收与连续运行",
+      "summary": "研究用大孔聚阴离子微球催化PET乙二醇解。催化剂可过滤回收，30次循环的BHET收率保持在90.7±2.7%；连续搅拌釜运行超过4小时，转化率79.7±2.6%。两项指标口径不同，不能混作单体收率。",
+      "source_name": "Nature Communications",
+      "url": "https://www.nature.com/articles/s41467-026-76086-2",
+      "focus": "材料技术",
+      "date_basis": "原文发布日期"
+    },
+    {
+      "id": "20260730-engineering-recycling",
+      "published_at": "2026-07-30",
+      "added_at": "2026-10-15",
+      "materials": [
+        "PA6",
+        "聚氨酯"
+      ],
+      "kind": "回收与纯化",
+      "title": "工程塑料回收：材料与杂质决定机械、溶剂和解聚路线的组合",
+      "summary": "工程塑料常含纤维、添加剂及不同聚合物，单一路线难覆盖全部废物流。技术介绍以聚酰胺和聚氨酯为例，讨论溶剂处理、解聚等方法的组合；重点是按料流选择路线，不能把“技术可行”直接理解为所有体系均已规模化。",
+      "source_name": "BASF 技术介绍",
+      "url": "https://www.basf.com/global/en/media/news-releases/2026/07/p-26-131",
+      "focus": "材料技术",
+      "date_basis": "原文发布日期"
+    },
+    {
+      "id": "20260812-eu-ppwr",
+      "published_at": "2026-08-12",
+      "added_at": "2026-10-15",
+      "materials": [
+        "PET",
+        "包装材料"
+      ],
+      "kind": "政策与标准",
+      "title": "欧盟PPWR开始适用：包装可回收设计与再生料使用进入分阶段要求",
+      "summary": "欧盟包装与包装废弃物法规自2026年8月12日开始适用，覆盖各种包装材料。回收设计、减量和再生塑料含量是主要方向；多项具体目标在2030年及以后实施，并非当天全部生效。对PET包装应同步关注再生料品质、可分选性与用途要求。",
+      "source_name": "欧盟理事会｜政策适用节点",
+      "url": "https://www.consilium.europa.eu/en/policies/packaging/",
+      "focus": "材料技术",
+      "date_basis": "政策适用日期"
+    },
+    {
+      "id": "20260917-permeable-pa",
+      "published_at": "2026-09-17",
+      "added_at": "2026-10-15",
+      "materials": [
+        "PA"
+      ],
+      "kind": "新品与应用",
+      "title": "高透水聚酰胺：把强度与水、烟渗透性结合用于肠衣",
+      "summary": "BASF介绍Ultramid H33 L热塑性聚酰胺，主打在保持强度的同时提高水与烟渗透性，可用于薄壁烟熏肠衣。这一案例值得学习的是以传质性能拓展PA用途；性能优势来自企业介绍，公开信息未给出可直接横向比较的完整测试条件。",
+      "source_name": "BASF 产品技术介绍",
+      "url": "https://www.basf.com/global/en/media/news-releases/2026/09/p-26-153",
+      "focus": "材料技术",
+      "date_basis": "原文发布日期"
     }
   ]
 }
