@@ -22,3 +22,32 @@ main{margin-left:224px;max-width:1664px;padding:0 42px}.topbar{height:65px;font-
 .term-categories{display:flex;flex-wrap:wrap;gap:8px;margin:23px 0 14px}.term-categories button{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:8px 12px;background:white}.term-categories button[aria-pressed="true"]{background:#e6efdf;color:#35543e;border-color:#b8caae}.term-categories small{font-size:10px;opacity:.75;font-variant-numeric:tabular-nums}.atlas-guide{border:1px solid var(--line);border-radius:10px;background:#f0f4eb;margin:0 0 18px}.atlas-guide>summary{padding:12px 16px;cursor:pointer;font-size:12px;font-weight:600;color:var(--green)}.atlas-guide>summary small{font-weight:400;font-size:10px;color:var(--muted);margin-left:12px}.atlas-guide>div{border-top:1px solid var(--line);padding:8px 18px 16px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 25px}.atlas-guide h3{font-size:12px;margin:15px 0 5px}.atlas-guide p{font-size:12px;line-height:1.85;color:#63745b;margin:0}.term-reference{display:inline-block;font-size:11px;color:var(--green);text-decoration:underline;margin-top:16px;text-underline-offset:4px}.term-card>.badge{align-self:flex-start}.term-card>p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.term-card .card-bottom{margin-top:auto;padding-top:14px}
 @media(max-width:560px){.term-categories{gap:6px}.term-categories button{font-size:11px;padding:7px 9px}.atlas-guide>div{grid-template-columns:1fr}.atlas-guide>summary small{display:block;margin:3px 0 0 15px}}
 html{scrollbar-gutter:stable}#atlasPanel,#newsPanel{min-width:0}#newsPanel .intro{padding-top:32px}#newsPanel>footer>span a[data-view]{color:var(--green)}
+
+/* Balanced news landing: one reading width from headline to archive. */
+main{max-width:none}
+#newsPanel{max-width:1440px;margin-inline:auto;padding-bottom:20px}
+#newsPanel .news-hero{display:grid;grid-template-columns:minmax(0,1fr) 330px;align-items:center;gap:36px;padding:26px 0 18px}
+#newsPanel .news-hero h1{font-size:clamp(26px,2.1vw,36px);max-width:760px}
+#newsPanel .news-hero p{margin-top:10px}
+.news-paths{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:17px;background:#edf2e8;border:1px solid var(--line);border-radius:14px}
+.news-paths>span{grid-column:1/-1;color:var(--muted);font-size:11px;margin-bottom:2px}
+.news-paths a{display:flex;flex-direction:column;gap:6px;padding:11px;background:#ffffffb8;border:1px solid #dfe7d9;border-radius:9px}
+.news-paths strong{font-size:12px;color:var(--green);font-weight:600}.news-paths small{font-size:10px;color:var(--muted)}
+.news-paths a:hover{background:white;border-color:#a8bda1}
+#newsPanel .news-stats{margin-bottom:16px;gap:20px}
+#newsPanel .news-filters{margin-top:10px;padding:10px 14px}
+#newsPanel .results-heading{margin:22px 0 12px}
+#newsPanel .news-list{max-width:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+#newsPanel .news-item{display:flex;flex-direction:column;min-width:0;padding:22px 24px}
+#newsPanel .news-item h3{font-size:17px;line-height:1.65;margin:12px 0 9px}
+#newsPanel .news-item p{max-width:none;line-height:1.9}
+#newsPanel .news-bottom{margin-top:auto;padding-top:17px;flex-wrap:wrap}
+#newsPanel .news-source{margin-left:0}
+#newsPanel .news-meta{justify-content:flex-start;gap:6px 10px}
+#newsPanel .news-pagination{max-width:none}
+#newsPanel .empty{grid-column:1/-1}
+@keyframes atlas-arrive{from{opacity:.3;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:no-preference){main{animation:atlas-arrive .48s ease-out both}}
+@media(max-width:1100px){#newsPanel .news-hero{grid-template-columns:1fr;gap:16px}.news-paths{grid-template-columns:auto 1fr 1fr;align-items:center;padding:11px}.news-paths>span{grid-column:auto;margin:0}.news-paths a{padding:9px 12px}.news-paths small{display:none}}
+@media(max-width:1000px){#newsPanel .news-list{grid-template-columns:1fr}}
+@media(max-width:760px){#newsPanel .news-hero{padding:20px 0 16px}.news-paths{grid-template-columns:1fr 1fr}.news-paths>span{grid-column:1/-1}#newsPanel .news-item{padding:19px}#newsPanel .news-item h3{font-size:16px}#newsPanel .news-stats{gap:6px 14px}#newsPanel .news-bottom{gap:10px}}
