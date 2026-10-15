@@ -14,8 +14,10 @@ function saveFavorite(id){if(favorites.has(id))favorites.delete(id);else favorit
 function compare(id){if(selected.includes(id))selected=selected.filter(x=>x!==id);else if(selected.length<3)selected.push(id);else toast('最多对比 3 条记录，请先移除一条');render();if($('#detailDialog').open)detail(id,false)}
 function names(){return {news:'材料动态',materials:'材料图鉴',favorites:'我的收藏',terms:'基础知识',literature:'回收文献'}}
 const viewStates=new Map();let newsController;
+function animateView(){const main=$('main');main.classList.remove('view-enter');void main.offsetWidth;main.classList.add('view-enter')}
+
 function routeView(){const key=location.hash.slice(1);return ['materials','terms','literature','favorites','news'].includes(key)?key:'news'}
-function switchView(next,{historyMode='push'}={}){if(!Object.hasOwn(names(),next)||next===view)return;viewStates.set(view,{category,termCategory,onlyFavorites,query:$('#search').value,scroll:window.scrollY});view=next;const state=viewStates.get(next)||{category:'全部材料',termCategory:'全部知识',onlyFavorites:false,query:'',scroll:0};category=state.category;termCategory=state.termCategory;onlyFavorites=state.onlyFavorites;$('#search').value=state.query;if(historyMode==='push')history.pushState({view:next},'',`#${next}`);render();const restore=()=>{if(view===next)requestAnimationFrame(()=>{if(view===next)window.scrollTo({top:state.scroll,behavior:'instant'})})};restore();if(next==='news')newsController?.ready.then(restore)}
+function switchView(next,{historyMode='push'}={}){if(!Object.hasOwn(names(),next)||next===view)return;viewStates.set(view,{category,termCategory,onlyFavorites,query:$('#search').value,scroll:window.scrollY});view=next;const state=viewStates.get(next)||{category:'全部材料',termCategory:'全部知识',onlyFavorites:false,query:'',scroll:0};category=state.category;termCategory=state.termCategory;onlyFavorites=state.onlyFavorites;$('#search').value=state.query;if(historyMode==='push')history.pushState({view:next},'',`#${next}`);render();animateView();const restore=()=>{if(view===next)requestAnimationFrame(()=>{if(view===next)window.scrollTo({top:state.scroll,behavior:'instant'})})};restore();if(next==='news')newsController?.ready.then(restore)}
 window.addEventListener('popstate',()=>{if(DATA)switchView(routeView(),{historyMode:'none'})});window.addEventListener('hashchange',()=>{if(DATA)switchView(routeView(),{historyMode:'none'})});
 function items(){const q=$('#search').value.trim().toLowerCase();if(view==='terms')return DATA.terms.filter(x=>(termCategory==='全部知识'||x['分类']===termCategory)&&[x['术语/阅读规则'],x['解释'],x['用途或易错点'],x['分类']].join(' ').toLowerCase().includes(q));if(view==='literature')return DATA.literature.filter(x=>Object.values(x).join(' ').toLowerCase().includes(q));return DATA.materials.filter(m=>(category==='全部材料'||m.category===category)&&(!(onlyFavorites||view==='favorites')||favorites.has(m.id))&&Object.values(m.fields).join(' ').toLowerCase().includes(q)).sort((a,b)=>{
  const score=m=>q&&m.fields['英文缩写'].toLowerCase().split(/[\s/、]+/).includes(q)?2:q&&m.fields['材料名称'].toLowerCase().includes(q)?1:0;return score(b)-score(a);
@@ -98,4 +100,6 @@ try{const response=await fetch('data.json');if(!response.ok)throw Error('资料�
 
 // Reveal the initial reading surface only after its data has settled.
 if(view==='news'&&newsController)await newsController.ready;
-$('main').classList.add('entry-ready');
+clearTimeout(window.atlasLoaderFallback);
+const loader=$('#siteLoader');if(loader){loader.classList.add('loader-leaving');setTimeout(()=>loader.remove(),600)}
+animateView();
