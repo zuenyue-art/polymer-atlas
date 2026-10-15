@@ -47,7 +47,7 @@ main{max-width:none}
 #newsPanel .news-pagination{max-width:none}
 #newsPanel .empty{grid-column:1/-1}
 @keyframes atlas-arrive{from{opacity:.3;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
-@media(prefers-reduced-motion:no-preference){main{animation:atlas-arrive .48s ease-out both}}
+
 @media(max-width:1100px){#newsPanel .news-hero{grid-template-columns:1fr;gap:16px}}
 @media(max-width:1000px){#newsPanel .news-list{grid-template-columns:1fr}}
 @media(max-width:760px){#newsPanel .news-hero{padding:20px 0 16px}#newsPanel .news-item{padding:19px}#newsPanel .news-item h3{font-size:16px}#newsPanel .news-stats{gap:6px 14px}#newsPanel .news-bottom{gap:10px}}
@@ -59,3 +59,12 @@ main{max-width:none}
 @media(prefers-reduced-motion:no-preference){.polymer-chain{animation:polymer-drift 7s ease-in-out infinite}}
 @media(min-width:761px) and (max-width:1100px){#newsPanel .news-hero{grid-template-columns:minmax(0,1fr) 220px;gap:18px}.polymer-motion{width:220px;height:110px}}
 @media(max-width:760px){#newsPanel .news-hero{display:block}.polymer-motion{display:none}}
+
+/* Entry starts after the selected view is ready, rather than during the data request. */
+@keyframes atlas-ready-entry{from{opacity:.05;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:no-preference){main.entry-ready{animation:atlas-ready-entry .95s cubic-bezier(.2,.7,.2,1) both}}
+.polymer-motion{position:relative}
+.polymer-motion .polymer-motif{position:absolute;inset:0;opacity:0}
+.polymer-motion .motif-chain{opacity:1}
+@keyframes polymer-cycle{0%,27%{opacity:1}33.333%,94%{opacity:0}100%{opacity:1}}
+@media(prefers-reduced-motion:no-preference){.polymer-motion .polymer-motif{animation:polymer-cycle 18s ease-in-out infinite}.polymer-motion .motif-ring{animation-delay:-12s}.polymer-motion .motif-network{animation-delay:-6s}}

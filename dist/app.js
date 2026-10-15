@@ -95,3 +95,7 @@ document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if
 $('.brand').addEventListener('click',e=>{e.preventDefault();if(DATA)switchView('news')});
 $('#search').addEventListener('input',()=>{if(DATA)render()});
 try{const response=await fetch('data.json');if(!response.ok)throw Error('资料载入失败');DATA=await response.json();try{const knowledgeResponse=await fetch('terms.json');if(!knowledgeResponse.ok)throw Error('基础知识载入失败');const knowledge=await knowledgeResponse.json();DATA.terms=knowledge.terms;TERM_GUIDE=knowledge.guide;}catch{const guideNames=['本次整理范围','资料口径','文献与专利的范围','表中研发切入点','关联非高分子材料'];DATA.terms=DATA.terms.filter(t=>!guideNames.includes(t['术语/阅读规则']));TERM_GUIDE=[{标题:'基础知识更新暂未载入',说明:'当前显示原有知识条目，分类扩展将在刷新成功后显示。'}];}document.querySelector('[data-view="terms"]')?.replaceChildren(Object.assign(document.createElement('span'),{textContent:'≡'}),document.createTextNode('基础知识'));favorites=new Set([...favorites].filter(id=>material(id)));if(routeView()!==view)switchView(routeView(),{historyMode:'none'});else render()}catch(e){$('#content').innerHTML='<div class="empty error"><h3>资料暂时未能载入</h3><p>请刷新页面重试。</p></div>';$('#resultCount').textContent='载入失败'}
+
+// Reveal the initial reading surface only after its data has settled.
+if(view==='news'&&newsController)await newsController.ready;
+$('main').classList.add('entry-ready');
