@@ -61,8 +61,8 @@ main{max-width:none}
 @media(max-width:760px){#newsPanel .news-hero{display:block}.polymer-motion{display:none}}
 
 /* Entry starts after the selected view is ready, rather than during the data request. */
-@keyframes atlas-ready-entry{from{opacity:.05;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
-@media(prefers-reduced-motion:no-preference){main.view-enter{animation:atlas-ready-entry .55s cubic-bezier(.2,.7,.2,1) both}}
+@keyframes atlas-ready-entry{from{opacity:.78}to{opacity:1}}
+@media(prefers-reduced-motion:no-preference){main.view-enter{animation:atlas-ready-entry .18s ease-out both}}
 .polymer-motion{position:relative}
 .polymer-motion .polymer-motif{position:absolute;inset:0;opacity:0}
 .polymer-motion .motif-chain{opacity:1}
@@ -70,7 +70,7 @@ main{max-width:none}
 @media(prefers-reduced-motion:no-preference){.polymer-motion .polymer-motif{animation:polymer-cycle 18s ease-in-out infinite}.polymer-motion .motif-ring{animation-delay:-12s}.polymer-motion .motif-network{animation-delay:-6s}}
 
 /* A first-load cover bridges network loading; navigation uses a lighter reveal. */
-.site-loader{position:fixed;inset:0;z-index:10000;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;opacity:1;transition:opacity .5s ease,visibility .5s ease}
+.site-loader{position:fixed;inset:0;z-index:10000;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;opacity:1;transition:opacity .22s ease,visibility .22s ease}
 .site-loader.loader-leaving{opacity:0;visibility:hidden;pointer-events:none}
 .site-loader strong{font-size:20px;font-weight:600;letter-spacing:2px;color:var(--ink)}
 .site-loader>span{font-size:12px;color:var(--muted)}
