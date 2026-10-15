@@ -25,7 +25,7 @@ html{scrollbar-gutter:stable}#atlasPanel,#newsPanel{min-width:0}#newsPanel .intr
 
 /* Balanced news landing: one reading width from headline to archive. */
 main{max-width:none}
-#newsPanel{max-width:1440px;margin-inline:auto;padding-bottom:20px}
+#newsPanel{max-width:none;margin-inline:0;padding-bottom:20px}
 #newsPanel .news-hero{display:grid;grid-template-columns:minmax(0,1fr) 330px;align-items:center;gap:36px;padding:26px 0 18px}
 #newsPanel .news-hero h1{font-size:clamp(26px,2.1vw,36px);max-width:760px}
 #newsPanel .news-hero p{margin-top:10px}
