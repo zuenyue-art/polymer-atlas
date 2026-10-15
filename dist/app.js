@@ -23,7 +23,7 @@ function render(){
  $('#categories').innerHTML=cats.map(c=>`<button class="category ${category===c?'active':''}" data-category="${esc(c)}">${esc(c)}<small>${c==='全部材料'?DATA.materials.length:DATA.materials.filter(m=>m.category===c).length}</small></button>`).join('');
  $('#categories').hidden=!isMaterial;$('.categories-label').hidden=!isMaterial;
  $('#breadcrumb').textContent=names()[view];
- const titles={materials:'从一个材料，<br>认识一个世界。',favorites:'把值得回看的，<br>留在这里。',terms:'看懂术语，<br>再理解材料。',literature:'从回收路线，<br>寻找新的可能。'};
+ const titles={materials:'材料图鉴' ,favorites:'我的材料收藏',terms:'基础术语',literature:'从回收路线，<br>寻找新的可能。'};
  $('#pageTitle').innerHTML=titles[view];
  $('#pageSubtitle').textContent={materials:'结构、性能、加工与回收，让材料知识更好查，也更好懂。',favorites:'收藏记录保存在当前浏览器，方便随时回看。',terms:'把常见概念放在一起，厘清结构、性能与回收的关系。',literature:'10 项重点论文与专利，附技术路线、来源和核验范围。'}[view];
  $('#search').placeholder=isMaterial?'搜索名称、缩写、特性或用途…':view==='terms'?'搜索术语，例如 Tg、BHPT、水解…':'搜索材料、文献题名或技术路线…';
