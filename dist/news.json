@@ -14,13 +14,16 @@
         "PEIT",
         "PEIF"
       ],
-      "kind": "产业动态",
-      "title": "Avantium 完成 Parana 技术分拆，生物基聚酯平台独立运营",
-      "summary": "Parana Materials 将推进 PISA、PISOX、PEIT/PEIF 等植物基聚酯的开发与商业化。FDCA 和 PEF 业务仍留在 Avantium；此次属于业务与技术平台调整，不代表全部产品已经量产。",
+      "kind": "新材料与结构",
+      "title": "异山梨醇基聚酯平台推进独立开发，涵盖PISA、PISOX与PEIT/PEIF",
+      "summary": "Parana平台以异山梨醇、琥珀酸、草酸及生物基乙二醇等商业化单体开发高性能聚酯，面向包装、消费品和耐用材料，设计路线力求适配现有工业设施。10月1日完成独立运营，继续开发与放大；公告所述PISOX海洋降解和潜在负碳特性仍需结合具体测试及生命周期边界理解。",
       "source_name": "Avantium 官方公告",
       "url": "https://newsroom.avantium.com/avantium-completes-spin-out-of-parana-technology-into-parana-materials/",
       "source_title": "Avantium Completes Spin-out of Parana Technology into Parana Materials",
-      "focus": "企业与产线"
+      "focus": "材料技术",
+      "region": "荷兰",
+      "corrected_at": "2026-10-15",
+      "correction_note": "按材料平台与产业化进展重写，取消企业背景隐藏分类，保留原ID与收藏关联。"
     },
     {
       "id": "20260930-basf-ultradur-rc1",
@@ -47,13 +50,16 @@
         "FDCA",
         "生物基聚酯"
       ],
-      "kind": "产业动态",
-      "title": "Avantium FDCA 旗舰工厂产出首批产品，进入启动与验证阶段",
-      "summary": "公司宣布荷兰 FDCA 旗舰工厂产出首批产品，下一步进行产品资格验证并向连续运行推进。其当时预计于 2026 年底开始商业销售；首批产出不等于装置已达设计产能。",
+      "kind": "研究进展",
+      "title": "PEF关键单体FDCA完成商业规模装置首批生产，进入产品验证",
+      "summary": "FDCA是生物基聚酯PEF的关键单体。Avantium于9月28日宣布旗舰工厂产出首批FDCA，随后进行客户规格验证，并由批次生产向连续运行推进。公司当时预计年底开始商业销售、启动后12—24个月爬坡至设计产能；首批产出属于放大节点，尚不能视为稳定满产。",
       "source_name": "Avantium 官方公告",
       "url": "https://newsroom.avantium.com/avantium-announces-the-start-up-of-its-flagship-plant-with-the-first-batch-of-fdca-produced/",
       "source_title": "Avantium announces the start-up of its Flagship Plant, with the first batch of FDCA produced",
-      "focus": "企业与产线"
+      "focus": "材料技术",
+      "region": "荷兰",
+      "corrected_at": "2026-10-15",
+      "correction_note": "突出PEF单体供应与放大阶段，取消企业背景隐藏分类，保留原ID。"
     },
     {
       "id": "20260729-pet-beads",
@@ -67,22 +73,6 @@
       "summary": "研究用大孔聚阴离子微球催化PET乙二醇解。催化剂可过滤回收，30次循环的BHET收率保持在90.7±2.7%；连续搅拌釜运行超过4小时，转化率79.7±2.6%。两项指标口径不同，不能混作单体收率。",
       "source_name": "Nature Communications",
       "url": "https://www.nature.com/articles/s41467-026-76086-2",
-      "focus": "材料技术",
-      "date_basis": "原文发布日期"
-    },
-    {
-      "id": "20260730-engineering-recycling",
-      "published_at": "2026-07-30",
-      "added_at": "2026-10-15",
-      "materials": [
-        "PA6",
-        "聚氨酯"
-      ],
-      "kind": "回收与纯化",
-      "title": "工程塑料回收：材料与杂质决定机械、溶剂和解聚路线的组合",
-      "summary": "工程塑料常含纤维、添加剂及不同聚合物，单一路线难覆盖全部废物流。技术介绍以聚酰胺和聚氨酯为例，讨论溶剂处理、解聚等方法的组合；重点是按料流选择路线，不能把“技术可行”直接理解为所有体系均已规模化。",
-      "source_name": "BASF 技术介绍",
-      "url": "https://www.basf.com/global/en/media/news-releases/2026/07/p-26-131",
       "focus": "材料技术",
       "date_basis": "原文发布日期"
     },
@@ -269,6 +259,29 @@
       "url": "https://eur-lex.europa.eu/eli/reg/2024/2462/oj/eng",
       "region": "欧盟",
       "regulatory_status": "指定用途限制开始适用"
+    },
+    {
+      "id": "20260924-china-biomanufacturing-products",
+      "published_at": "2026-09-24",
+      "added_at": "2026-10-15",
+      "materials": [
+        "生物基材料",
+        "生物基化学品"
+      ],
+      "kind": "政策与标准",
+      "focus": "材料技术",
+      "title": "中国征集生物制造标志性产品：生物基材料与化学品列入重点领域",
+      "summary": "工信部启动2026年生物制造标志性产品征集，覆盖生物基材料、化学品等，分重大创新、关键提升、规模替代和AI赋能四类。商业化早期产品须完成中试验证并具有产业化价值。这是产品征集与推广安排，不是普遍补贴或强制使用要求；地方申报期限需另查。",
+      "source_name": "工信微报（工信部官方账号）／北京市政府配套通知",
+      "source_title": "2026年生物制造标志性产品征集工作启动",
+      "url": "https://news.qq.com/rain/a/20260924A04OTZ00",
+      "supporting_urls": [
+        "https://www.beijing.gov.cn/zhengce/zhengcefagui/202609/t20260929_4885654.html"
+      ],
+      "region": "中国",
+      "regulatory_status": "征集通知已发布；非入选名单",
+      "date_basis": "官方账号发布日2026-09-24；工信部通知成文2026-09-23；北京配套通知公开2026-09-29",
+      "verification_scope": "官方账号公开检索正文与北京市政府配套通知全文交叉核验"
     }
   ]
 }
