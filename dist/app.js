@@ -1,3 +1,4 @@
+import{mountNews,NEWS_TEMPLATE}from './news-view.mjs';
 import{relatedMarkup,comparisonRows,annotateTerms}from './learning.mjs';
 import{recyclingFigure}from './recycling.mjs';
 import{structureFigure}from './structures.mjs';
@@ -11,12 +12,18 @@ function toast(message){$('#toast').textContent=message;$('#toast').classList.ad
 function material(id){return DATA.materials.find(m=>m.id===id)}
 function saveFavorite(id){if(favorites.has(id))favorites.delete(id);else favorites.add(id);try{localStorage.setItem('polymer-atlas-favorites',JSON.stringify([...favorites]))}catch{toast('本次收藏可用，浏览器未允许保存到本地')}render();if($('#detailDialog').open)detail(id,false)}
 function compare(id){if(selected.includes(id))selected=selected.filter(x=>x!==id);else if(selected.length<3)selected.push(id);else toast('最多对比 3 条记录，请先移除一条');render();if($('#detailDialog').open)detail(id,false)}
-function names(){return {materials:'材料图鉴',favorites:'我的收藏',terms:'基础知识',literature:'回收文献'}}
-function switchView(next){view=next;category='全部材料';termCategory='全部知识';onlyFavorites=false;$('#search').value='';render()}
+function names(){return {news:'材料动态',materials:'材料图鉴',favorites:'我的收藏',terms:'基础知识',literature:'回收文献'}}
+const viewStates=new Map();let newsController;
+function routeView(){const key=location.hash.slice(1);return ['materials','terms','literature','favorites','news'].includes(key)?key:'materials'}
+function switchView(next,{historyMode='push'}={}){if(!Object.hasOwn(names(),next)||next===view)return;viewStates.set(view,{category,termCategory,onlyFavorites,query:$('#search').value,scroll:window.scrollY});view=next;const state=viewStates.get(next)||{category:'全部材料',termCategory:'全部知识',onlyFavorites:false,query:'',scroll:0};category=state.category;termCategory=state.termCategory;onlyFavorites=state.onlyFavorites;$('#search').value=state.query;if(historyMode==='push')history.pushState({view:next},'',`#${next}`);render();const restore=()=>{if(view===next)requestAnimationFrame(()=>{if(view===next)window.scrollTo({top:state.scroll,behavior:'instant'})})};restore();if(next==='news')newsController?.ready.then(restore)}
+window.addEventListener('popstate',()=>{if(DATA)switchView(routeView(),{historyMode:'none'})});window.addEventListener('hashchange',()=>{if(DATA)switchView(routeView(),{historyMode:'none'})});
 function items(){const q=$('#search').value.trim().toLowerCase();if(view==='terms')return DATA.terms.filter(x=>(termCategory==='全部知识'||x['分类']===termCategory)&&[x['术语/阅读规则'],x['解释'],x['用途或易错点'],x['分类']].join(' ').toLowerCase().includes(q));if(view==='literature')return DATA.literature.filter(x=>Object.values(x).join(' ').toLowerCase().includes(q));return DATA.materials.filter(m=>(category==='全部材料'||m.category===category)&&(!(onlyFavorites||view==='favorites')||favorites.has(m.id))&&Object.values(m.fields).join(' ').toLowerCase().includes(q)).sort((a,b)=>{
  const score=m=>q&&m.fields['英文缩写'].toLowerCase().split(/[\s/、]+/).includes(q)?2:q&&m.fields['材料名称'].toLowerCase().includes(q)?1:0;return score(b)-score(a);
 })}
 function render(){
+ const news=view==='news';$('#atlasPanel').hidden=news;$('#newsPanel').hidden=!news;
+ if(news){if(!newsController){$('#newsPanel').innerHTML=NEWS_TEMPLATE;newsController=mountNews($('#newsPanel'))}document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view===view));$('#breadcrumb').textContent='材料动态';$('#categories').hidden=true;$('.categories-label').hidden=true;$('#compareTray').hidden=true;document.title='材料动态 · 高分子材料图鉴';return}
+ document.title=names()[view]+' · 高分子材料图鉴';
  const isMaterial=['materials','favorites'].includes(view),list=items();
  document.querySelectorAll('[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view===view));
  $('#favoriteCount').textContent=[...favorites].filter(x=>material(x)).length;
@@ -68,7 +75,7 @@ document.addEventListener('click',e=>{
  if(el.dataset.termHelp!==undefined){showTermHelp(Number(el.dataset.termHelp));return}
  if(el.dataset.related){detailSelections.set(el.dataset.related,'overview');detail(el.dataset.related);document.querySelector('.detail-tab.active')?.focus({preventScroll:true});return}
  if(el.dataset.detailGroup){selectDetailGroup(el.dataset.materialId,el.dataset.detailGroup);return}
- if(el.dataset.view){switchView(el.dataset.view);return}
+ if(el.dataset.view){if(el.tagName==='A'&&(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey))return;e.preventDefault();switchView(el.dataset.view);return}
  if(el.dataset.category){view='materials';category=el.dataset.category;render();return}
  if(el.dataset.query){view='materials';category='全部材料';$('#search').value=el.dataset.query;render();return}
  if(el.hasAttribute('data-close')){el.closest('dialog').close();return}
@@ -80,11 +87,11 @@ document.addEventListener('click',e=>{
  if(['compareOpen','compareGo'].includes(el.id)){openCompare();return}
  if(el.id==='compareClear'){selected=[];render();return}
  if(el.id==='printDetail'){window.print();return}
- if(el.id==='reset'){switchView(view==='terms'?'terms':'materials');return}
+ if(el.id==='reset'){category='全部材料';termCategory='全部知识';onlyFavorites=false;$('#search').value='';render();return}
  const article=e.target.closest('article');if(article){if(article.dataset.detail)detail(article.dataset.detail);else if(article.dataset.term!==undefined)otherDetail('term',Number(article.dataset.term));else if(article.dataset.literature!==undefined)otherDetail('literature',Number(article.dataset.literature))}
 });
-document.addEventListener('keydown',e=>{if(e.key==='/'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)&&!$('dialog[open]')){e.preventDefault();$('#search').focus()}if(['Enter',' '].includes(e.key)&&e.target.matches('article')){e.preventDefault();e.target.click()}});
+document.addEventListener('keydown',e=>{if(e.key==='/'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)&&!$('dialog[open]')){e.preventDefault();$(view==='news'?'#newsSearch':'#search').focus()}if(['Enter',' '].includes(e.key)&&e.target.matches('article')){e.preventDefault();e.target.click()}});
 document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close()}}));
 $('.brand').addEventListener('click',e=>{e.preventDefault();if(DATA)switchView('materials')});
 $('#search').addEventListener('input',()=>{if(DATA)render()});
-try{const response=await fetch('data.json');if(!response.ok)throw Error('资料载入失败');DATA=await response.json();try{const knowledgeResponse=await fetch('terms.json');if(!knowledgeResponse.ok)throw Error('基础知识载入失败');const knowledge=await knowledgeResponse.json();DATA.terms=knowledge.terms;TERM_GUIDE=knowledge.guide;}catch{const guideNames=['本次整理范围','资料口径','文献与专利的范围','表中研发切入点','关联非高分子材料'];DATA.terms=DATA.terms.filter(t=>!guideNames.includes(t['术语/阅读规则']));TERM_GUIDE=[{标题:'基础知识更新暂未载入',说明:'当前显示原有知识条目，分类扩展将在刷新成功后显示。'}];}document.querySelector('[data-view="terms"]')?.replaceChildren(Object.assign(document.createElement('span'),{textContent:'≡'}),document.createTextNode('基础知识'));favorites=new Set([...favorites].filter(id=>material(id)));render()}catch(e){$('#content').innerHTML='<div class="empty error"><h3>资料暂时未能载入</h3><p>请刷新页面重试。</p></div>';$('#resultCount').textContent='载入失败'}
+try{const response=await fetch('data.json');if(!response.ok)throw Error('资料载入失败');DATA=await response.json();try{const knowledgeResponse=await fetch('terms.json');if(!knowledgeResponse.ok)throw Error('基础知识载入失败');const knowledge=await knowledgeResponse.json();DATA.terms=knowledge.terms;TERM_GUIDE=knowledge.guide;}catch{const guideNames=['本次整理范围','资料口径','文献与专利的范围','表中研发切入点','关联非高分子材料'];DATA.terms=DATA.terms.filter(t=>!guideNames.includes(t['术语/阅读规则']));TERM_GUIDE=[{标题:'基础知识更新暂未载入',说明:'当前显示原有知识条目，分类扩展将在刷新成功后显示。'}];}document.querySelector('[data-view="terms"]')?.replaceChildren(Object.assign(document.createElement('span'),{textContent:'≡'}),document.createTextNode('基础知识'));favorites=new Set([...favorites].filter(id=>material(id)));if(routeView()!==view)switchView(routeView(),{historyMode:'none'});else render()}catch(e){$('#content').innerHTML='<div class="empty error"><h3>资料暂时未能载入</h3><p>请刷新页面重试。</p></div>';$('#resultCount').textContent='载入失败'}
