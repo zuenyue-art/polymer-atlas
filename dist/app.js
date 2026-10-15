@@ -1,7 +1,5 @@
 import{mountNews,NEWS_TEMPLATE}from './news-view.mjs';
-import{relatedMarkup,comparisonRows,annotateTerms}from './learning.mjs';
-import{recyclingFigure}from './recycling.mjs';
-import{structureFigure}from './structures.mjs';
+let relatedMarkup,comparisonRows,annotateTerms,recyclingFigure,structureFigure;
 const $=s=>document.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let DATA,view='news',category='全部材料',onlyFavorites=false,selected=[],favorites=new Set();
@@ -98,7 +96,7 @@ $('.brand').addEventListener('click',e=>{e.preventDefault();switchView('news')})
 $('#search').addEventListener('input',()=>{if(DATA)render()});
 
 let atlasRequest,knowledgeRequest,knowledgeReady=false,pendingView=0;
-function ensureAtlas(){if(DATA)return Promise.resolve();if(!atlasRequest)atlasRequest=(async()=>{const r=await fetch('data.json');if(!r.ok)throw Error('资料载入失败');DATA=await r.json();favorites=new Set([...favorites].filter(id=>material(id)));})().catch(e=>{atlasRequest=null;throw e});return atlasRequest}
+function ensureAtlas(){if(DATA)return Promise.resolve();if(!atlasRequest)atlasRequest=(async()=>{const [r,learning,recycling,structures]=await Promise.all([fetch('data.json'),import('./learning.mjs'),import('./recycling.mjs'),import('./structures.mjs')]);if(!r.ok)throw Error('资料载入失败');const data=await r.json();({relatedMarkup,comparisonRows,annotateTerms}=learning);({recyclingFigure}=recycling);({structureFigure}=structures);DATA=data;favorites=new Set([...favorites].filter(id=>material(id)));})().catch(e=>{atlasRequest=null;throw e});return atlasRequest}
 function ensureKnowledge(){if(knowledgeReady)return Promise.resolve();if(!knowledgeRequest)knowledgeRequest=(async()=>{await ensureAtlas();try{const r=await fetch('terms.json');if(!r.ok)throw Error();const k=await r.json();DATA.terms=k.terms;TERM_GUIDE=k.guide;}catch{const guideNames=['本次整理范围','资料口径','文献与专利的范围','表中研发切入点','关联非高分子材料'];DATA.terms=DATA.terms.filter(t=>!guideNames.includes(t['术语/阅读规则']));}knowledgeReady=true;})();return knowledgeRequest}
 document.querySelector('[data-view="terms"]')?.replaceChildren(Object.assign(document.createElement('span'),{textContent:'≡'}),document.createTextNode('基础知识'));
 const initialView=routeView();
