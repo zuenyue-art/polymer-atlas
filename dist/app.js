@@ -87,7 +87,7 @@ document.addEventListener('click',e=>{
  if(['compareOpen','compareGo'].includes(el.id)){openCompare();return}
  if(el.id==='compareClear'){selected=[];render();return}
  if(el.id==='printDetail'){window.print();return}
- if(el.id==='reset'){category='全部材料';termCategory='全部知识';onlyFavorites=false;$('#search').value='';render();return}
+ if(el.id==='reset'){if(view==='favorites'){viewStates.delete('materials');switchView('materials');return}category='全部材料';termCategory='全部知识';onlyFavorites=false;$('#search').value='';render();return}
  const article=e.target.closest('article');if(article){if(article.dataset.detail)detail(article.dataset.detail);else if(article.dataset.term!==undefined)otherDetail('term',Number(article.dataset.term));else if(article.dataset.literature!==undefined)otherDetail('literature',Number(article.dataset.literature))}
 });
 document.addEventListener('keydown',e=>{if(e.key==='/'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)&&!$('dialog[open]')){e.preventDefault();$(view==='news'?'#newsSearch':'#search').focus()}if(['Enter',' '].includes(e.key)&&e.target.matches('article')){e.preventDefault();e.target.click()}});
