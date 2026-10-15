@@ -1,0 +1,85 @@
+{
+  "items": [
+    {
+      "id": "20261001-avantium-parana",
+      "published_at": "2026-10-01",
+      "added_at": "2026-10-15",
+      "materials": [
+        "生物基聚酯",
+        "PISA",
+        "PISOX",
+        "PEIT",
+        "PEIF"
+      ],
+      "kind": "新材料与结构",
+      "title": "异山梨醇基聚酯平台推进独立开发，涵盖PISA、PISOX与PEIT/PEIF",
+      "summary": "Parana平台以异山梨醇、琥珀酸、草酸及生物基乙二醇等商业化单体开发高性能聚酯，面向包装、消费品和耐用材料，设计路线力求适配现有工业设施。10月1日完成独立运营，继续开发与放大；公告所述PISOX海洋降解和潜在负碳特性仍需结合具体测试及生命周期边界理解。",
+      "source_name": "Avantium 官方公告",
+      "url": "https://newsroom.avantium.com/avantium-completes-spin-out-of-parana-technology-into-parana-materials/",
+      "source_title": "Avantium Completes Spin-out of Parana Technology into Parana Materials",
+      "focus": "材料技术",
+      "region": "荷兰",
+      "corrected_at": "2026-10-15",
+      "correction_note": "按材料平台与产业化进展重写，取消企业背景隐藏分类，保留原ID与收藏关联。"
+    },
+    {
+      "added_at": "2026-10-15",
+      "focus": "材料技术",
+      "date_basis": "原文发布日期",
+      "id": "20261005-polyesteramide-adhesive",
+      "published_at": "2026-10-05",
+      "materials": [
+        "聚酯酰胺",
+        "PCL",
+        "聚酰胺"
+      ],
+      "kind": "新材料与结构",
+      "title": "内酯与内酰胺直接共聚，构建可循环聚酯酰胺胶黏材料",
+      "summary": "研究采用钛催化配位开环转酰胺共聚，使ε-己内酯与ε-己内酰胺形成聚酯酰胺，探索兼具黏接功能、可降解和循环利用潜力的材料。可学习的是酯键与酰胺键的组合设计；它是新聚合物合成研究，不能当作废PEBA已经闭环回收的证据。",
+      "source_name": "Nature Communications",
+      "source_title": "Coordination ring-opening transamidation copolymerization of cyclic lactones and lactams towards circular and biodegradable poly(ester amide) adhesives",
+      "url": "https://www.nature.com/articles/s41467-026-78220-6",
+      "region": "中国",
+      "verification_scope": "出版社题录与研究简介"
+    },
+    {
+      "added_at": "2026-10-15",
+      "focus": "材料技术",
+      "date_basis": "原文发布日期",
+      "id": "20261005-paes-ai-electronics",
+      "published_at": "2026-10-05",
+      "materials": [
+        "PSU",
+        "PESU",
+        "PPSU"
+      ],
+      "kind": "新品与应用",
+      "title": "聚芳醚砜拓展至光纤连接器、线缆绝缘与热管理部件",
+      "summary": "BASF介绍PSU、PESU和PPSU在数据中心与电气部件中的应用，包括薄壁光纤连接器、线缆护套及冷却系统零件。PPSU被用于讨论部分含氟材料替代方案；耐热、绝缘与耐介质表现应按牌号和工况核验，不能理解为对所有含氟聚合物的通用替代。",
+      "source_name": "BASF 官方材料技术公告",
+      "source_title": "Powering data, managing heat: Ultrason for AI-driven E&E applications",
+      "url": "https://www.basf.com/global/en/media/news-releases/2026/10/p-26-170",
+      "region": "德国"
+    },
+    {
+      "added_at": "2026-10-15",
+      "focus": "材料技术",
+      "date_basis": "政策适用日期；法规于2024-09-20公布",
+      "id": "20261010-eu-pfhxa-limits",
+      "published_at": "2026-10-10",
+      "materials": [
+        "纺织材料",
+        "功能涂层",
+        "含氟助剂"
+      ],
+      "kind": "政策与标准",
+      "title": "欧盟PFHxA相关限制进入服装、鞋类等用途适用阶段",
+      "summary": "欧盟法规2024/2462自10月10日起，对面向公众的服装、鞋类等指定用途实施PFHxA及相关物质限值，涉及防水防油整理与功能涂层选材。法规按用途设置适用日期和例外；这是2024年法规的分阶段适用节点，不是2026年新颁布的所有PFAS统一禁令。",
+      "source_name": "EUR-Lex 欧盟法规原文｜适用节点",
+      "source_title": "Commission Regulation (EU) 2024/2462",
+      "url": "https://eur-lex.europa.eu/eli/reg/2024/2462/oj/eng",
+      "region": "欧盟",
+      "regulatory_status": "指定用途限制开始适用"
+    }
+  ]
+}

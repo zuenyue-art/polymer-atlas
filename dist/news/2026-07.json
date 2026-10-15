@@ -1,0 +1,19 @@
+{
+  "items": [
+    {
+      "id": "20260729-pet-beads",
+      "published_at": "2026-07-29",
+      "added_at": "2026-10-15",
+      "materials": [
+        "PET"
+      ],
+      "kind": "回收与纯化",
+      "title": "PET醇解：大孔聚阴离子微球兼顾催化、过滤回收与连续运行",
+      "summary": "研究用大孔聚阴离子微球催化PET乙二醇解。催化剂可过滤回收，30次循环的BHET收率保持在90.7±2.7%；连续搅拌釜运行超过4小时，转化率79.7±2.6%。两项指标口径不同，不能混作单体收率。",
+      "source_name": "Nature Communications",
+      "url": "https://www.nature.com/articles/s41467-026-76086-2",
+      "focus": "材料技术",
+      "date_basis": "原文发布日期"
+    }
+  ]
+}

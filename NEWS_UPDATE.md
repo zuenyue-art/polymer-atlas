@@ -11,7 +11,7 @@
 4. 每条中文摘要80–150字左右，优先写清材料对象、具体变化/方法、性能或应用意义；避免以公司为主语堆叠商业信息。未说明的性能测试条件不得补写；仅定性改善就保留定性口径。直说技术变化及为何值得关注，不强行写专利创造性分析。按技术价值收录，不设固定条数或硬性上限，不凑数量；没有有价值新增就不添加旧闻。
 5. items中的每条记录使用 id、published_at(YYYY-MM-DD原文发布日期)、added_at(YYYY-MM-DD收录日期)、materials(字符串数组)、kind、title、summary、source_name、source_title、url(具体原文HTTP(S)地址)。kind使用新材料与结构/配方与性能/新品与应用/回收与纯化/研究进展/专利公开/政策与标准。新增条目focus固定为材料技术。符合上述标准的产业化消息统一归入材料技术并默认展示，不因企业来源而隐藏。id稳定唯一，按规范化URL及同一事件去重，多语种和转载不重复收录。
 6. 保留符合标准的历史items及稳定ID；仅在用户要求清理时删除不合格条目，日常更新不得擅自清空历史。更正旧条目须保留其id和added_at并加correction_note与corrected_at。updated_at仅内容增改时更新，checked_at完整检索成功后更新；检索失败不得假报检查成功。
-7. 校验JSON可解析、字段齐全、ID和URL去重、日期不在未来、摘要和链接对应。使用 github.update_file 更新同一路径，提供刚读取的SHA。冲突时重新读取合并再写，不强推、不删历史、不改其他网站文件。无新增也可只更新checked_at，标识最近检查；勿为同一检查重复提交。
+7. 校验JSON可解析、字段齐全、ID和URL去重、日期不在未来、摘要和链接对应。使用 github.update_file 更新同一路径，提供刚读取的SHA。冲突时重新读取合并再写，不强推、不删合格历史。dist/news.json是完整编辑源，网站读取news-index.json及news/YYYY-MM.json分月文件；每次更新必须同步生成索引与受影响月份，并在同一个GitHub tree/commit提交，不修改其他界面文件。可用scripts/build-news.mjs生成派生文件。无新增也可只更新checked_at，标识最近检查；勿为同一检查重复提交。
 8. 从main读回dist/news.json，验证新增ID、保留的旧条目数及URL；检查提交CI/Cloudflare检查状态（如可用）。自动部署未成功时明确报告，不把GitHub提交成功等同于网站已上线。不使用本地临时路径作为更新依赖，不需要Cloudflare API密钥或用户手动授权。
 9. 返回简短中文状态，附材料动态链接；确实有新增时列出数量和1–2个主题，无新增时简短说明。临时检索或连接故障保留任务待后续重试，不禁用持续更新任务。
 
@@ -20,3 +20,6 @@
 
 ## 全球检索范围
 地域不限中国或已有消息来源。以中、英、日等适合的检索词，轮换覆盖中国、欧洲、北美、日本、韩国及其他有实质成果的地区，不设地域配额。优先出版商、高校与研究机构、监管部门及材料技术官方原文，避免长期集中于少数公司。用中文概述并保留原文链接；同一成果的多语种稿与转载合并去重。政策明确适用国家/地区，不把地方规定写成全球义务。全球范围不改变前述材料重点、材料排除项及按材料信息价值筛选的规则。
+
+## 分月加载数据约定
+前端不直接读取完整news.json。news-index.json包含version、updated_at、checked_at、total、materials（全部材料去重排序）、kinds（类型去重排序）、months（按年月倒序的{month,count,url}数组）。url使用news/YYYY-MM.json；每月文件为{items:[该月全部条目]}。news.json仍保留完整合格历史供检索去重和编辑。每次改变news.json后，运行node scripts/build-news.mjs，或严格按该脚本在内存生成等价内容。将news.json、news-index.json与变化月份文件用create_tree/create_commit/update_ref（expected_sha，不force）原子提交。冲突须读取最新main重新合并生成，不得覆盖并发变更。仅检查日期变化也需同步索引。读回校验月份总数合计等于total、逐月条目并集等于源数据、ID和收藏关联不变。不要只写news.json，否则网站不会显示新增。

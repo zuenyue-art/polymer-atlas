@@ -4,7 +4,7 @@ import{recyclingFigure}from './recycling.mjs';
 import{structureFigure}from './structures.mjs';
 const $=s=>document.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let DATA,view='materials',category='全部材料',onlyFavorites=false,selected=[],favorites=new Set();
+let DATA,view='news',category='全部材料',onlyFavorites=false,selected=[],favorites=new Set();
 try{const saved=JSON.parse(localStorage.getItem('polymer-atlas-favorites')||'[]');if(Array.isArray(saved))favorites=new Set(saved.filter(x=>typeof x==='string'));}catch{}
 let toastTimer;
 const detailSelections=new Map();let termCategory='全部知识';let TERM_GUIDE=[];
@@ -17,8 +17,8 @@ const viewStates=new Map();let newsController;
 function animateView(){const main=$('main');main.classList.remove('view-enter');void main.offsetWidth;main.classList.add('view-enter')}
 
 function routeView(){const key=location.hash.slice(1);return ['materials','terms','literature','favorites','news'].includes(key)?key:'news'}
-function switchView(next,{historyMode='push'}={}){if(!Object.hasOwn(names(),next)||next===view)return;viewStates.set(view,{category,termCategory,onlyFavorites,query:$('#search').value,scroll:window.scrollY});view=next;const state=viewStates.get(next)||{category:'全部材料',termCategory:'全部知识',onlyFavorites:false,query:'',scroll:0};category=state.category;termCategory=state.termCategory;onlyFavorites=state.onlyFavorites;$('#search').value=state.query;if(historyMode==='push')history.pushState({view:next},'',`#${next}`);render();animateView();const restore=()=>{if(view===next)requestAnimationFrame(()=>{if(view===next)window.scrollTo({top:state.scroll,behavior:'instant'})})};restore();if(next==='news')newsController?.ready.then(restore)}
-window.addEventListener('popstate',()=>{if(DATA)switchView(routeView(),{historyMode:'none'})});window.addEventListener('hashchange',()=>{if(DATA)switchView(routeView(),{historyMode:'none'})});
+function switchView(next,{historyMode='push'}={}){const ticket=++pendingView;if(next!=='news'&&(!DATA||(next==='terms'&&!knowledgeReady))){toast('正在载入资料…');(next==='terms'?ensureKnowledge():ensureAtlas()).then(()=>{if(ticket===pendingView)switchView(next,{historyMode})}).catch(()=>toast('资料暂时未能载入，请重试'));return;}if(!Object.hasOwn(names(),next)||next===view)return;viewStates.set(view,{category,termCategory,onlyFavorites,query:$('#search').value,scroll:window.scrollY});view=next;const state=viewStates.get(next)||{category:'全部材料',termCategory:'全部知识',onlyFavorites:false,query:'',scroll:0};category=state.category;termCategory=state.termCategory;onlyFavorites=state.onlyFavorites;$('#search').value=state.query;if(historyMode==='push')history.pushState({view:next},'',`#${next}`);render();animateView();const restore=()=>{if(view===next)requestAnimationFrame(()=>{if(view===next)window.scrollTo({top:state.scroll,behavior:'instant'})})};restore();if(next==='news')newsController?.ready.then(restore)}
+window.addEventListener('popstate',()=>{switchView(routeView(),{historyMode:'none'})});window.addEventListener('hashchange',()=>{if(DATA)switchView(routeView(),{historyMode:'none'})});
 function items(){const q=$('#search').value.trim().toLowerCase();if(view==='terms')return DATA.terms.filter(x=>(termCategory==='全部知识'||x['分类']===termCategory)&&[x['术语/阅读规则'],x['解释'],x['用途或易错点'],x['分类']].join(' ').toLowerCase().includes(q));if(view==='literature')return DATA.literature.filter(x=>Object.values(x).join(' ').toLowerCase().includes(q));return DATA.materials.filter(m=>(category==='全部材料'||m.category===category)&&(!(onlyFavorites||view==='favorites')||favorites.has(m.id))&&Object.values(m.fields).join(' ').toLowerCase().includes(q)).sort((a,b)=>{
  const score=m=>q&&m.fields['英文缩写'].toLowerCase().split(/[\s/、]+/).includes(q)?2:q&&m.fields['材料名称'].toLowerCase().includes(q)?1:0;return score(b)-score(a);
 })}
@@ -37,7 +37,7 @@ function render(){
  $('#pageTitle').innerHTML=titles[view];
  $('#pageSubtitle').textContent={materials:'结构、性能、加工与回收，让材料知识更好查，也更好懂。',favorites:'收藏记录保存在当前浏览器，方便随时回看。',terms:'从结构到表征、从加工到回收：按主题查概念，同时看懂容易混淆的地方。',literature:'10 项重点论文与专利，附技术路线、来源和核验范围。'}[view];
  $('#search').placeholder=isMaterial?'搜索名称、缩写、特性或用途…':view==='terms'?'搜索术语，例如 Tg、BHPT、水解…':'搜索材料、文献题名或技术路线…';
- $('#latestNews').hidden=view!=='materials';$('#quickFilters').hidden=!isMaterial;$('#favoriteToggle').hidden=!isMaterial||view==='favorites';$('#compareOpen').hidden=!isMaterial;
+ $('#latestNews').hidden=view!=='materials';if(view==='materials')import('./news-preview.js');$('#quickFilters').hidden=!isMaterial;$('#favoriteToggle').hidden=!isMaterial||view==='favorites';$('#compareOpen').hidden=!isMaterial;
  $('#favoriteToggle').setAttribute('aria-pressed',onlyFavorites);$('#compareCount').textContent=selected.length;$('#compareOpen').disabled=selected.length<2;
  $('#resultsTitle').textContent=view==='materials'?category:names()[view];$('#resultCount').textContent=`${list.length} ${isMaterial?'条记录':view==='terms'?'个词条':'项资料'}`;
  $('#resultsHint').textContent=isMaterial?'点击卡片，查看完整资料':'点击卡片，阅读说明';
@@ -94,12 +94,15 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('keydown',e=>{if(e.key==='/'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)&&!$('dialog[open]')){e.preventDefault();$(view==='news'?'#newsSearch':'#search').focus()}if(['Enter',' '].includes(e.key)&&e.target.matches('article')){e.preventDefault();e.target.click()}});
 document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close()}}));
-$('.brand').addEventListener('click',e=>{e.preventDefault();if(DATA)switchView('news')});
+$('.brand').addEventListener('click',e=>{e.preventDefault();switchView('news')});
 $('#search').addEventListener('input',()=>{if(DATA)render()});
-try{const response=await fetch('data.json');if(!response.ok)throw Error('资料载入失败');DATA=await response.json();try{const knowledgeResponse=await fetch('terms.json');if(!knowledgeResponse.ok)throw Error('基础知识载入失败');const knowledge=await knowledgeResponse.json();DATA.terms=knowledge.terms;TERM_GUIDE=knowledge.guide;}catch{const guideNames=['本次整理范围','资料口径','文献与专利的范围','表中研发切入点','关联非高分子材料'];DATA.terms=DATA.terms.filter(t=>!guideNames.includes(t['术语/阅读规则']));TERM_GUIDE=[{标题:'基础知识更新暂未载入',说明:'当前显示原有知识条目，分类扩展将在刷新成功后显示。'}];}document.querySelector('[data-view="terms"]')?.replaceChildren(Object.assign(document.createElement('span'),{textContent:'≡'}),document.createTextNode('基础知识'));favorites=new Set([...favorites].filter(id=>material(id)));if(routeView()!==view)switchView(routeView(),{historyMode:'none'});else render()}catch(e){$('#content').innerHTML='<div class="empty error"><h3>资料暂时未能载入</h3><p>请刷新页面重试。</p></div>';$('#resultCount').textContent='载入失败'}
 
-// Reveal the initial reading surface only after its data has settled.
-if(view==='news'&&newsController)await newsController.ready;
+let atlasRequest,knowledgeRequest,knowledgeReady=false,pendingView=0;
+function ensureAtlas(){if(DATA)return Promise.resolve();if(!atlasRequest)atlasRequest=(async()=>{const r=await fetch('data.json');if(!r.ok)throw Error('资料载入失败');DATA=await r.json();favorites=new Set([...favorites].filter(id=>material(id)));})().catch(e=>{atlasRequest=null;throw e});return atlasRequest}
+function ensureKnowledge(){if(knowledgeReady)return Promise.resolve();if(!knowledgeRequest)knowledgeRequest=(async()=>{await ensureAtlas();try{const r=await fetch('terms.json');if(!r.ok)throw Error();const k=await r.json();DATA.terms=k.terms;TERM_GUIDE=k.guide;}catch{const guideNames=['本次整理范围','资料口径','文献与专利的范围','表中研发切入点','关联非高分子材料'];DATA.terms=DATA.terms.filter(t=>!guideNames.includes(t['术语/阅读规则']));}knowledgeReady=true;})();return knowledgeRequest}
+document.querySelector('[data-view="terms"]')?.replaceChildren(Object.assign(document.createElement('span'),{textContent:'≡'}),document.createTextNode('基础知识'));
+const initialView=routeView();
+try{if(initialView!=='news'){await ensureAtlas();if(initialView==='terms')await ensureKnowledge();}if(initialView!==view)switchView(initialView,{historyMode:'none'});else render();if(view==='news')await newsController.ready;}catch{toast('资料暂时未能载入，请稍后重试')}
 clearTimeout(window.atlasLoaderFallback);
 const loader=$('#siteLoader');if(loader){loader.classList.add('loader-leaving');setTimeout(()=>loader.remove(),600)}
 animateView();

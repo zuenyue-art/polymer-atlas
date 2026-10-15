@@ -1,0 +1,172 @@
+{
+  "items": [
+    {
+      "id": "20260930-basf-ultradur-rc1",
+      "published_at": "2026-09-30",
+      "added_at": "2026-10-15",
+      "materials": [
+        "PBT",
+        "PET"
+      ],
+      "kind": "新品与应用",
+      "title": "再生 PET 用于玻纤增强 PBT/PET 配方，面向汽车工程部件",
+      "summary": "新 Ultradur RC1 系列采用玻纤增强 PBT/PET 配方，消费后再生 PET 含量最高达 30%，面向汽车支架、壳体和连接器。它展示了包装废 PET 进入工程塑料的利用方向，并非单体回收纯度的新突破。",
+      "source_name": "BASF 官方新闻",
+      "url": "https://www.basf.com/global/en/media/news-releases/2026/09/p-26-159",
+      "source_title": "BASF expands the Ultradur® portfolio with new grades based on post-consumer recycled PET",
+      "focus": "材料技术"
+    },
+    {
+      "id": "20260928-avantium-fdca",
+      "published_at": "2026-09-28",
+      "added_at": "2026-10-15",
+      "materials": [
+        "PEF",
+        "FDCA",
+        "生物基聚酯"
+      ],
+      "kind": "研究进展",
+      "title": "PEF关键单体FDCA完成商业规模装置首批生产，进入产品验证",
+      "summary": "FDCA是生物基聚酯PEF的关键单体。Avantium于9月28日宣布旗舰工厂产出首批FDCA，随后进行客户规格验证，并由批次生产向连续运行推进。公司当时预计年底开始商业销售、启动后12—24个月爬坡至设计产能；首批产出属于放大节点，尚不能视为稳定满产。",
+      "source_name": "Avantium 官方公告",
+      "url": "https://newsroom.avantium.com/avantium-announces-the-start-up-of-its-flagship-plant-with-the-first-batch-of-fdca-produced/",
+      "source_title": "Avantium announces the start-up of its Flagship Plant, with the first batch of FDCA produced",
+      "focus": "材料技术",
+      "region": "荷兰",
+      "corrected_at": "2026-10-15",
+      "correction_note": "突出PEF单体供应与放大阶段，取消企业背景隐藏分类，保留原ID。"
+    },
+    {
+      "id": "20260917-permeable-pa",
+      "published_at": "2026-09-17",
+      "added_at": "2026-10-15",
+      "materials": [
+        "PA"
+      ],
+      "kind": "新品与应用",
+      "title": "高透水聚酰胺：把强度与水、烟渗透性结合用于肠衣",
+      "summary": "BASF介绍Ultramid H33 L热塑性聚酰胺，主打在保持强度的同时提高水与烟渗透性，可用于薄壁烟熏肠衣。这一案例值得学习的是以传质性能拓展PA用途；性能优势来自企业介绍，公开信息未给出可直接横向比较的完整测试条件。",
+      "source_name": "BASF 产品技术介绍",
+      "url": "https://www.basf.com/global/en/media/news-releases/2026/09/p-26-153",
+      "focus": "材料技术",
+      "date_basis": "原文发布日期"
+    },
+    {
+      "added_at": "2026-10-15",
+      "focus": "材料技术",
+      "date_basis": "原文发布日期",
+      "id": "20260902-pmma-bulk-scission",
+      "published_at": "2026-09-02",
+      "materials": [
+        "PMMA",
+        "聚甲基丙烯酸酯"
+      ],
+      "kind": "回收与纯化",
+      "title": "商用聚甲基丙烯酸酯可经主链断裂实现较低温本体解聚",
+      "summary": "研究提出本体主链断裂路线，用于商用聚甲基丙烯酸酯的较低温解聚和单体回收，无需预装特殊链端或牺牲性共聚单元。值得关注的是把研究对象推进到商用聚合物和高浓度体系；具体配方、温度及产物精制仍须查原文条件。",
+      "source_name": "Nature Chemistry",
+      "source_title": "Lower-temperature bulk depolymerization of commercial polymethacrylates",
+      "url": "https://www.nature.com/articles/s41557-026-02232-4",
+      "verification_scope": "出版社题录及研究摘要",
+      "region": "瑞士"
+    },
+    {
+      "added_at": "2026-10-15",
+      "focus": "材料技术",
+      "date_basis": "研究机构报道日；论文于2026-09-01公开",
+      "id": "20260902-pcl-mobile-crosslinks",
+      "published_at": "2026-09-02",
+      "materials": [
+        "PCL",
+        "PPS",
+        "可降解聚酯"
+      ],
+      "kind": "配方与性能",
+      "title": "PCL引入可移动环状交联：兼顾韧性与酶降解速度调节",
+      "summary": "大阪大学将PPS生产副产物中的环状聚苯硫醚作为可移动交联引入PCL。报道在保持刚度的同时，韧性约提高一倍，并能通过环尺寸调节酶降解速度。这提供了利用工业副产物设计材料强度和使用寿命的思路，不等于任意自然环境下都会快速降解。",
+      "source_name": "大阪大学研究发布",
+      "source_title": "ポリカプロラクトンの酵素分解速度を自在に設計―分子のリングサイズで強さと寿命を制御―",
+      "url": "https://www.sci.osaka-u.ac.jp/ja/topics/17181/",
+      "region": "日本"
+    },
+    {
+      "added_at": "2026-10-15",
+      "focus": "材料技术",
+      "date_basis": "原文发布日期",
+      "id": "20260909-pvc-zno-dechlorination",
+      "published_at": "2026-09-09",
+      "materials": [
+        "PVC"
+      ],
+      "kind": "回收与纯化",
+      "title": "含增塑剂PVC的ZnO脱氯：从纯树脂走向实际配混料",
+      "summary": "RIKEN TECHNOS与信州大学研究ZnO参与的PVC脱氯，并比较不同烷基链长的邻苯二甲酸酯增塑剂。官方报道约200℃可实现较高脱氯率，增塑剂还可帮助ZnO分散。这是配混料适配研究，仍需解决脱氯产物利用，不能视为已实现PVC闭环回收。",
+      "source_name": "RIKEN TECHNOS / 信州大学联合研究公告",
+      "source_title": "RIKEN TECHNOS Conducts Joint Studies with Shinshu University on PVC Dechlorination Using Zinc Oxide",
+      "url": "https://www.rikentechnos.co.jp/e/information/2026/09/09/20260909-01/",
+      "region": "日本",
+      "verification_scope": "官方研究公告；会议成果"
+    },
+    {
+      "added_at": "2026-10-15",
+      "focus": "材料技术",
+      "date_basis": "原文发布日期",
+      "id": "20260924-hybrid-silicone-aerogel",
+      "published_at": "2026-09-24",
+      "materials": [
+        "有机硅",
+        "气凝胶",
+        "聚合物复合材料"
+      ],
+      "kind": "配方与性能",
+      "title": "有机硅—二氧化硅双网络气凝胶兼顾回弹与持续火焰防护",
+      "summary": "研究以连续有机硅基体和二氧化硅网络构建杂化气凝胶，结合柔韧性与低导热性。火焰作用下出现纳米中空化陶瓷化屏障；论文测试中10毫米板材背面温度保持低于120℃至少25分钟。该结果依赖特定试验条件，不能直接替代建筑防火等级认证。",
+      "source_name": "Nature Communications",
+      "source_title": "Mechanically resilient, hybrid silicone aerogel for thermal insulation, daytime radiative cooling and sustained flame protection",
+      "url": "https://www.nature.com/articles/s41467-026-78091-x",
+      "region": "中国",
+      "verification_scope": "出版社早期公开版本摘要"
+    },
+    {
+      "added_at": "2026-10-15",
+      "focus": "材料技术",
+      "date_basis": "原文发布日期",
+      "id": "20260924-solid-polymer-electrolyte",
+      "published_at": "2026-09-24",
+      "materials": [
+        "固态聚合物电解质"
+      ],
+      "kind": "研究进展",
+      "title": "聚合物电解质用一维带电界面组织锂离子传输",
+      "summary": "研究通过一维带电界面固定阴离子、促进锂盐解离，并调节锂离子溶剂化结构，构建“离子班车”式传输路径。所制电解质在28℃的离子电导率为0.92×10⁻³ S/cm；电池循环结果对应各自测试条件，不能直接等同于所有固态电池的工程性能。",
+      "source_name": "Nature Communications",
+      "source_title": "Li+ Shuttle bus enables safe fast ion transport in solid polymer electrolytes",
+      "url": "https://www.nature.com/articles/s41467-026-78041-7",
+      "region": "中国",
+      "verification_scope": "出版社早期公开版本摘要"
+    },
+    {
+      "id": "20260924-china-biomanufacturing-products",
+      "published_at": "2026-09-24",
+      "added_at": "2026-10-15",
+      "materials": [
+        "生物基材料",
+        "生物基化学品"
+      ],
+      "kind": "政策与标准",
+      "focus": "材料技术",
+      "title": "中国征集生物制造标志性产品：生物基材料与化学品列入重点领域",
+      "summary": "工信部启动2026年生物制造标志性产品征集，覆盖生物基材料、化学品等，分重大创新、关键提升、规模替代和AI赋能四类。商业化早期产品须完成中试验证并具有产业化价值。这是产品征集与推广安排，不是普遍补贴或强制使用要求；地方申报期限需另查。",
+      "source_name": "工信微报（工信部官方账号）／北京市政府配套通知",
+      "source_title": "2026年生物制造标志性产品征集工作启动",
+      "url": "https://news.qq.com/rain/a/20260924A04OTZ00",
+      "supporting_urls": [
+        "https://www.beijing.gov.cn/zhengce/zhengcefagui/202609/t20260929_4885654.html"
+      ],
+      "region": "中国",
+      "regulatory_status": "征集通知已发布；非入选名单",
+      "date_basis": "官方账号发布日2026-09-24；工信部通知成文2026-09-23；北京配套通知公开2026-09-29",
+      "verification_scope": "官方账号公开检索正文与北京市政府配套通知全文交叉核验"
+    }
+  ]
+}
