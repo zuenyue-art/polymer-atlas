@@ -18,6 +18,7 @@
     "audit:strict": "python scripts/audit.py . --strict",
     "format": "prettier --write \"dist/**/*.{js,css,html}\" \"scripts/**/*.mjs\"",
     "format:check": "prettier --check \"dist/**/*.{js,css,html}\" \"scripts/**/*.mjs\"",
+    "check:links": "node scripts/check-links.mjs --concurrency=6 --timeout=20000",
     "check": "npm run check:derived && npm run check:seo && npm run audit"
   },
   "devDependencies": {
