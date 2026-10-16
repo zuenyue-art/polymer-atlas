@@ -4,10 +4,10 @@
 
 ## 静态部署
 
-发布目录：`dist`。图鉴本身（`index.html` + `app.js`）无构建步骤；`dist/` 里的派生产物（新闻归档、材料页、`robots.txt` / `sitemap.xml`）由 `npm run build` 一次性重建，生成结果随仓库提交。
+发布目录：`dist`。图鉴本身（`index.html` + `app.js`）无构建步骤；`dist/` 里的派生产物（新闻归档、材料页、可下载 Excel、`robots.txt` / `sitemap.xml`）由 `npm run build` 一次性重建，生成结果随仓库提交。
 
 ```bash
-npm run build    # 依序：新闻归档 → 材料页预渲染 → sitemap
+npm run build    # 依序：新闻归档 → 材料页预渲染 → 可下载 Excel → sitemap
 npm run serve    # 本地预览 http://localhost:8080
 ```
 
@@ -24,13 +24,27 @@ npm run serve    # 本地预览 http://localhost:8080
 - 站点地址可用环境变量 `SITE_ORIGIN` 覆盖（绑定自定义域名后不用改代码）
 - `wrangler.jsonc` 里显式声明了 `html_handling: auto-trailing-slash`，`/m/<id>/` 由这个策略解析到 `index.html`
 
+## 可下载的 Excel
+
+首页「下载完整 Excel」指向 `dist/materials.xlsx`：九个材料分类各一张表，另有术语表与重点回收文献表。
+
+它由 `scripts/build-xlsx.py` 从 `data.json` / `terms.json` 生成。此前它是一份手工维护的第二份副本，不受任何检查约束——改了 JSON 忘了改表，读者下载到的就是过期内容，而且没人会发现。改成派生文件之后，它与站点展示的内容同源同批次。
+
+术语取 `terms.json` 的 68 条正式词条，而不是 `data.json` 内嵌的那一份：后者只是 `terms.json` 加载失败时的回退数据，条数少且会过时。
+
+生成与校验依赖 `openpyxl`，与分享卡片用到的 Pillow 一并列在 `scripts/requirements.txt`：
+
+```bash
+pip install -r scripts/requirements.txt
+```
+
 ## 本地校验
 
 ```bash
 npm run check    # 提交前跑一次，四步全过才算干净
 ```
 
-- `npm run check:derived` —— 用 `news.json` 重建索引与月度文件，与仓库现有内容不一致即失败。专治「只改了 `news.json`，忘了同步派生文件」。
+- `npm run check:derived` —— 两步。先看新闻归档：用 `news.json` 重建索引与月度文件，与仓库现有内容不一致即失败，专治「只改了 `news.json`，忘了同步派生文件」。再看可下载的 Excel：`dist/materials.xlsx` 由 `scripts/build-xlsx.py` 从 JSON 生成，`check-xlsx.py` 读回来逐格比对，专治「改了数据忘了重新生成，读者下载到过期内容」。
 - `npm run check:prerender` —— 逐字节比对 130 份材料页与 `data.json` 当前内容。专治「改了数据，忘了重跑预渲染」——漏一页就是 sitemap 少收录一条内容，而且不会有任何报错。
 - `npm run check:seo` —— 校验首页与 `news.html` 的分享卡片信息，并要求每条材料都有预渲染页，然后与 `robots.txt` / `sitemap.xml` 对账。
 - `npm run audit` —— 校验 id / url 去重、必填字段、日期合法性、月度分档并集、索引覆盖等。数据错误时命令返回非 0；工程习惯类问题只告警，不拦截提交。

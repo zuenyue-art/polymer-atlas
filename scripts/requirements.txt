@@ -1,0 +1,11 @@
+# 生成与校验脚本用到的 Python 依赖。
+# 安装：pip install -r scripts/requirements.txt
+#
+# 图鉴本身是纯静态的，不依赖这些；只有重建派生产物（可下载的 Excel、
+# 分享卡片图）与跑校验时才需要。CI 里由 .github/workflows/audit.yml 安装。
+
+# build-xlsx.py / check-xlsx.py —— 生成并校验 dist/materials.xlsx
+openpyxl>=3.1
+
+# build-og-image.py —— 画分享卡片 dist/og.png
+Pillow>=10

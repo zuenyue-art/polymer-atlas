@@ -46,8 +46,13 @@ jobs:
         with:
           python-version: '3.12'
 
-      # 这一条专治「只改了 news.json，忘了同步索引和月度文件」
-      - name: 派生文件是否与 news.json 同步
+      # build-xlsx.py / check-xlsx.py 需要 openpyxl
+      - name: 安装 Python 依赖
+        run: pip install -r scripts/requirements.txt
+
+      # 这一条专治「只改了 news.json，忘了同步索引和月度文件」，
+      # 以及「改了 JSON 忘了重新生成可下载的 Excel」
+      - name: 派生文件是否与数据同步
         run: npm run check:derived
 
       # 每条材料都必须有一份与 data.json 对得上的静态页（dist/m/<id>/index.html）。
