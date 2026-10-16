@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://polymer-atlas.zuenyue.workers.dev/sitemap.xml

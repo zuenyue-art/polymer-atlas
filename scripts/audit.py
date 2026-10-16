@@ -210,7 +210,9 @@ def audit(root):
         if os.path.exists(p):
             with open(p, encoding="utf-8") as f:
                 html = f.read()
-            refs = sorted(set(re.findall(r'(?:src|href)="(https?://[^"]+)"', html)))
+            # canonical / og: 这类元信息不会被浏览器下载，不算外部依赖
+            html_no_meta = re.sub(r"<link[^>]*rel=\"canonical\"[^>]*>", "", html)
+            refs = sorted(set(re.findall(r'(?:src|href)="(https?://[^"]+)"', html_no_meta)))
             a.stats[f"{name}_external_refs"] = refs
             if refs:
                 a.warn(name, f"出现外部资源引用，站点将不再可离线打开：{refs}")

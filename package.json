@@ -10,9 +10,18 @@
   "scripts": {
     "serve": "python -m http.server 8080 --directory dist",
     "build:news": "node scripts/build-news.mjs",
+    "build:seo": "node scripts/build-seo.mjs",
+    "build:image": "python scripts/build-og-image.py",
     "check:derived": "node scripts/build-news.mjs && git diff --exit-code -- dist/news-index.json dist/news",
+    "check:seo": "node scripts/build-seo.mjs --check",
     "audit": "python scripts/audit.py .",
     "audit:strict": "python scripts/audit.py . --strict",
-    "check": "npm run check:derived && npm run audit"
+    "format": "prettier --write \"dist/**/*.{js,css,html}\" \"scripts/**/*.mjs\"",
+    "format:check": "prettier --check \"dist/**/*.{js,css,html}\" \"scripts/**/*.mjs\"",
+    "check:links": "node scripts/check-links.mjs --concurrency=6 --timeout=20000",
+    "check": "npm run check:derived && npm run check:seo && npm run audit"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3"
   }
 }

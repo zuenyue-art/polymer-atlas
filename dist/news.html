@@ -1,8 +1,115 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="材料新闻与研究动态，短摘要、原始来源和历史归档。"><title>材料动态 · 高分子材料图鉴</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="news.css"><link rel="stylesheet" href="layout.css"></head><body>
-<aside class="sidebar"><a href="index.html" class="brand"><span class="brand-mark">p.</span><span>高分子材料图鉴<small>POLYMER ATLAS</small></span></a><div class="section-label">知识空间</div><nav id="views"><a class="nav active" href="news.html" aria-current="page"><span>◷</span>材料动态</a><a class="nav" href="index.html"><span>▦</span>材料图鉴</a><a class="nav" href="literature.html"><span>↗</span>回收文献</a></nav><div class="section-label categories-label">持续关注</div><div class="watch-list">PPO / PPE · PBT · PTT · PET<br>TPAE / PEBA · TPEE · PMMA<br>生物基与可降解材料</div><div class="sidebar-bottom">短读一条，回到原文。<small>保留历史，按需检索。</small><a href="index.html">返回材料图鉴 ↗</a></div></aside>
-<main><header class="topbar"><span>材料知识库 <span class="sep">/</span> 材料动态</span><span class="edition">技术 · 应用 · 政策</span></header><section class="intro"><div><div class="eyebrow">MATERIALS IN MOTION</div><h1>关注材料本身，<br>看懂技术的新变化。</h1><p>新配方、新性能、新用途与回收方法，短读技术要点，再看原文。</p></div></section>
-<div class="news-stats"><span id="total">正在载入…</span><span id="lastCheck"></span><span>历史消息持续保留</span></div>
-<section class="toolbar"><label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="m15 15 5 5"/></svg><input id="newsSearch" type="search" aria-label="搜索材料动态" placeholder="搜索材料、政策或技术关键词…"></label></section>
-<section class="news-filters" aria-label="动态筛选"><label>材料 <select id="newsMaterial"><option value="">全部材料</option></select></label><label>类型 <select id="newsKind"><option value="">全部类型</option></select></label><label>月份 <select id="newsMonth"><option value="">全部历史</option></select></label><label class="background-toggle"><input type="checkbox" id="includeBackground">包含早期企业与产线消息</label><label><input type="checkbox" id="savedNews">只看收藏</label><button class="btn" id="clearFilters">清除筛选</button></section>
-<div class="results-heading"><div><h2>动态与归档</h2><span id="newsCount" aria-live="polite"></span></div><span>按发布日期 / 政策适用日期排序</span></div><div id="newsList" class="news-list"></div><div class="news-pagination"><button class="btn" id="prevPage" disabled>上一页</button><span id="pageLabel"></span><button class="btn" id="nextPage" disabled>下一页</button></div>
-<footer>新闻摘要仅保留主要事实；企业公告中的预测和性能表述均保留其归属。论文、专利与政策分开标识；收藏保存在当前浏览器，不跨设备同步。<span><a href="index.html">返回材料图鉴 ↗</a></span></footer></main><script type="module" src="news.js"></script></body></html>
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="材料新闻与研究动态，短摘要、原始来源和历史归档。" />
+    <link rel="canonical" href="https://polymer-atlas.zuenyue.workers.dev/news.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="高分子材料图鉴" />
+    <meta property="og:title" content="材料动态 · 高分子材料图鉴" />
+    <meta property="og:description" content="材料新闻与研究动态，短摘要、原始来源和历史归档。" />
+    <meta property="og:url" content="https://polymer-atlas.zuenyue.workers.dev/news.html" />
+    <meta property="og:image" content="https://polymer-atlas.zuenyue.workers.dev/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="材料动态 · 高分子材料图鉴" />
+    <meta name="twitter:description" content="材料新闻与研究动态，短摘要、原始来源和历史归档。" />
+    <meta name="twitter:image" content="https://polymer-atlas.zuenyue.workers.dev/og.png" />
+    <title>材料动态 · 高分子材料图鉴</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="news.css" />
+    <link rel="stylesheet" href="layout.css" />
+  </head>
+  <body>
+    <aside class="sidebar">
+      <a href="index.html" class="brand"
+        ><span class="brand-mark">p.</span
+        ><span>高分子材料图鉴<small>POLYMER ATLAS</small></span></a
+      >
+      <div class="section-label">知识空间</div>
+      <nav id="views">
+        <a class="nav active" href="news.html" aria-current="page"><span>◷</span>材料动态</a
+        ><a class="nav" href="index.html"><span>▦</span>材料图鉴</a
+        ><a class="nav" href="index.html#literature"><span>↗</span>回收文献</a>
+      </nav>
+      <div class="section-label categories-label">持续关注</div>
+      <div class="watch-list">
+        PPO / PPE · PBT · PTT · PET<br />TPAE / PEBA · TPEE · PMMA<br />生物基与可降解材料
+      </div>
+      <div class="sidebar-bottom">
+        短读一条，回到原文。<small>保留历史，按需检索。</small
+        ><a href="index.html">返回材料图鉴 ↗</a>
+      </div>
+    </aside>
+    <main>
+      <header class="topbar">
+        <span>材料知识库 <span class="sep">/</span> 材料动态</span
+        ><span class="edition">技术 · 应用 · 政策</span>
+      </header>
+      <section class="intro">
+        <div>
+          <div class="eyebrow">MATERIALS IN MOTION</div>
+          <h1>关注材料本身，<br />看懂技术的新变化。</h1>
+          <p>新配方、新性能、新用途与回收方法，短读技术要点，再看原文。</p>
+        </div>
+      </section>
+      <div class="news-stats">
+        <span id="total">正在载入…</span><span id="lastCheck"></span><span>历史消息持续保留</span>
+      </div>
+      <section class="toolbar">
+        <label class="search"
+          ><svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="10" cy="10" r="6.5" />
+            <path d="m15 15 5 5" /></svg
+          ><input
+            id="newsSearch"
+            type="search"
+            aria-label="搜索材料动态"
+            placeholder="搜索材料、政策或技术关键词…"
+        /></label>
+      </section>
+      <section class="news-filters" aria-label="动态筛选">
+        <label
+          >材料
+          <select id="newsMaterial">
+            <option value="">全部材料</option>
+          </select></label
+        ><label
+          >类型
+          <select id="newsKind">
+            <option value="">全部类型</option>
+          </select></label
+        ><label
+          >月份
+          <select id="newsMonth">
+            <option value="">全部历史</option>
+          </select></label
+        ><label class="background-toggle"
+          ><input type="checkbox" id="includeBackground" />包含早期企业与产线消息</label
+        ><label><input type="checkbox" id="savedNews" />只看收藏</label
+        ><button class="btn" id="clearFilters">清除筛选</button>
+      </section>
+      <div class="results-heading">
+        <div>
+          <h2>动态与归档</h2>
+          <span id="newsCount" aria-live="polite"></span>
+        </div>
+        <span>按发布日期 / 政策适用日期排序</span>
+      </div>
+      <div id="newsList" class="news-list"></div>
+      <div class="news-pagination">
+        <button class="btn" id="prevPage" disabled>上一页</button><span id="pageLabel"></span
+        ><button class="btn" id="nextPage" disabled>下一页</button>
+      </div>
+      <footer>
+        新闻摘要仅保留主要事实；企业公告中的预测和性能表述均保留其归属。论文、专利与政策分开标识；收藏保存在当前浏览器，不跨设备同步。<span
+          ><a href="index.html">返回材料图鉴 ↗</a></span
+        >
+      </footer>
+    </main>
+    <script type="module" src="news.js"></script>
+  </body>
+</html>

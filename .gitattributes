@@ -5,3 +5,19 @@
 # 重建后就会出现「内容相同却显示已修改」的假差异，干扰 npm run check:derived。
 # 固定 eol=lf 后，Windows 与 CI 的比较结果一致。
 *.json text eol=lf
+
+# 源码同样钉死 LF。
+# 原因：`.prettierrc.json` 里 endOfLine=lf，若本机检出为 CRLF，
+# 在 Windows 上运行 `npm run format:check` 会报满屏假差异。
+# 固定之后，Windows 与 CI 的格式检查结果一致。
+*.js text eol=lf
+*.mjs text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+
+# scripts/build-seo.mjs 生成的 robots.txt 与 sitemap.xml 同样钉死 LF，
+# 理由与上面的 JSON 一致：本机检出为 CRLF 时，重新生成会显示假差异，
+# 干扰 npm run check:seo。
+*.txt text eol=lf
+*.xml text eol=lf
+*.py text eol=lf
