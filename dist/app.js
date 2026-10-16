@@ -178,9 +178,27 @@ function animateView() {
   main.classList.add('view-enter')
 }
 
+const VIEW_KEYS = ['materials', 'terms', 'literature', 'favorites', 'news']
+function safeDecode(text) {
+  try {
+    return decodeURIComponent(text)
+  } catch {
+    return text
+  }
+}
+// 地址栏形态：#<视图>，或 #materials/<材料 id>（例如 #materials/m-0-0）。
+// 单条材料有独立地址，链接可以直接发给别人。
+function routeParts() {
+  const [head, tail] = location.hash.slice(1).split('/')
+  const known = VIEW_KEYS.includes(head)
+  const view = known ? head : 'news'
+  return { view, materialId: view === 'materials' && tail ? safeDecode(tail) : '' }
+}
 function routeView() {
-  const key = location.hash.slice(1)
-  return ['materials', 'terms', 'literature', 'favorites', 'news'].includes(key) ? key : 'news'
+  return routeParts().view
+}
+function routeMaterialId() {
+  return routeParts().materialId
 }
 function switchView(next, { historyMode = 'push' } = {}) {
   const ticket = ++pendingView
@@ -224,12 +242,76 @@ function switchView(next, { historyMode = 'push' } = {}) {
   restore()
   if (next === 'news') newsController?.ready.then(restore)
 }
-window.addEventListener('popstate', () => {
-  switchView(routeView(), { historyMode: 'none' })
-})
-window.addEventListener('hashchange', () => {
-  if (DATA) switchView(routeView(), { historyMode: 'none' })
-})
+// ---- 材料详情与地址栏同步 ----
+// 单一数据源是 location.hash：openDetail 负责写 hash，关闭详情时回退一步，
+// syncFromHash 负责把 hash 的现状翻译成界面状态。这样分享链接、浏览器返回键、
+// 弹窗关闭三者不会互相打架。
+let detailHashId = ''
+let hashDriven = false
+let handledHash = location.hash
+
+function materialHash(id) {
+  return `#materials/${encodeURIComponent(id)}`
+}
+
+function openDetail(id) {
+  if (!material(id)) return false
+  detail(id)
+  const state = { detail: id }
+  // 详情已经开着时（例如从详情里点「相关材料」）替换当前记录，
+  // 否则返回键要按两次才能回到列表
+  if (detailHashId) history.replaceState(state, '', materialHash(id))
+  else history.pushState(state, '', materialHash(id))
+  detailHashId = id
+  handledHash = location.hash
+  return true
+}
+
+function closeDetailDialog() {
+  if ($('#detailDialog').open) $('#detailDialog').close()
+}
+
+function syncFromHash() {
+  hashDriven = true
+  const { view: next, materialId } = routeParts()
+  switchView(next, { historyMode: 'none' })
+  if (next === 'materials' && materialId) {
+    ensureAtlas()
+      .then(() => {
+        if (!material(materialId)) {
+          detailHashId = ''
+          closeDetailDialog()
+          toast('这条材料记录已不存在')
+          return
+        }
+        detailHashId = materialId
+        detail(materialId)
+      })
+      .catch(() => toast('资料暂时未能载入，请重试'))
+  } else {
+    detailHashId = ''
+    closeDetailDialog()
+  }
+  hashDriven = false
+}
+
+function onLocationChange() {
+  if (location.hash === handledHash) return
+  handledHash = location.hash
+  syncFromHash()
+}
+
+window.addEventListener('popstate', onLocationChange)
+window.addEventListener('hashchange', onLocationChange)
+
+// 按 Esc、点关闭按钮或点遮罩关掉详情时，把地址栏退回列表态。
+// hashDriven 为真说明这次关闭是 hash 变化引起的，不能再回溯一次。
+function onDetailClosed() {
+  if (hashDriven) return
+  const shouldRewind = detailHashId && routeMaterialId() === detailHashId
+  detailHashId = ''
+  if (shouldRewind) history.back()
+}
 function items() {
   const q = $('#search').value.trim().toLowerCase()
   if (view === 'terms')
@@ -561,7 +643,7 @@ document.addEventListener('click', e => {
               .split(/[\s/、（）()]+/)
               .includes(key)
         )
-        if (matches.length === 1) detail(matches[0].id)
+        if (matches.length === 1) openDetail(matches[0].id)
         else if (matches.length) {
           switchView('materials')
           category = '全部材料'
@@ -592,7 +674,7 @@ document.addEventListener('click', e => {
   }
   if (el.dataset.related) {
     detailSelections.set(el.dataset.related, 'overview')
-    detail(el.dataset.related)
+    openDetail(el.dataset.related)
     document.querySelector('.detail-tab.active')?.focus({ preventScroll: true })
     return
   }
@@ -673,7 +755,7 @@ document.addEventListener('click', e => {
   }
   const article = e.target.closest('article')
   if (article) {
-    if (article.dataset.detail) detail(article.dataset.detail)
+    if (article.dataset.detail) openDetail(article.dataset.detail)
     else if (article.dataset.term !== undefined) otherDetail('term', Number(article.dataset.term))
     else if (article.dataset.literature !== undefined)
       otherDetail('literature', Number(article.dataset.literature))
@@ -702,6 +784,7 @@ document.querySelectorAll('dialog').forEach(d =>
     }
   })
 )
+$('#detailDialog').addEventListener('close', onDetailClosed)
 $('.brand').addEventListener('click', e => {
   e.preventDefault()
   switchView('news')
@@ -762,7 +845,8 @@ function ensureKnowledge() {
     })()
   return knowledgeRequest
 }
-const initialView = routeView()
+const initial = routeParts()
+const initialView = initial.view
 try {
   if (initialView !== 'news') {
     await ensureAtlas()
@@ -773,6 +857,20 @@ try {
   if (view === 'news') await newsController.ready
 } catch {
   toast('资料暂时未能载入，请稍后重试')
+}
+// 用分享链接直接打开某条材料时，先垫一条「列表态」历史记录，
+// 这样关闭详情按返回键是回到材料列表，而不是退出站点。
+if (initial.materialId) {
+  if (DATA && material(initial.materialId)) {
+    history.replaceState({ view: 'materials' }, '', '#materials')
+    history.pushState({ detail: initial.materialId }, '', materialHash(initial.materialId))
+    handledHash = location.hash
+    detailHashId = initial.materialId
+    detail(initial.materialId)
+  } else {
+    history.replaceState({ view: 'materials' }, '', '#materials')
+    handledHash = location.hash
+  }
 }
 clearTimeout(window.atlasLoaderFallback)
 const loader = $('#siteLoader')
