@@ -1,0 +1,230 @@
+/* 预渲染材料页（/m/<id>/）的版式。
+   这一页由 scripts/prerender.mjs 生成，不加载 app.js，是给搜索引擎、分享卡片
+   和「先读到内容再说」的场合准备的。字体、颜色、卡片语言都复用 style.css 与
+   layout.css 里已有的类，这里只补这一页独有的骨架。
+
+   注意：不要沿用 main 与 .sidebar 那套规则——它们是给图鉴的两栏布局写的，
+   main 带着侧边栏的 224px 左内边距，没有侧边栏的页面会被整块推歪。 */
+
+.material-page {
+  margin: 0;
+  background: #f7f8f4;
+}
+
+.mp-bar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 14px clamp(16px, 4vw, 40px);
+  background: #f0f3ec;
+  border-bottom: 1px solid var(--line);
+}
+.mp-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+}
+.mp-brand small {
+  display: block;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+.mp-bar .mp-cta {
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* 顶栏的行动按钮不用 .btn / .primary：layout.css 里的 .btn 在后面加载，
+   会把 .primary 的绿底盖成白底白字。这里自己写，不去赌层叠顺序。 */
+.mp-cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 8px 15px;
+  border-radius: 9px;
+  background: var(--green);
+  color: #fff;
+  font-size: 12px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.mp-cta:hover {
+  background: #3c5a44;
+}
+
+.mp-main {
+  max-width: 840px;
+  margin: 0 auto;
+  padding: 22px clamp(16px, 4vw, 40px) 72px;
+}
+
+.mp-crumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--muted);
+}
+.mp-crumb a {
+  color: var(--muted);
+  text-decoration: none;
+}
+.mp-crumb a:hover {
+  color: var(--green);
+}
+.mp-crumb span[aria-hidden] {
+  color: #c6cdc2;
+}
+
+.mp-head {
+  padding: 22px 0 6px;
+}
+.mp-identity {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.mp-head .abbr {
+  margin: 0;
+  font-size: 30px;
+}
+.mp-head h1 {
+  margin: 0;
+  font-size: 27px;
+  line-height: 1.3;
+}
+.mp-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 14px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.mp-group {
+  margin-top: 30px;
+}
+/* 分组标题用上边框分隔，不再加卡片，读起来更像一份资料而不是一叠弹窗。 */
+.mp-group-title {
+  margin: 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--green);
+}
+.mp-group .detail-section {
+  padding: 14px 0 2px;
+}
+.mp-group .detail-section h3 {
+  margin-bottom: 6px;
+}
+
+.mp-siblings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.mp-siblings a {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
+  font-size: 13px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.mp-siblings a:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+.mp-siblings b {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--green);
+}
+.mp-siblings-more a {
+  border-style: dashed;
+  color: var(--muted);
+}
+
+.mp-foot {
+  /* 全局 footer 是 flex 两栏（给图鉴页脚的「说明 + 版本号」用的），
+     这一页的页脚是几行说明文字，退回普通文档流。 */
+  display: block;
+  margin-top: 44px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  font-size: 12.5px;
+  line-height: 1.9;
+  color: var(--muted);
+}
+.mp-foot p {
+  margin: 0 0 10px;
+}
+.mp-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin-bottom: 12px;
+}
+.mp-links a,
+.mp-foot a {
+  color: var(--green);
+  text-decoration: none;
+}
+.mp-links a:hover,
+.mp-foot a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 760px) {
+  .mp-bar {
+    position: static;
+  }
+  .mp-head h1 {
+    font-size: 22px;
+  }
+  .mp-head .abbr {
+    font-size: 25px;
+  }
+  .mp-head {
+    padding-top: 16px;
+  }
+  .mp-group {
+    margin-top: 24px;
+  }
+}
+
+@media print {
+  .mp-bar,
+  .mp-siblings {
+    display: none;
+  }
+  .mp-main {
+    max-width: none;
+    padding: 0;
+  }
+}

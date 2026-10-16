@@ -4,31 +4,46 @@
 
 ## 静态部署
 
-发布目录：`dist`。无需构建步骤。
+发布目录：`dist`。图鉴本身（`index.html` + `app.js`）无构建步骤；`dist/` 里的派生产物（新闻归档、材料页、`robots.txt` / `sitemap.xml`）由 `npm run build` 一次性重建，生成结果随仓库提交。
+
+```bash
+npm run build    # 依序：新闻归档 → 材料页预渲染 → sitemap
+npm run serve    # 本地预览 http://localhost:8080
+```
 
 资料核验范围见每条记录；研究构思不等同于已验证实验结果。收藏保存在访问者当前浏览器。
+
+## 材料的独立页面（预渲染）
+
+每条材料都有一份真实存在的静态页：`dist/m/<id>/index.html`，线上地址形如 `/m/m-0-0/`。
+
+为什么要单独做这一层：图鉴是纯前端渲染的，材料正文只存在于 `data.json` 里，搜索引擎只看得到一个根地址。预渲染之后，每条材料有自己的地址、标题、描述、canonical 和分享卡片，被 `sitemap.xml` 收录，并通过「同分类的其他材料」互相链接，成为一张可爬取的图。页面不加载 `app.js`——它的定位是内容页，读取快、关掉 JS 也读得完；搜索、对比、收藏留在图鉴里，页面上给了回链（`/#materials/<id>`，图鉴会自动展开那条材料）。
+
+- 生成器：`scripts/prerender.mjs`（字段分组与 `app.js` 的 `detailGroups` 对齐，脚本会检查 data.json 的每个字段都被收录，漏了直接报错）
+- 版式：`dist/material.css`，只补这一页独有的骨架，颜色与组件复用 `style.css` / `layout.css`
+- 站点地址可用环境变量 `SITE_ORIGIN` 覆盖（绑定自定义域名后不用改代码）
+- `wrangler.jsonc` 里显式声明了 `html_handling: auto-trailing-slash`，`/m/<id>/` 由这个策略解析到 `index.html`
 
 ## 本地校验
 
 ```bash
-npm run serve    # 本地预览 http://localhost:8080
-npm run check    # 派生文件同步 + 数据体检，提交前跑一次
+npm run check    # 提交前跑一次，四步全过才算干净
 ```
 
-`npm run check` 由两步组成：
+- `npm run check:derived` —— 用 `news.json` 重建索引与月度文件，与仓库现有内容不一致即失败。专治「只改了 `news.json`，忘了同步派生文件」。
+- `npm run check:prerender` —— 逐字节比对 130 份材料页与 `data.json` 当前内容。专治「改了数据，忘了重跑预渲染」——漏一页就是 sitemap 少收录一条内容，而且不会有任何报错。
+- `npm run check:seo` —— 校验首页与 `news.html` 的分享卡片信息，并要求每条材料都有预渲染页，然后与 `robots.txt` / `sitemap.xml` 对账。
+- `npm run audit` —— 校验 id / url 去重、必填字段、日期合法性、月度分档并集、索引覆盖等。数据错误时命令返回非 0；工程习惯类问题只告警，不拦截提交。
 
-- `npm run check:derived` —— 用 `news.json` 重建索引与月度文件，若与仓库现有内容不一致即失败。专治「只改了 `news.json`，忘了同步派生文件」。
-- `npm run audit` —— 校验 id / url 去重、必填字段、日期合法性、月度分档并集、索引覆盖等。数据错误时命令返回非 0。工程习惯类问题（如许可证缺失）只告警，不拦截提交。
+另有 `npm run check:links` 单独查链接：dist 下全部 HTML（含材料页）的站内引用必须存在，数据文件里的外链逐一探测可达性。401/403/429 这类「站点在但拒绝脚本」不计为失效，连不上默认只告警。
 
-另有两个单独入口：`npm run build:news` 只重建派生文件；`npm run audit:strict` 把工程习惯类警告也视为失败。
-
-`.github/workflows/audit.yml` 会在数据相关文件变更时自动执行上述检查，结果写入 job summary。
+`.github/workflows/audit.yml` 会在 `dist/**` 或脚本变更时自动执行上述检查，并每天定时跑一次链接检查，结果写入 job summary。
 
 ## 材料动态
 
 `dist/news.html` 提供短摘要、原始来源、材料/类型/月度筛选和分页历史归档。新闻存档为 `dist/news.json`，更新流程见 `NEWS_UPDATE.md`。
 
-Cloudflare Workers 使用根目录 `wrangler.jsonc`，部署命令 `npx wrangler deploy`；静态文件位于 `dist`，无需构建。GitHub 仓库私有不代表已部署的网站私有。
+Cloudflare Workers 使用根目录 `wrangler.jsonc`，部署命令 `npx wrangler deploy`；静态文件位于 `dist`。GitHub 仓库私有不代表已部署的网站私有。
 
 ## 许可
 
