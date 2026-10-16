@@ -57,7 +57,22 @@ npm run check    # 提交前跑一次，四步全过才算干净
 
 `dist/news.html` 提供短摘要、原始来源、材料/类型/月度筛选和分页历史归档。新闻存档为 `dist/news.json`，更新流程见 `NEWS_UPDATE.md`。
 
-Cloudflare Workers 使用根目录 `wrangler.jsonc`，部署命令 `npx wrangler deploy`；静态文件位于 `dist`。GitHub 仓库私有不代表已部署的网站私有。
+## 部署
+
+Cloudflare Workers，配置在根目录 `wrangler.jsonc`，发布目录 `dist`。
+
+push 到 `main` 会自动部署（`.github/workflows/deploy.yml`）。首次启用需要在仓库 Settings → Secrets 里配两个值：
+
+- `CLOUDFLARE_API_TOKEN` —— Cloudflare Dashboard → 我的资料 → API 令牌 → 创建令牌，用「编辑 Cloudflare Workers」模板
+- `CLOUDFLARE_ACCOUNT_ID` —— Workers & Pages 概览页右侧的 Account ID
+
+没配这两个值时部署步骤会跳过，不会把 CI 染红。也可以手动部署：
+
+```bash
+npx wrangler deploy    # 首次需要先 wrangler login
+```
+
+GitHub 仓库私有不代表已部署的网站私有。
 
 ## 许可
 
