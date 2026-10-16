@@ -1,0 +1,5 @@
+# dist/m/ 是 scripts/prerender.mjs 的产物：130 份由模板拼出来的 HTML。
+# 它的格式由生成器决定，手写模板经不起 prettier 的换行规则——检查它会天天误报，
+# 而按 prettier 的要求重排又会让「重建后内容一致」这条断言变得没有意义。
+# 生成器本身（scripts/prerender.mjs）照常参与格式化。
+dist/m/

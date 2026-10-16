@@ -2,6 +2,10 @@
   "name": "polymer-atlas",
   "compatibility_date": "2026-10-14",
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    // 材料页是目录形式（dist/m/m-0-0/index.html），要靠这个策略把 /m/m-0-0/
+    // 解析到 index.html。显式写出来而不是依赖默认值——默认值哪天变了，
+    // 表现会是 130 个页面一起 404，排查起来很绕。
+    "html_handling": "auto-trailing-slash"
   }
 }

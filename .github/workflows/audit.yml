@@ -50,6 +50,12 @@ jobs:
       - name: 派生文件是否与 news.json 同步
         run: npm run check:derived
 
+      # 每条材料都必须有一份与 data.json 对得上的静态页（dist/m/<id>/index.html）。
+      # 这一条同时兜住「改了 data.json 忘了重跑预渲染」——漏一条就是 sitemap
+      # 少收录一条内容，而且不会有任何报错。
+      - name: 预渲染产物是否与 data.json 同步
+        run: npm run check:prerender
+
       # robots.txt / sitemap.xml 与数据是否一致，HTML 的分享卡片信息是否齐全
       - name: 站点元信息与 sitemap 同步
         run: npm run check:seo

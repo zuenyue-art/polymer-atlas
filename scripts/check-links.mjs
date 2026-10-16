@@ -4,7 +4,8 @@
  *
  * 扫描 dist 下的数据文件（data.json / terms.json / news.json / news/*.json），
  * 抽出全部外部链接并逐一探测可达性；同时校验 dist 下 HTML 里的站内引用
- * （href / src 指到的文件是否真的存在）。
+ * （href / src 指到的文件是否真的存在）——包括 130 个预渲染材料页，
+ * 它们互相之间、以及指向样式表与图标的链接都在检查范围内。
  *
  * 用法：
  *   node scripts/check-links.mjs                 # 人类可读输出
@@ -102,13 +103,34 @@ async function collectTargets() {
 
 // ---------- 站内引用 ----------
 
-const HTML_FILES = ['index.html', 'news.html']
 const ATTR_RE = /(?:href|src)\s*=\s*"([^"]*)"/g
 
-async function checkInternal() {
-  const broken = new Map()
+/** 要查站内引用的 HTML：两个入口页 + 全部预渲染材料页。 */
+async function htmlTargets() {
+  const files = ['index.html', 'news.html']
+  try {
+    for (const name of await readdir(path.join(DIST, 'm'))) {
+      if (name.startsWith('.')) continue
+      const rel = path.join('m', name, 'index.html')
+      try {
+        await stat(path.join(DIST, rel))
+        files.push(rel)
+      } catch {
+        /* 没有 index.html 的目录由 prerender 的检查负责，这里跳过 */
+      }
+    }
+  } catch {
+    /* 还没跑过预渲染时 dist/m 不存在，两个入口页照查 */
+  }
+  return files
+}
+
+async function checkInternal(files) {
+  // 先把「哪一处引用指向哪个文件」收集起来，再逐个目标 stat 一次——
+  // 130 个材料页里 favicon / 样式表被反复引用，按目标去重能少查一大半。
+  const refsByTarget = new Map()
   let checked = 0
-  for (const file of HTML_FILES) {
+  for (const file of files) {
     const html = await readFile(path.join(DIST, file), 'utf8').catch(() => '')
     for (const match of html.matchAll(ATTR_RE)) {
       const raw = match[1].trim()
@@ -119,20 +141,23 @@ async function checkInternal() {
       if (!clean) continue // 纯锚点
       checked += 1
       const key = clean.replace(/^\//, '')
-      const resolved = path.join(DIST, key)
-      let present = false
-      try {
-        const info = await stat(resolved)
-        present = info.isFile() || info.isDirectory()
-      } catch {
-        present = false
-      }
-      if (present) continue
-      if (!broken.has(key)) broken.set(key, new Set())
-      broken.get(key).add(file)
+      if (!refsByTarget.has(key)) refsByTarget.set(key, new Set())
+      refsByTarget.get(key).add(file)
     }
   }
-  return { broken, checked }
+
+  const broken = new Map()
+  for (const [key, sources] of refsByTarget) {
+    let present = false
+    try {
+      const info = await stat(path.join(DIST, key))
+      present = info.isFile() || info.isDirectory()
+    } catch {
+      present = false
+    }
+    if (!present) broken.set(key, sources)
+  }
+  return { broken, checked, files }
 }
 
 async function request(url, method) {
@@ -196,8 +221,8 @@ async function runPool(items, worker, limit) {
 }
 
 const internal = argv.includes('--skip-internal')
-  ? { broken: new Map(), checked: 0 }
-  : await checkInternal()
+  ? { broken: new Map(), checked: 0, files: [] }
+  : await checkInternal(await htmlTargets())
 
 const targets = await collectTargets()
 const urls = [...targets.keys()].sort()
@@ -214,6 +239,7 @@ if (AS_JSON) {
     JSON.stringify(
       {
         internal_total: internal.checked,
+        internal_files: internal.files.length,
         internal_broken: [...internal.broken.keys()],
         total: results.length,
         ok: ok.length,
@@ -227,7 +253,8 @@ if (AS_JSON) {
     )
   )
 } else {
-  if (!QUIET) console.log(`站内引用检查：共 ${internal.checked} 处\n`)
+  if (!QUIET)
+    console.log(`站内引用检查：${internal.files.length} 个页面 / 共 ${internal.checked} 处引用\n`)
   if (internal.broken.size) {
     console.log(`站内失效 ${internal.broken.size} 个：`)
     for (const [target, refs] of internal.broken) {
@@ -236,7 +263,7 @@ if (AS_JSON) {
     }
     console.log('')
   } else if (internal.checked) {
-    console.log(`站内引用全部有效（${internal.checked} 处）\n`)
+    console.log(`站内引用全部有效（${internal.files.length} 个页面 / ${internal.checked} 处）\n`)
   }
 
   if (!QUIET) {
@@ -277,7 +304,7 @@ if (AS_JSON) {
   }
 
   console.log(
-    `汇总：站内 ${internal.checked - internal.broken.size}/${internal.checked} 有效 · 外链可达 ${ok.length} · 跳过 ${soft.length} · 失效 ${dead.length} · 连不上 ${unreachable.length}`
+    `汇总：站内 ${internal.checked - internal.broken.size}/${internal.checked} 处有效（${internal.files.length} 个页面） · 外链可达 ${ok.length} · 跳过 ${soft.length} · 失效 ${dead.length} · 连不上 ${unreachable.length}`
   )
 }
 
