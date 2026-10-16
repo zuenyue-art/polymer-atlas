@@ -2,3 +2,7 @@ node_modules/
 .env
 .env.*
 .DS_Store
+
+# wrangler 的本地缓存与部署状态（.wrangler/ 里含账号会话信息，绝不入库）
+.wrangler/
+dist/.wrangler/
