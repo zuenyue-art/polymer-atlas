@@ -1,6 +1,6 @@
-import{newsCard}from './news-utils.mjs';
-import{getNewsItems}from './news-store.mjs';
-import{mountNews,NEWS_TEMPLATE}from './news-view.mjs';
+import{newsCard}from './news-utils.js';
+import{getNewsItems}from './news-store.js';
+import{mountNews,NEWS_TEMPLATE}from './news-view.js';
 let relatedMarkup,comparisonRows,annotateTerms,recyclingFigure,structureFigure;
 const $=s=>document.querySelector(s);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -122,7 +122,7 @@ $('.brand').addEventListener('click',e=>{e.preventDefault();switchView('news')})
 $('#search').addEventListener('input',()=>{if(DATA)render()});
 
 let atlasRequest,knowledgeRequest,knowledgeReady=false,pendingView=0;
-function ensureAtlas(){if(DATA)return Promise.resolve();if(!atlasRequest)atlasRequest=(async()=>{const [r,learning,recycling,structures]=await Promise.all([fetch('data.json'),import('./learning.mjs'),import('./recycling.mjs'),import('./structures.mjs')]);if(!r.ok)throw Error('资料载入失败');const data=await r.json();({relatedMarkup,comparisonRows,annotateTerms}=learning);({recyclingFigure}=recycling);({structureFigure}=structures);DATA=data;favorites=new Set([...favorites].filter(id=>material(id)));})().catch(e=>{atlasRequest=null;throw e});return atlasRequest}
+function ensureAtlas(){if(DATA)return Promise.resolve();if(!atlasRequest)atlasRequest=(async()=>{const [r,learning,recycling,structures]=await Promise.all([fetch('data.json'),import('./learning.js'),import('./recycling.js'),import('./structures.js')]);if(!r.ok)throw Error('资料载入失败');const data=await r.json();({relatedMarkup,comparisonRows,annotateTerms}=learning);({recyclingFigure}=recycling);({structureFigure}=structures);DATA=data;favorites=new Set([...favorites].filter(id=>material(id)));})().catch(e=>{atlasRequest=null;throw e});return atlasRequest}
 function ensureKnowledge(){if(knowledgeReady)return Promise.resolve();if(!knowledgeRequest)knowledgeRequest=(async()=>{await ensureAtlas();try{const r=await fetch('terms.json');if(!r.ok)throw Error();const k=await r.json();DATA.terms=k.terms;TERM_GUIDE=k.guide;}catch{const guideNames=['本次整理范围','资料口径','文献与专利的范围','表中研发切入点','关联非高分子材料'];DATA.terms=DATA.terms.filter(t=>!guideNames.includes(t['术语/阅读规则']));}knowledgeReady=true;})();return knowledgeRequest}
 const initialView=routeView();
 try{if(initialView!=='news'){await ensureAtlas();if(initialView==='terms')await ensureKnowledge();}if(initialView!==view)switchView(initialView,{historyMode:'none'});else render();if(view==='news')await newsController.ready;}catch{toast('资料暂时未能载入，请稍后重试')}
