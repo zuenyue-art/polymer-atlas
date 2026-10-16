@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "高分子材料图鉴 —— 中文材料知识库静态站",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "engines": {
     "node": ">=20"
   },
