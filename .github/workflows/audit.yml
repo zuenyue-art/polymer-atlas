@@ -1,0 +1,56 @@
+name: 数据体检
+
+# 只要改到数据或派生文件就跑一遍。日常改界面不会被拦住。
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'dist/data.json'
+      - 'dist/terms.json'
+      - 'dist/news.json'
+      - 'dist/news-index.json'
+      - 'dist/news/**'
+      - 'scripts/**'
+      - 'package.json'
+      - '.github/workflows/audit.yml'
+  pull_request:
+    paths:
+      - 'dist/data.json'
+      - 'dist/terms.json'
+      - 'dist/news.json'
+      - 'dist/news-index.json'
+      - 'dist/news/**'
+      - 'scripts/**'
+      - 'package.json'
+      - '.github/workflows/audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    name: 数据一致性
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 安装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # 这一条专治「只改了 news.json，忘了同步索引和月度文件」
+      - name: 派生文件是否与 news.json 同步
+        run: npm run check:derived
+
+      - name: 运行数据体检
+        run: |
+          set -o pipefail
+          python scripts/audit.py . --markdown | tee -a "$GITHUB_STEP_SUMMARY"
