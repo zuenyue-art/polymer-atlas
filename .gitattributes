@@ -24,3 +24,7 @@
 
 # 没有后缀的配置文件也钉死 LF，理由同上。
 .prettierignore text eol=lf
+
+# 工作流定义同样钉死 LF：YAML 对行尾不敏感，但检出成 CRLF 后再编辑，
+# diff 会混进纯行尾的噪音，看不出真正改了哪一行。
+*.yml text eol=lf
