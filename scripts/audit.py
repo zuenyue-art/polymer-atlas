@@ -225,6 +225,10 @@ def audit(root):
         "ci": any(n.startswith(".github/workflows/") for n in rf),
         "wrangler": "wrangler.jsonc" in rf or "wrangler.toml" in rf,
         "xlsx_in_dist": "dist/materials.xlsx" in rf,
+        # materials.xlsx 已由 build-xlsx.py 从 JSON 生成、由 check-xlsx.py 校验，
+        # 不再是手工维护的第二份副本。这里盯的是「脚本还在不在」——哪天被删了
+        # 它又会退化成游离副本，那时才该告警。
+        "xlsx_generated": "scripts/build-xlsx.py" in rf and "scripts/check-xlsx.py" in rf,
     }
     a.stats["repo"] = has
     a.soft(has["LICENSE"], "工程习惯",
@@ -232,9 +236,10 @@ def audit(root):
     a.soft(has["package.json"], "工程习惯", "无 package.json——缺少脚本入口与 Node 版本约定")
     a.soft(has["ci"], "工程习惯", "无 .github/workflows/ ——数据一致性没有自动兜底")
     a.soft(has["wrangler"], "工程习惯", "无 wrangler 配置——请确认部署方式")
-    if has["xlsx_in_dist"]:
+    if has["xlsx_in_dist"] and not has["xlsx_generated"]:
         a.warn("工程习惯",
-               "dist/materials.xlsx 随站点公开可下载；它是不受校验的第二份数据副本，更新时容易与 JSON 不一致")
+               "dist/materials.xlsx 随站点公开可下载，但没有生成与校验脚本；"
+               "它是游离的第二份数据副本，更新时容易与 JSON 不一致")
     return a
 
 
