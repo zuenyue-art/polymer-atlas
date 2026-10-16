@@ -1,0 +1,7 @@
+# 数据文件固定使用 LF 换行。
+#
+# dist/news-index.json 与 dist/news/** 由 scripts/build-news.mjs 生成，
+# 该脚本写出的是 LF。若本机 core.autocrlf=true，git 检出为 CRLF，
+# 重建后就会出现「内容相同却显示已修改」的假差异，干扰 npm run check:derived。
+# 固定 eol=lf 后，Windows 与 CI 的比较结果一致。
+*.json text eol=lf
