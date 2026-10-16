@@ -21,3 +21,6 @@
 *.txt text eol=lf
 *.xml text eol=lf
 *.py text eol=lf
+
+# 没有后缀的配置文件也钉死 LF，理由同上。
+.prettierignore text eol=lf
