@@ -344,18 +344,29 @@ async function main() {
     return 0
   }
 
-  // dist/m 整个目录都是产物，重建前清空，避免已删除材料的旧页面被 sitemap 继续收录。
-  // 清空前再确认一次目标确实是 dist 的子目录——这条 rm -rf 不该有别的可能。
-  const relative = path.relative(DIST, OUT)
-  if (!relative || relative.startsWith('..') || path.isAbsolute(relative))
-    throw Error(`拒绝清空非 dist 子目录：${OUT}`)
-  await rm(OUT, { recursive: true, force: true })
-
   for (const [rel, content] of pages) {
     const file = path.join(DIST, rel)
     await mkdir(path.dirname(file), { recursive: true })
     await writeFile(file, content, 'utf8')
   }
+
+  // 材料从 data.json 里删掉之后，它的旧页面不能留着——否则 sitemap 会继续
+  // 收录一个已经不存在的内容。这里只删「这次没有生成」的那些，而不是先
+  // 清空整个目录再重建：清空意味着每次都要删掉上百个刚写完的文件，既做
+  // 无用功，也让误伤范围变得不必要地大。
+  const relative = path.relative(DIST, OUT)
+  if (!relative || relative.startsWith('..') || path.isAbsolute(relative))
+    throw Error(`拒绝清理非 dist 子目录：${OUT}`)
+  const wanted = new Set(
+    [...pages.keys()].map(rel => path.relative(OUT, path.join(DIST, rel)).split(path.sep)[0])
+  )
+  const stale = (await readdir(OUT, { withFileTypes: true }).catch(() => []))
+    .filter(entry => entry.isDirectory() && !wanted.has(entry.name))
+    .map(entry => entry.name)
+  for (const name of stale) {
+    await rm(path.join(OUT, name), { recursive: true, force: true })
+  }
+  if (stale.length) console.log(`清除了 ${stale.length} 个已失效的材料页：${stale.join('、')}`)
 
   const bytes = [...pages.values()].reduce((n, s) => n + Buffer.byteLength(s), 0)
   console.log(
