@@ -1,28 +1,28 @@
 name: 数据体检
 
-# 只要改到数据或派生文件就跑一遍。日常改界面不会被拦住。
+# 数据、派生文件、脚本、页面元信息有改动就跑一遍。
+#
+# dist/** 是故意放宽的：以前只盯住几个 JSON，结果新增的 robots.txt /
+# sitemap.xml / og.png 都不会触发检查，改错了也没人拦。现在整个 dist
+# 都在范围内——单独改样式也会跑一次，但体检本身很轻，不值得为省这点
+# 时间去做例外，漏检的代价反而更大。
 on:
   push:
     branches: [main]
     paths:
-      - 'dist/data.json'
-      - 'dist/terms.json'
-      - 'dist/news.json'
-      - 'dist/news-index.json'
-      - 'dist/news/**'
+      - 'dist/**'
       - 'scripts/**'
       - 'package.json'
       - '.github/workflows/audit.yml'
   pull_request:
     paths:
-      - 'dist/data.json'
-      - 'dist/terms.json'
-      - 'dist/news.json'
-      - 'dist/news-index.json'
-      - 'dist/news/**'
+      - 'dist/**'
       - 'scripts/**'
       - 'package.json'
       - '.github/workflows/audit.yml'
+  schedule:
+    # 每天早上 8 点（UTC，即北京时间 16 点）检查一次外链是否还活着
+    - cron: '0 8 * * *'
   workflow_dispatch:
 
 permissions:
@@ -50,7 +50,15 @@ jobs:
       - name: 派生文件是否与 news.json 同步
         run: npm run check:derived
 
+      # robots.txt / sitemap.xml 与数据是否一致，HTML 的分享卡片信息是否齐全
+      - name: 站点元信息与 sitemap 同步
+        run: npm run check:seo
+
       - name: 运行数据体检
         run: |
           set -o pipefail
           python scripts/audit.py . --markdown | tee -a "$GITHUB_STEP_SUMMARY"
+
+      # 站内引用必须存在，外链要能打开。403/429 之类的「拒绝脚本」不计为失效。
+      - name: 站内与外链可达性
+        run: npm run check:links
