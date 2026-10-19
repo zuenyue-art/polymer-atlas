@@ -85,7 +85,7 @@
   color: var(--green);
 }
 .mp-crumb span[aria-hidden] {
-  color: #c6cdc2;
+  color: #75846d;
 }
 
 .mp-head {
@@ -210,7 +210,7 @@
   color: #53634c;
 }
 .cp-list .cp-recycle {
-  color: #5a6b70;
+  color: #465357;
 }
 .cp-list .cp-recycle span {
   margin-right: 6px;
@@ -265,6 +265,12 @@
   .mp-group {
     margin-top: 24px;
   }
+}
+
+.mp-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 @media print {

@@ -2,7 +2,7 @@
   --bg: #f6f6f2;
   --paper: #fff;
   --ink: #242a25;
-  --muted: #7a807b;
+  --muted: #5a6359;
   --line: #e1e4dc;
   --green: #527044;
   --soft: #eaf0e4;
@@ -127,7 +127,7 @@ a:focus-visible {
   align-items: center;
   justify-content: space-between;
   font-size: 12px;
-  color: #6b736a;
+  color: #505650;
   border-radius: 6px;
 }
 .category:hover,
@@ -137,7 +137,7 @@ a:focus-visible {
 }
 .category small {
   font-size: 10px;
-  color: #969c92;
+  color: #60655c;
 }
 .sidebar-bottom {
   margin-top: auto;
@@ -180,13 +180,51 @@ main {
 }
 .sep {
   margin: 0 13px;
-  color: #c3c8bf;
+  color: #788370;
 }
 .edition {
   border: 1px solid var(--line);
   border-radius: 20px;
   padding: 3px 12px;
   font-size: 10px;
+}
+/* 外观开关：只露当前能切到的那一半，所以深色下显示太阳、浅色下显示月亮。
+   颜色全走变量，theme-dark.css 不需要为它单独生成一条。 */
+.theme-toggle {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
+}
+.theme-toggle:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+.theme-toggle svg {
+  width: 15px;
+  height: 15px;
+}
+.theme-toggle .ti-sun,
+[data-theme='dark'] .theme-toggle .ti-moon {
+  display: none;
+}
+[data-theme='dark'] .theme-toggle .ti-sun {
+  display: block;
 }
 .intro {
   display: flex;
@@ -268,13 +306,13 @@ h1 br {
   font-size: 12px;
 }
 .search input::placeholder {
-  color: #a0a69d;
+  color: #62685f;
 }
 .search kbd {
   border: 1px solid #eceee8;
   padding: 0 5px;
   border-radius: 3px;
-  color: #a8aea3;
+  color: #62685c;
   font: 11px var(--font);
 }
 .btn {
@@ -284,7 +322,7 @@ h1 br {
   border-radius: 9px;
   white-space: nowrap;
   font-size: 11px;
-  color: #65705d;
+  color: #4d5547;
 }
 .btn[aria-pressed='true'] {
   background: var(--soft);
@@ -306,13 +344,13 @@ h1 br {
   font-size: 10px;
 }
 .quick-filters > span {
-  color: #949c8c;
+  color: #5e6657;
   margin-right: 6px;
 }
 .quick-filters button {
   border: 0;
   background: #ebeee5;
-  color: #718067;
+  color: #525c4a;
   font-size: 10px;
   border-radius: 5px;
   padding: 3px 9px;
@@ -337,7 +375,7 @@ h1 br {
   margin: 0;
 }
 .results-heading span {
-  color: #929a8b;
+  color: #5e6558;
   font-size: 10px;
 }
 .grid {
@@ -373,7 +411,7 @@ h1 br {
 .badge {
   font-size: 9px;
   border: 1px solid #e2e7db;
-  color: #7a8b6b;
+  color: #55614b;
   border-radius: 5px;
   padding: 2px 7px;
   max-width: 85%;
@@ -386,7 +424,7 @@ h1 br {
   background: transparent;
   font-size: 21px;
   line-height: 1;
-  color: #949d8a;
+  color: #5f6656;
   padding: 4px;
   border-radius: 4px;
 }
@@ -415,7 +453,7 @@ h1 br {
 }
 .card p {
   font-size: 11px;
-  color: #878e82;
+  color: #5c6158;
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -432,7 +470,7 @@ h1 br {
   padding-top: 12px;
   margin-top: 20px;
   font-size: 10px;
-  color: #9aa290;
+  color: #606757;
 }
 .check {
   display: flex;
@@ -448,7 +486,7 @@ h1 br {
 }
 .arrow {
   font-size: 16px;
-  color: #90a27e;
+  color: #738560;
 }
 .empty {
   grid-column: 1/-1;
@@ -471,7 +509,7 @@ h1 br {
 }
 footer {
   font-size: 10px;
-  color: #959c8d;
+  color: #5f6558;
   margin: 32px 0 60px;
   border-top: 1px solid var(--line);
   padding-top: 20px;
@@ -554,7 +592,7 @@ dialog::backdrop {
 }
 .source-text {
   font-size: 11px !important;
-  color: #858d7f;
+  color: #5a6156;
 }
 .source-link {
   display: inline-flex;
@@ -575,7 +613,7 @@ dialog::backdrop {
 .text-btn {
   border: 0;
   background: transparent;
-  color: #8a947f;
+  color: #5c6353;
   font-size: 11px;
   padding: 8px;
 }
@@ -666,7 +704,7 @@ dialog::backdrop {
   font-size: 12px;
 }
 .comparison td:first-child {
-  color: #7e8c73;
+  color: #576150;
   background: #fafbf7;
 }
 .term-card {
@@ -1030,10 +1068,10 @@ body {
   -webkit-line-clamp: 2;
 }
 .card .limitation p {
-  color: #797368;
+  color: #5a564d;
 }
 .card-fact.limitation > span {
-  color: #91806b;
+  color: #675a4c;
 }
 .card-fact.recycle > span {
   color: #4d6b72;
@@ -1184,7 +1222,7 @@ dialog {
   border-radius: 7px;
   background: transparent;
   padding: 9px 13px;
-  color: #737e6e;
+  color: #545b50;
 }
 .detail-tab:hover {
   background: #f0f3eb;

@@ -58,6 +58,13 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const DIST = path.join(ROOT, 'dist')
 const OUT = path.join(DIST, 'm')
 const CAT_OUT = path.join(DIST, 'c')
+
+/**
+ * 外观开关。首页、材料页、分类页共用同一个形状：两枚图标都写在按钮里，由
+ * style.css 按 html[data-theme] 决定露哪一枚，theme-init.js 只管点与记。
+ * 这里的 aria-label 只是首屏文案，脚本会在读到系统偏好后立刻改写。
+ */
+const THEME_TOGGLE = `<button class="theme-toggle" type="button" aria-label="切换到深色外观"><svg class="ti-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" /></svg><svg class="ti-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2" /><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6" /></svg></button>`
 const CHECK_ONLY = process.argv.includes('--check')
 
 /** 数值字段定义，从 data.json 的 propsSpec 读（main 里赋值）。 */
@@ -245,8 +252,8 @@ function renderPage(m, materials) {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="#46684f" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#111310" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#46684f" />
+    <script src="${BASE_PATH}theme-init.js"></script>
     <link rel="icon" type="image/svg+xml" href="${BASE_PATH}favicon.svg?v=1" />
     <meta name="description" content="${esc(description)}" />
     <link rel="canonical" href="${esc(url)}" />
@@ -278,7 +285,10 @@ function renderPage(m, materials) {
         ><span class="brand-mark">p.</span
         ><span>${esc(SITE_NAME)}<small>POLYMER ATLAS</small></span></a
       >
-      <a class="mp-cta" href="${esc(atlasLink)}">在交互图鉴中打开 ↗</a>
+      <div class="mp-actions">
+        <a class="mp-cta" href="${esc(atlasLink)}">在交互图鉴中打开 ↗</a>
+        ${THEME_TOGGLE}
+      </div>
     </header>
     <main class="mp-main">
       <nav class="mp-crumb" aria-label="位置">
@@ -383,8 +393,8 @@ function renderCategoryPage(name, materials, categories) {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="#46684f" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#111310" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#46684f" />
+    <script src="${BASE_PATH}theme-init.js"></script>
     <link rel="icon" type="image/svg+xml" href="${BASE_PATH}favicon.svg?v=1" />
     <meta name="description" content="${esc(description)}" />
     <link rel="canonical" href="${esc(url)}" />
@@ -416,7 +426,10 @@ function renderCategoryPage(name, materials, categories) {
         ><span class="brand-mark">p.</span
         ><span>${esc(SITE_NAME)}<small>POLYMER ATLAS</small></span></a
       >
-      <a class="mp-cta" href="${esc(atlasLink)}">在交互图鉴中打开 ↗</a>
+      <div class="mp-actions">
+        <a class="mp-cta" href="${esc(atlasLink)}">在交互图鉴中打开 ↗</a>
+        ${THEME_TOGGLE}
+      </div>
     </header>
     <main class="mp-main">
       <nav class="mp-crumb" aria-label="位置">
