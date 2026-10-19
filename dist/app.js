@@ -404,21 +404,27 @@ function switchView(next, { historyMode = 'push' } = {}) {
 // syncFromHash 负责把 hash 的现状翻译成界面状态。这样分享链接、浏览器返回键、
 // 弹窗关闭三者不会互相打架。
 let detailHashId = ''
+// 术语 / 文献详情弹窗在历史里的标记（地址不变，只靠 state 区分）
+let popupKind = ''
 let hashDriven = false
 let handledHash = location.hash
 
 function materialHash(id) {
   return `#materials/${encodeURIComponent(id)}`
 }
+// 详情按「第几层」记录：列表里点开是第 1 层，详情里点关联材料是第 2 层……
+// 这样返回键一层层往回退（符合「返回 = 撤销上一步」的直觉），
+// 而点关闭按钮要一步回列表时，按层数 go(-depth) 就够了，不用连点好几次。
+function detailDepth() {
+  const state = history.state
+  return state && state.detail ? Number(state.depth) || 1 : 0
+}
 
 function openDetail(id) {
   if (!material(id)) return false
   detail(id)
-  const state = { detail: id }
-  // 详情已经开着时（例如从详情里点「相关材料」）替换当前记录，
-  // 否则返回键要按两次才能回到列表
-  if (detailHashId) history.replaceState(state, '', materialHash(id))
-  else history.pushState(state, '', materialHash(id))
+  const depth = detailHashId ? detailDepth() + 1 : 1
+  history.pushState({ detail: id, depth }, '', materialHash(id))
   detailHashId = id
   handledHash = location.hash
   return true
@@ -453,6 +459,24 @@ function syncFromHash() {
 }
 
 function onLocationChange() {
+  const popup = history.state && history.state.popup
+  // 术语 / 文献 / 对比弹窗：前进键回到那条记录就重新打开，返回键离开就收起来
+  if (popup && !popupKind) {
+    if (popup === 'compare') openCompare({ record: false })
+    else otherDetail(popup, Number(history.state.index), { record: false })
+    return
+  }
+  if (!popup && popupKind) {
+    const was = popupKind
+    popupKind = ''
+    hashDriven = true
+    if (was === 'compare') {
+      const dialog = $('#compareDialog')
+      if (dialog.open) dialog.close()
+    } else closeDetailDialog()
+    hashDriven = false
+    return
+  }
   if (location.hash === handledHash) return
   handledHash = location.hash
   syncFromHash()
@@ -465,9 +489,23 @@ window.addEventListener('hashchange', onLocationChange)
 // hashDriven 为真说明这次关闭是 hash 变化引起的，不能再回溯一次。
 function onDetailClosed() {
   if (hashDriven) return
+  // 术语 / 文献 / 对比弹窗：历史里那条记录就是它自己，后退一步即可
+  if (popupKind) {
+    popupKind = ''
+    history.back()
+    return
+  }
   const shouldRewind = detailHashId && routeMaterialId() === detailHashId
+  const depth = detailDepth()
   detailHashId = ''
-  if (shouldRewind) history.back()
+  if (!shouldRewind) return
+  if (depth > 1) history.go(-depth)
+  else if (depth === 1) history.back()
+  // 地址是手工敲进来或外部跳转的（没有垫记录），直接改回列表，别把用户带出站
+  else {
+    history.replaceState({ view: 'materials' }, '', '#materials')
+    handledHash = location.hash
+  }
 }
 // ---- 搜索命中溯源 ----
 // 搜索拿整条记录的所有字段做全文匹配，但卡片只呈现其中几个。实测 18 个常用
@@ -873,8 +911,12 @@ function selectDetailGroup(id, group) {
   })
   document.querySelector(`[data-detail-group="${group}"]`)?.focus({ preventScroll: true })
 }
-function otherDetail(kind, index) {
+// 术语、文献的详情没有独立地址（编号只是当前这份资料的顺序，换个版本就对不上），
+// 但仍然要占一条历史记录，否则手机上按返回键不是关弹窗，而是直接退出站点。
+// 地址不变，靠 history.state 里的 popup 标记识别；前进键回来也能重新打开。
+function otherDetail(kind, index, { record = true } = {}) {
   const x = kind === 'term' ? DATA.terms[index] : DATA.literature[index]
+  if (!x) return
   $('#detailCategory').textContent = kind === 'term' ? '基础知识' : '论文与专利'
   const title = kind === 'term' ? '术语/阅读规则' : '题名/资料'
   let body = `<div class="detail-header"><h2>${esc(x[title])}</h2></div>`
@@ -882,10 +924,12 @@ function otherDetail(kind, index) {
   if (x['来源链接'])
     body += `<section class="detail-section"><a class="source-link" href="${esc(x['来源链接'])}" target="_blank" rel="noopener noreferrer">打开原始来源 ↗</a></section>`
   $('#detailContent').innerHTML = body
+  popupKind = kind
+  if (record) history.pushState({ popup: kind, index }, '', location.href)
   showDialog($('#detailDialog'))
 }
 let comparisonOnlyDifferences = false
-function openCompare() {
+function openCompare({ record = true } = {}) {
   if (selected.length < 2) return
   const ms = selected.map(material),
     rows = comparisonRows(ms),
@@ -893,6 +937,12 @@ function openCompare() {
   const sameCount = rows.filter(r => r.same).length
   $('#compareContent').innerHTML =
     `<div class="comparison-controls"><label><input type="checkbox" id="differencesOnly" ${comparisonOnlyDifferences ? 'checked' : ''}>只看差异</label><span>${rows.length - sameCount} 项文本不同 · ${sameCount} 项文本相同</span><small>按文字内容比较，相近表述仍可能标为不同；不代表性能差异大小。</small></div><div class="comparison"><table><thead><tr><th scope="col">比较维度</th>${ms.map(m => `<th scope="col">${esc(m.fields['英文缩写'])}<div style="font-size:11px;font-weight:400;margin-top:6px">${esc(m.fields['材料名称'])}</div></th>`).join('')}</tr></thead><tbody>${visible.map(r => `<tr class="${r.same ? 'comparison-same' : 'comparison-different'}"><th scope="row">${esc(r.key)}<small>${r.same ? '相同' : '不同'}</small></th>${r.values.map((v, i) => `<td class="${!r.same && !r.shared[i] ? 'comparison-distinct' : ''}">${esc(v || '未收录')}</td>`).join('')}</tr>`).join('')}</tbody></table>${visible.length ? '' : '<div class="empty">所选资料在当前比较维度中没有文本差异。</div>'}</div>`
+  // 对比表是从详情里叠出来的第二层弹窗，也要占历史记录；否则返回键会先关掉
+  // 底下的详情，对比表孤零零留在屏幕上。重复渲染（勾「只看差异」）不再压栈。
+  if (record && popupKind !== 'compare') {
+    popupKind = 'compare'
+    history.pushState({ popup: 'compare' }, '', location.href)
+  }
   showDialog($('#compareDialog'))
 }
 function showTermHelp(index) {
@@ -1203,6 +1253,12 @@ document.querySelectorAll('dialog').forEach(d =>
   })
 )
 $('#detailDialog').addEventListener('close', onDetailClosed)
+// 对比表关闭（×、Esc、点遮罩）同样要把历史退回一层；后退引起的关闭由 hashDriven 兜住
+$('#compareDialog').addEventListener('close', () => {
+  if (hashDriven || popupKind !== 'compare') return
+  popupKind = ''
+  history.back()
+})
 $('.brand').addEventListener('click', e => {
   e.preventDefault()
   switchView('news')
