@@ -427,7 +427,7 @@ function render() {
 function card(m) {
   const f = m.fields,
     abbr = f['英文缩写']
-  return `<article class="card material-card" tabindex="0" role="button" data-detail="${m.id}" aria-label="查看${esc(f['材料名称'])}详情"><div class="card-top"><span class="badge">${esc(m.category)}</span><button class="icon-btn ${favorites.has(m.id) ? 'saved' : ''}" data-star="${m.id}" aria-pressed="${favorites.has(m.id)}" aria-label="${favorites.has(m.id) ? '取消收藏' : '收藏'}${esc(f['材料名称'])}">${favorites.has(m.id) ? '★' : '☆'}</button></div><div class="abbr ${abbr.length > 12 ? 'long' : ''}">${esc(abbr)}</div><h3>${esc(f['材料名称'])}</h3><div class="card-facts"><div class="card-fact"><span>特点</span><p>${esc(f['突出特点'])}</p></div><div class="card-fact limitation"><span>局限</span><p>${esc(f['主要弱点'])}</p></div></div><div class="card-bottom"><label class="check"><input type="checkbox" data-compare="${m.id}" ${selected.includes(m.id) ? 'checked' : ''}>加入对比</label><span>查看资料 <span class="arrow">↗</span></span></div></article>`
+  return `<article class="card material-card" tabindex="0" role="button" data-detail="${m.id}" aria-label="查看${esc(f['材料名称'])}详情"><div class="card-top"><span class="badge">${esc(m.category)}</span><button class="icon-btn ${favorites.has(m.id) ? 'saved' : ''}" data-star="${m.id}" aria-pressed="${favorites.has(m.id)}" aria-label="${favorites.has(m.id) ? '取消收藏' : '收藏'}${esc(f['材料名称'])}">${favorites.has(m.id) ? '★' : '☆'}</button></div><div class="abbr ${abbr.length > 12 ? 'long' : ''}">${esc(abbr)}</div><h3>${esc(f['材料名称'])}</h3><span class="card-form">${esc(f['形态与结晶性'])}</span><div class="card-facts"><div class="card-fact"><span>特点</span><p>${esc(f['突出特点'])}</p></div><div class="card-fact limitation"><span>局限</span><p>${esc(f['主要弱点'])}</p></div><div class="card-fact recycle"><span>回收</span><p>${esc(f['回收路线与分离难点'])}</p></div></div><div class="card-bottom"><label class="check"><input type="checkbox" data-compare="${m.id}" ${selected.includes(m.id) ? 'checked' : ''}>加入对比</label><span>查看资料 <span class="arrow">↗</span></span></div></article>`
 }
 function termCard(x) {
   const index = DATA.terms.indexOf(x)
@@ -789,8 +789,14 @@ $('.brand').addEventListener('click', e => {
   e.preventDefault()
   switchView('news')
 })
+let searchTimer = 0
 $('#search').addEventListener('input', () => {
-  if (DATA) render()
+  // render() 会把 130 条材料的 14 个字段重新拼一遍；每敲一个字都跑，长关键词会打顿。
+  // 停手 180ms 再渲染，和动态页 news-view.js 的取值保持一致。
+  // 但清空输入框要立刻重绘——删掉关键词就该马上看到全部，这个结果不能让人等。
+  clearTimeout(searchTimer)
+  if (DATA && $('#search').value === '') render()
+  else searchTimer = setTimeout(render, 180)
 })
 
 let atlasRequest,

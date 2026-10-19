@@ -1035,6 +1035,25 @@ body {
 .card-fact.limitation > span {
   color: #91806b;
 }
+.card-fact.recycle > span {
+  color: #4d6b72;
+}
+/* 「形态与结晶性」是 14 个字段里唯一不用读句子就能消化的一个（平均 8 字），
+   所以从正文里提出来做成标签，扫一列卡片时能被眼睛一次带过：想找半结晶的，
+   不用打开 130 次弹窗。整句照录，不截断、不加 tooltip——这一层的作用就是
+   让人在开详情之前先排除掉一批材料。用 .card 提权，避开 .card p 的截断规则。 */
+.card .card-form {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin: -6px 0 12px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: #eef2ea;
+  color: #5c6b56;
+  font-size: 11px;
+  line-height: 1.5;
+}
 .card-bottom {
   margin-top: auto;
   font-size: 12px;
