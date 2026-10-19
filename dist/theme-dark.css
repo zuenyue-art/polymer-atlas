@@ -402,8 +402,7 @@ html[data-theme='dark'] #newsPanel .news-bottom,
 html[data-theme='dark'] .unified-favorites .news-bottom {
   border-top: 1px solid #3d4433;
 }
-html[data-theme='dark'] .term-card > p,
-html[data-theme='dark'] .literature-card > p {
+html[data-theme='dark'] .term-card > p {
   color: #d3d8d3;
 }
 html[data-theme='dark'] .news-filters select {

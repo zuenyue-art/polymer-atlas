@@ -29,8 +29,7 @@ function toast(message) {
   toastTimer = setTimeout(() => $('#toast').classList.remove('show'), 2200)
 }
 
-const NEWS_FAVORITES = 'polymer-atlas-news-favorites',
-  LIT_FAVORITES = 'polymer-atlas-literature-favorites'
+const NEWS_FAVORITES = 'polymer-atlas-news-favorites'
 function readSaved(key) {
   try {
     const a = JSON.parse(localStorage.getItem(key) || '[]')
@@ -50,19 +49,17 @@ function toggleSaved(key, id) {
   if (window.dispatchEvent) window.dispatchEvent(new Event('atlas-favorites-changed'))
   return set
 }
-const litKey = x => x['来源链接'] || x['题名/资料']
 let favoriteType = '全部',
   favoriteNews = [],
   favoriteNewsState = 'idle',
   favoriteRevision = 0
 function updateFavoriteCount() {
-  const count = favorites.size + readSaved(NEWS_FAVORITES).size + readSaved(LIT_FAVORITES).size
+  const count = favorites.size + readSaved(NEWS_FAVORITES).size
   $('#favoriteCount').textContent = count
 }
 function renderUnifiedFavorites() {
   const rev = ++favoriteRevision,
     ns = readSaved(NEWS_FAVORITES),
-    ls = readSaved(LIT_FAVORITES),
     q = $('#search').value.trim().toLocaleLowerCase()
   let tools = $('#favoriteTools')
   if (!tools) {
@@ -77,11 +74,10 @@ function renderUnifiedFavorites() {
   ensureBackupTools()
   const counts = {
     材料: DATA.materials.filter(x => favorites.has(x.id)).length,
-    动态: ns.size,
-    文献: DATA.literature.filter(x => ls.has(litKey(x))).length
+    动态: ns.size
   }
-  counts['全部'] = counts.材料 + counts.动态 + counts.文献
-  tools.innerHTML = ['全部', '材料', '动态', '文献']
+  counts['全部'] = counts.材料 + counts.动态
+  tools.innerHTML = ['全部', '材料', '动态']
     .map(
       type =>
         `<button data-favorite-type="${type}" aria-pressed="${favoriteType === type}">${type}<small>${counts[type]}</small></button>`
@@ -93,29 +89,18 @@ function renderUnifiedFavorites() {
       .map(x => ({ type: '材料', x, text: Object.values(x.fields).join(' ') })),
     ...favoriteNews
       .filter(x => ns.has(x.id))
-      .map(x => ({ type: '动态', x, text: [x.title, x.summary, ...x.materials].join(' ') })),
-    ...DATA.literature
-      .filter(x => ls.has(litKey(x)))
-      .map(x => ({ type: '文献', x, text: Object.values(x).join(' ') }))
+      .map(x => ({ type: '动态', x, text: [x.title, x.summary, ...x.materials].join(' ') }))
   ].filter(
     r =>
       (favoriteType === '全部' || r.type === favoriteType) &&
       (!q || r.text.toLocaleLowerCase().includes(q))
   )
   $('#content').innerHTML =
-    records
-      .map(r =>
-        r.type === '材料'
-          ? card(r.x)
-          : r.type === '动态'
-            ? newsCard(r.x, true)
-            : literatureCard(r.x)
-      )
-      .join('') ||
-    `<div class="empty"><h3>${counts.全部 ? '当前筛选下没有收藏' : '还没有收藏内容'}</h3><p>材料、动态与回收文献都可以收藏，在这里统一回看。</p><button id="reset">浏览材料</button></div>`
+    records.map(r => (r.type === '材料' ? card(r.x) : newsCard(r.x, true))).join('') ||
+    `<div class="empty"><h3>${counts.全部 ? '当前筛选下没有收藏' : '还没有收藏内容'}</h3><p>材料与动态都可以收藏，在这里统一回看。</p><button id="reset">浏览材料</button></div>`
   $('#resultCount').textContent = `${records.length} 项收藏`
   $('#resultsTitle').textContent = '我的收藏'
-  $('#resultsHint').textContent = '材料 · 动态 · 回收文献'
+  $('#resultsHint').textContent = '材料 · 动态'
   if (ns.size && favoriteNewsState === 'idle') {
     favoriteNewsState = 'loading'
     $('#resultCount').textContent = '正在载入收藏动态…'
@@ -165,14 +150,13 @@ function backupPayload() {
     kind: BACKUP_KIND,
     exported_at: new Date().toISOString().slice(0, 10),
     materials: [...favorites],
-    news: [...readSaved(NEWS_FAVORITES)],
-    literature: [...readSaved(LIT_FAVORITES)]
+    news: [...readSaved(NEWS_FAVORITES)]
   }
 }
 
 function exportFavorites() {
   const payload = backupPayload()
-  const total = payload.materials.length + payload.news.length + payload.literature.length
+  const total = payload.materials.length + payload.news.length
   if (!total) {
     toast('还没有任何收藏，先收藏几条再导出')
     return
@@ -217,10 +201,9 @@ async function importFavorites(file) {
     Array.isArray(payload[key]) ? payload[key].filter(x => typeof x === 'string') : []
   const incoming = {
     材料: strings('materials'),
-    动态: strings('news'),
-    文献: strings('literature')
+    动态: strings('news')
   }
-  const total = incoming.材料.length + incoming.动态.length + incoming.文献.length
+  const total = incoming.材料.length + incoming.动态.length
   if (!total) {
     toast('文件里没有可导入的收藏')
     return
@@ -237,12 +220,11 @@ async function importFavorites(file) {
       })
       .catch(() => {})
   const knownMaterials = new Set((DATA?.materials ?? []).map(m => m.id))
-  const knownLit = new Set((DATA?.literature ?? []).map(litKey))
   const knownNews = new Set(favoriteNews.map(x => x.id))
 
-  const added = { 材料: 0, 动态: 0, 文献: 0 }
+  const added = { 材料: 0, 动态: 0 }
   let existed = 0
-  const dropped = { 材料: 0, 动态: 0, 文献: 0 }
+  const dropped = { 材料: 0, 动态: 0 }
 
   for (const id of incoming.材料) {
     if (knownMaterials.size && !knownMaterials.has(id)) dropped.材料++
@@ -262,14 +244,9 @@ async function importFavorites(file) {
     else if (!addSaved(NEWS_FAVORITES, id)) existed++
     else added.动态++
   }
-  for (const id of incoming.文献) {
-    if (knownLit.size && !knownLit.has(id)) dropped.文献++
-    else if (!addSaved(LIT_FAVORITES, id)) existed++
-    else added.文献++
-  }
 
-  const gain = added.材料 + added.动态 + added.文献
-  const lost = dropped.材料 + dropped.动态 + dropped.文献
+  const gain = added.材料 + added.动态
+  const lost = dropped.材料 + dropped.动态
   updateFavoriteCount()
   render()
   toast(
@@ -322,8 +299,7 @@ function names() {
     news: '材料动态',
     materials: '材料图鉴',
     favorites: '我的收藏',
-    terms: '基础知识',
-    literature: '回收文献'
+    terms: '基础知识'
   }
 }
 const viewStates = new Map()
@@ -335,7 +311,7 @@ function animateView() {
   main.classList.add('view-enter')
 }
 
-const VIEW_KEYS = ['materials', 'terms', 'literature', 'favorites', 'news']
+const VIEW_KEYS = ['materials', 'terms', 'favorites', 'news']
 function safeDecode(text) {
   try {
     return decodeURIComponent(text)
@@ -515,8 +491,7 @@ function onDetailClosed() {
 // 得到的（名称、缩写、特点…）不补，否则每张卡都挂一行废话。
 const VISIBLE_FIELDS = {
   materials: ['材料名称', '英文缩写', '形态与结晶性', '突出特点', '主要弱点', '回收路线与分离难点'],
-  terms: ['术语/阅读规则', '解释', '分类'],
-  literature: ['材料', '题名/资料', '年份或公开日', '技术路线/可学习内容']
+  terms: ['术语/阅读规则', '解释', '分类']
 }
 
 // 本轮渲染里「命中落在隐藏字段」的记录。卡片渲染时各自查一次，按视图整体重建，
@@ -574,19 +549,12 @@ function indexHits(list, q, kind) {
   hitMap = new Map()
   if (!q) return
   const visible = VISIBLE_FIELDS[kind]
-  // 术语与文献的卡片下标用的是它们在 DATA 里的位置（termCard / literatureCard
-  // 就是这样算的），而 list 是过滤后的——两个下标不是一回事，所以回原数组里查。
+  // 术语卡片的下标用的是它在 DATA.terms 里的位置（termCard 就是这样算的），
+  // 而 list 是过滤后的——两个下标不是一回事，所以回原数组里查。
   for (const x of list) {
     const hit = hiddenHit(x, q, visible)
     if (!hit) continue
-    hitMap.set(
-      kind === 'materials'
-        ? x.id
-        : kind === 'terms'
-          ? DATA.terms.indexOf(x)
-          : DATA.literature.indexOf(x),
-      hit
-    )
+    hitMap.set(kind === 'materials' ? x.id : DATA.terms.indexOf(x), hit)
   }
 }
 
@@ -682,11 +650,6 @@ function items() {
     indexHits(list, q, 'terms')
     return list
   }
-  if (view === 'literature') {
-    const list = DATA.literature.filter(x => Object.values(x).join(' ').toLowerCase().includes(q))
-    indexHits(list, q, 'literature')
-    return list
-  }
   const list = DATA.materials.filter(
     m =>
       (category === '全部材料' || m.category === category) &&
@@ -752,21 +715,19 @@ function render() {
   const titles = {
     materials: '材料图鉴',
     favorites: '我的收藏',
-    terms: '基础知识',
-    literature: '从回收路线，<br>寻找新的可能。'
+    terms: '基础知识'
   }
   $('#pageTitle').innerHTML = titles[view]
   $('#pageSubtitle').textContent = {
     materials: '结构、性能、加工与回收，让材料知识更好查，也更好懂。',
-    favorites: '材料、动态与回收文献集中回看，收藏保存在当前浏览器。',
-    terms: '从结构到表征、从加工到回收：按主题查概念，同时看懂容易混淆的地方。',
-    literature: '10 项重点论文与专利，附技术路线、来源和核验范围。'
+    favorites: '材料与动态集中回看，收藏保存在当前浏览器。',
+    terms: '从结构到表征、从加工到回收：按主题查概念，同时看懂容易混淆的地方。'
   }[view]
   $('#search').placeholder = isMaterial
     ? '搜索名称、缩写、特性或用途…'
     : view === 'terms'
       ? '搜索术语，例如 Tg、BHPT、水解…'
-      : '搜索材料、文献题名或技术路线…'
+      : '搜索收藏的材料与动态…'
   $('#latestNews').hidden = view !== 'materials'
   if (view === 'materials') import('./news-preview.js')
   $('#quickFilters').hidden = !isMaterial
@@ -791,9 +752,7 @@ function render() {
     ? '点击卡片，查看完整资料 · 方向键逐张浏览'
     : '点击卡片，阅读说明'
   $('#content').innerHTML = list.length
-    ? list
-        .map(x => (isMaterial ? card(x) : view === 'terms' ? termCard(x) : literatureCard(x)))
-        .join('')
+    ? list.map(x => (isMaterial ? card(x) : termCard(x))).join('')
     : `<div class="empty"><h3>${view === 'favorites' ? '还没有收藏的材料' : '没有找到匹配内容'}</h3><p>${view === 'favorites' ? '点击材料卡片右上角的星标，即可收藏。' : '试试更短的关键词，或切换回全部分类。'}</p><button id="reset">${view === 'favorites' ? '浏览材料' : '清除筛选'}</button></div>`
   renderTermTools()
   renderTray()
@@ -807,10 +766,6 @@ function card(m) {
 function termCard(x) {
   const index = DATA.terms.indexOf(x)
   return `<article class="card term-card" tabindex="0" role="button" data-term="${index}"><span class="badge">${esc(x['分类'] || '基础知识')}</span><h3>${esc(x['术语/阅读规则'])}</h3><p>${esc(x['解释'])}</p>${hitRow(index)}<div class="card-bottom">阅读完整解释 <span class="arrow">↗</span></div></article>`
-}
-function literatureCard(x) {
-  const index = DATA.literature.indexOf(x)
-  return `<article class="card literature-card" tabindex="0" role="button" data-literature="${index}"><div class="card-top"><span class="badge">${esc(x['材料'])}</span><span style="font-size:10px;color:var(--muted)">${esc(x['年份或公开日'])}</span></div><h3>${esc(x['题名/资料'])}</h3><p>${esc(x['技术路线/可学习内容'])}</p>${hitRow(index)}<div class="card-bottom"><button class="btn" data-lit-save="${index}" aria-pressed="${readSaved(LIT_FAVORITES).has(litKey(x))}">${readSaved(LIT_FAVORITES).has(litKey(x)) ? '★ 已收藏' : '☆ 收藏'}</button><span>技术路线与来源 ↗</span></div></article>`
 }
 function renderTermTools() {
   let tools = $('#termTools')
@@ -911,14 +866,14 @@ function selectDetailGroup(id, group) {
   })
   document.querySelector(`[data-detail-group="${group}"]`)?.focus({ preventScroll: true })
 }
-// 术语、文献的详情没有独立地址（编号只是当前这份资料的顺序，换个版本就对不上），
+// 术语详情没有独立地址（编号只是当前这份资料的顺序，换个版本就对不上），
 // 但仍然要占一条历史记录，否则手机上按返回键不是关弹窗，而是直接退出站点。
 // 地址不变，靠 history.state 里的 popup 标记识别；前进键回来也能重新打开。
 function otherDetail(kind, index, { record = true } = {}) {
-  const x = kind === 'term' ? DATA.terms[index] : DATA.literature[index]
+  const x = DATA.terms[index]
   if (!x) return
-  $('#detailCategory').textContent = kind === 'term' ? '基础知识' : '论文与专利'
-  const title = kind === 'term' ? '术语/阅读规则' : '题名/资料'
+  $('#detailCategory').textContent = '基础知识'
+  const title = '术语/阅读规则'
   let body = `<div class="detail-header"><h2>${esc(x[title])}</h2></div>`
   for (const [k, v] of Object.entries(x)) if (k !== title && k !== '来源链接') body += section(k, v)
   if (x['来源链接'])
@@ -1000,14 +955,6 @@ document.addEventListener('click', e => {
   if (el.dataset.retryFavorites) {
     favoriteNewsState = 'idle'
     render()
-    return
-  }
-  if (el.dataset.litSave !== undefined) {
-    const x = DATA.literature[Number(el.dataset.litSave)]
-    if (x) {
-      toggleSaved(LIT_FAVORITES, litKey(x))
-      render()
-    }
     return
   }
   if (el.dataset.newsSave && view === 'favorites') {
@@ -1157,8 +1104,6 @@ document.addEventListener('click', e => {
   if (article) {
     if (article.dataset.detail) openDetail(article.dataset.detail)
     else if (article.dataset.term !== undefined) otherDetail('term', Number(article.dataset.term))
-    else if (article.dataset.literature !== undefined)
-      otherDetail('literature', Number(article.dataset.literature))
   }
 })
 /**

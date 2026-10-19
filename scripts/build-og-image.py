@@ -26,7 +26,7 @@ CHAIN = (92, 126, 98)
 
 TITLE = '高分子材料图鉴'
 SUBTITLE = '130 条材料记录 · 结构 / 加工 / 改性 / 回收'
-FOOTER = '材料动态 · 基础术语 · 回收文献'
+FOOTER = '材料动态 · 基础术语'
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / 'dist' / 'og.png'
