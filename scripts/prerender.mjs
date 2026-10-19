@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 /**
- * 预渲染材料页：为每条材料生成一份真实存在的静态 HTML —— dist/m/<id>/index.html
+ * 预渲染内容页：为每条材料、每个分类各生成一份真实存在的静态 HTML。
+ *
+ *   dist/m/<id>/index.html     材料页
+ *   dist/c/<slug>/index.html   分类页
  *
  * 为什么要这一步
  *   站点是纯前端渲染的：130 条材料的正文只存在 data.json 里，靠 app.js 在浏览器
@@ -11,32 +14,50 @@
  *   全部写死在 HTML 里，不执行 JavaScript 就能读到，被 sitemap 收录，并互相链接
  *   （同分类兄弟材料），连成一张可爬取的图。
  *
- * 为什么材料页不加载 app.js
- *   材料页的定位是「内容页」：打开快、能选中能复制、关掉 JS 也读得完。搜索、对比、
+ *   分类页补的是这张图里缺的一层枢纽：材料页只会横向连到同类的十几条，从一条
+ *   「通用塑料」跳不到「橡胶弹性体」。9 个分类页各自列出本类全部材料并互链，
+ *   既让「聚烯烃这一类」能被单独分享，也给爬虫一个从首页直达任意材料的中间层。
+ *
+ * 为什么内容页不加载 app.js
+ *   内容页的定位是「内容页」：打开快、能选中能复制、关掉 JS 也读得完。搜索、对比、
  *   收藏这些交互留给图鉴本身，页面上给了回链（/#materials/<id>，图鉴会自动展开这条）。
  *   这样这一版改动完全不触碰 index.html 与 app.js，图鉴的既有行为不受影响。
  *
  * 用法：
- *   node scripts/prerender.mjs            # 重建 dist/m/
+ *   node scripts/prerender.mjs            # 重建 dist/m/ 与 dist/c/
  *   node scripts/prerender.mjs --check    # 只比对不写盘，不一致退出码 1（CI 用）
  *   SITE_ORIGIN=https://example.com node scripts/prerender.mjs
  *
- * 两个约定：
- *   1. 生成前清空 dist/m。整个目录都是产物，材料从 data.json 里删掉时旧页面不能留着，
- *      否则 sitemap 会一直收录一个已经不存在的内容。
+ * 三个约定：
+ *   1. dist/m/ 与 dist/c/ 整个都是产物。数据里删掉的材料/分类，旧页面不能留着，
+ *      否则 sitemap 会一直收录一个已经不存在的内容。清理是增量的：只删这一轮
+ *      没有生成的目录，而不是先清空再重建。
  *   2. 字段分组与 app.js 里的 detailGroups 保持一致。分组一旦对不上，材料内容就会
  *      在页面上悄悄少一块，所以脚本会检查 data.json 里的每个字段都落进了某一组。
+ *   3. 分类地址片段登记在 scripts/site.mjs 的 CATEGORY_SLUGS；出现未登记的分类时
+ *      这里会直接失败，避免生成一串百分号编码的难看地址。
  */
 
 import { access, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { BASE_PATH, SITE_NAME, SITE_TAGLINE, homeUrl, materialPath, materialUrl } from './site.mjs'
+import {
+  BASE_PATH,
+  SITE_NAME,
+  SITE_TAGLINE,
+  categoryPath,
+  categorySlug,
+  categoryUrl,
+  homeUrl,
+  materialPath,
+  materialUrl
+} from './site.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const DIST = path.join(ROOT, 'dist')
 const OUT = path.join(DIST, 'm')
+const CAT_OUT = path.join(DIST, 'c')
 const CHECK_ONLY = process.argv.includes('--check')
 
 const SOURCE_KEY = '参考来源与核验范围'
@@ -155,8 +176,10 @@ function renderSiblings(m, materials) {
         `<li><a href="${materialPath(x.id)}"><b>${esc(x.fields['英文缩写'])}</b>${esc(x.fields['材料名称'])}</a></li>`
     )
     .join('\n          ')
+  // 超出展示上限的那些指向分类页而不是图鉴首页：分类页列得全，而且从那里能
+  // 走到其他分类——首页进了图鉴还得自己再筛一次。
   const more = rest
-    ? `\n          <li class="mp-siblings-more"><a href="${BASE_PATH}#materials">另有 ${rest} 种同类材料，去图鉴看 ↗</a></li>`
+    ? `\n          <li class="mp-siblings-more"><a href="${categoryPath(m.category)}">另有 ${rest} 种同类材料，看完整分类 ↗</a></li>`
     : ''
   return `      <section class="mp-group">
         <h2 class="mp-group-title">同分类的其他材料 · ${esc(m.category)}</h2>
@@ -230,7 +253,7 @@ function renderPage(m, materials) {
       <nav class="mp-crumb" aria-label="位置">
         <a href="${BASE_PATH}">首页</a><span aria-hidden="true">/</span
         ><a href="${BASE_PATH}#materials">材料图鉴</a><span aria-hidden="true">/</span
-        ><span>${esc(m.category)}</span>
+        ><a href="${categoryPath(m.category)}">${esc(m.category)}</a>
       </nav>
       <article class="mp-article">
         <header class="mp-head">
@@ -259,6 +282,151 @@ ${renderSiblings(m, materials)}
 `
 }
 
+// ---------- 分类页 ----------
+
+/** 分类页标题。分类名最长 8 个汉字，加站名也不会超 TITLE_MAX。 */
+const categoryTitle = name => `${name} · ${SITE_NAME}`
+
+/** 描述：先说清「哪一类、多少种」，再顺手列前几种材料的名字。 */
+function describeCategory(name, items) {
+  let text = `${name}：共 ${items.length} 种材料 —— `
+  for (const m of items) {
+    if (text.length >= DESC_TARGET) break
+    text += `${m.fields['材料名称']}（${m.fields['英文缩写']}）、`
+  }
+  text = `${text.replace(/、$/, '')}。`
+  if (text.length > DESC_MAX) text = `${text.slice(0, DESC_MAX - 1).trimEnd()}…`
+  return text
+}
+
+/** 本类材料逐条列出：缩写 + 名称（链接），下面两行是选材时最先要对比的两条。 */
+function renderCategoryItems(items) {
+  return items
+    .map(m => {
+      const f = m.fields
+      return `          <li>
+            <a class="cp-name" href="${materialPath(m.id)}"><b>${esc(f['英文缩写'])}</b>${esc(f['材料名称'])}</a>
+            <p>${esc(f['突出特点'])}</p>
+            <p class="cp-recycle"><span>回收</span>${esc(f['回收路线与分离难点'])}</p>
+          </li>`
+    })
+    .join('\n')
+}
+
+function renderCategoryPage(name, materials, categories) {
+  const items = materials.filter(x => x.category === name)
+  const url = categoryUrl(name)
+  const home = homeUrl()
+  const title = categoryTitle(name)
+  const description = describeCategory(name, items)
+  const atlasLink = `${BASE_PATH}#materials`
+  const jsonLd = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `${name} · 材料图鉴`,
+    description,
+    url,
+    isPartOf: { '@type': 'WebSite', name: SITE_NAME, url: home },
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: items.length,
+      itemListElement: items.map((m, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: `${m.fields['材料名称']}（${m.fields['英文缩写']}）`,
+        url: materialUrl(m.id)
+      }))
+    }
+  }).replace(/</g, '\\u003c')
+
+  const others = categories
+    .filter(c => c !== name)
+    .map(
+      c =>
+        `<li><a href="${categoryPath(c)}">${esc(c)}<small>${materials.filter(x => x.category === c).length}</small></a></li>`
+    )
+    .join('\n          ')
+
+  return `<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#46684f" />
+    <link rel="icon" type="image/svg+xml" href="${BASE_PATH}favicon.svg?v=1" />
+    <meta name="description" content="${esc(description)}" />
+    <link rel="canonical" href="${esc(url)}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="${esc(SITE_NAME)}" />
+    <meta property="og:title" content="${esc(`${name} · ${items.length} 种材料`)}" />
+    <meta property="og:description" content="${esc(description)}" />
+    <meta property="og:url" content="${esc(url)}" />
+    <meta property="og:image" content="${esc(home)}og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${esc(`${name} · ${items.length} 种材料`)}" />
+    <meta name="twitter:description" content="${esc(description)}" />
+    <meta name="twitter:image" content="${esc(home)}og.png" />
+    <title>${esc(title)}</title>
+    <link rel="stylesheet" href="${BASE_PATH}style.css" />
+    <link rel="stylesheet" href="${BASE_PATH}layout.css" />
+    <link rel="stylesheet" href="${BASE_PATH}material.css" />
+    <script type="application/ld+json">
+      ${jsonLd}
+    </script>
+  </head>
+  <body class="material-page category-page">
+    <header class="mp-bar">
+      <a class="mp-brand" href="${BASE_PATH}"
+        ><span class="brand-mark">p.</span
+        ><span>${esc(SITE_NAME)}<small>POLYMER ATLAS</small></span></a
+      >
+      <a class="mp-cta" href="${esc(atlasLink)}">在交互图鉴中打开 ↗</a>
+    </header>
+    <main class="mp-main">
+      <nav class="mp-crumb" aria-label="位置">
+        <a href="${BASE_PATH}">首页</a><span aria-hidden="true">/</span
+        ><a href="${BASE_PATH}#materials">材料图鉴</a><span aria-hidden="true">/</span
+        ><span>${esc(name)}</span>
+      </nav>
+      <article class="mp-article">
+        <header class="mp-head">
+          <div class="mp-identity">
+            <h1>${esc(name)}</h1>
+          </div>
+          <p class="mp-meta"><span class="badge">${items.length} 种材料</span>材料图鉴 · 全站 ${materials.length} 条记录</p>
+        </header>
+      <section class="mp-group">
+        <h2 class="mp-group-title">这一类收录的材料</h2>
+        <ol class="cp-list">
+${renderCategoryItems(items)}
+        </ol>
+      </section>
+      <section class="mp-group">
+        <h2 class="mp-group-title">其他分类</h2>
+        <ul class="mp-siblings">
+          ${others}
+        </ul>
+      </section>
+        <footer class="mp-foot">
+          <p>${esc(SITE_TAGLINE)}按分类浏览，点任意材料可看完整资料与核验范围。</p>
+          <nav class="mp-links" aria-label="站内其他栏目">
+            <a href="${BASE_PATH}#materials">材料图鉴</a>
+            <a href="${BASE_PATH}#news">材料动态</a>
+            <a href="${BASE_PATH}#terms">基础知识</a>
+            <a href="${BASE_PATH}#literature">回收文献</a>
+          </nav>
+          <p><a href="${esc(atlasLink)}">在交互图鉴中查看全部材料（搜索、对比、收藏、打印）↗</a></p>
+        </footer>
+      </article>
+    </main>
+  </body>
+</html>
+`
+}
+
 // ---------- 一致性检查 ----------
 
 /** data.json 里的每个字段都必须落进某一组，否则页面上会静默少一块内容。 */
@@ -277,25 +445,50 @@ function checkFieldCoverage(materials) {
     throw Error(`GROUPS 里这些字段在 data.json 中不存在（可能是改过名）：${unused.join('、')}`)
 }
 
-async function existingPages() {
+/** 读出某个产物目录（dist/m 或 dist/c）下已有的 index.html。 */
+async function existingPages(outDir) {
+  const prefix = path.basename(outDir)
   const found = new Map()
   let entries
   try {
-    entries = await readdir(OUT, { withFileTypes: true })
+    entries = await readdir(outDir, { withFileTypes: true })
   } catch {
     return found
   }
   for (const entry of entries) {
     if (!entry.isDirectory()) continue
-    const file = path.join(OUT, entry.name, 'index.html')
+    const file = path.join(outDir, entry.name, 'index.html')
     try {
-      found.set(`m/${entry.name}/index.html`, await readFile(file, 'utf8'))
+      found.set(`${prefix}/${entry.name}/index.html`, await readFile(file, 'utf8'))
     } catch {
       /* 没有 index.html 的目录算作多余内容，下面按「意外文件」报出来 */
-      found.set(`m/${entry.name}/index.html`, null)
+      found.set(`${prefix}/${entry.name}/index.html`, null)
     }
   }
   return found
+}
+
+/**
+ * 删掉这一轮没有生成的页面目录。数据是唯一事实来源，删掉的材料/分类不能留下
+ * 旧页面，否则 sitemap 会继续收录一个已经不存在的内容。
+ * 只删「这次没生成」的，而不是先清空整个目录再重建：清空意味着每次都要先删掉
+ * 上百个刚写完的文件，既做无用功，也让误伤范围变得不必要地大。
+ */
+async function pruneStale(outDir, wanted) {
+  const relative = path.relative(DIST, outDir)
+  if (!relative || relative.startsWith('..') || path.isAbsolute(relative))
+    throw Error(`拒绝清理非 dist 子目录：${outDir}`)
+  const prefix = path.basename(outDir)
+  const stale = (await readdir(outDir, { withFileTypes: true }).catch(() => []))
+    .filter(entry => entry.isDirectory() && !wanted.has(entry.name))
+    .map(entry => entry.name)
+  for (const name of stale) {
+    await rm(path.join(outDir, name), { recursive: true, force: true })
+  }
+  if (stale.length)
+    console.log(
+      `清除了 ${stale.length} 个已失效的页面：${stale.map(n => `${prefix}/${n}`).join('、')}`
+    )
 }
 
 async function main() {
@@ -322,8 +515,19 @@ async function main() {
     pages.set(`m/${encodeURIComponent(m.id)}/index.html`, renderPage(m, materials))
   }
 
+  // 分类页：地址片段在 site.mjs 里登记，未登记的分类会在这里抛错，不会生成一个
+  // 百分号编码的难看地址。顺序按 data.json 里出现的先后，保证产物稳定可复现。
+  const categories = [...new Set(materials.map(m => m.category))]
+  const categoryPages = []
+  for (const name of categories) {
+    const rel = `c/${categorySlug(name)}/index.html`
+    if (pages.has(rel)) throw Error(`分类地址片段重复：${rel}`)
+    pages.set(rel, renderCategoryPage(name, materials, categories))
+    categoryPages.push(rel)
+  }
+
   if (CHECK_ONLY) {
-    const onDisk = await existingPages()
+    const onDisk = new Map([...(await existingPages(OUT)), ...(await existingPages(CAT_OUT))])
     const problems = []
     for (const [rel, content] of pages) {
       if (!onDisk.has(rel)) problems.push(`缺失 ${rel}`)
@@ -339,7 +543,7 @@ async function main() {
     }
     const bytes = [...pages.values()].reduce((n, s) => n + Buffer.byteLength(s), 0)
     console.log(
-      `预渲染产物与 data.json 同步：${pages.size} 条材料页 / ${(bytes / 1024).toFixed(0)} KB。`
+      `预渲染产物与 data.json 同步：${materials.length} 条材料页 + ${categoryPages.length} 个分类页 / ${(bytes / 1024).toFixed(0)} KB。`
     )
     return 0
   }
@@ -350,34 +554,26 @@ async function main() {
     await writeFile(file, content, 'utf8')
   }
 
-  // 材料从 data.json 里删掉之后，它的旧页面不能留着——否则 sitemap 会继续
-  // 收录一个已经不存在的内容。这里只删「这次没有生成」的那些，而不是先
-  // 清空整个目录再重建：清空意味着每次都要删掉上百个刚写完的文件，既做
-  // 无用功，也让误伤范围变得不必要地大。
-  const relative = path.relative(DIST, OUT)
-  if (!relative || relative.startsWith('..') || path.isAbsolute(relative))
-    throw Error(`拒绝清理非 dist 子目录：${OUT}`)
-  const wanted = new Set(
-    [...pages.keys()].map(rel => path.relative(OUT, path.join(DIST, rel)).split(path.sep)[0])
-  )
-  const stale = (await readdir(OUT, { withFileTypes: true }).catch(() => []))
-    .filter(entry => entry.isDirectory() && !wanted.has(entry.name))
-    .map(entry => entry.name)
-  for (const name of stale) {
-    await rm(path.join(OUT, name), { recursive: true, force: true })
-  }
-  if (stale.length) console.log(`清除了 ${stale.length} 个已失效的材料页：${stale.join('、')}`)
+  await pruneStale(OUT, dirNames(pages, OUT))
+  await pruneStale(CAT_OUT, dirNames(pages, CAT_OUT))
 
   const bytes = [...pages.values()].reduce((n, s) => n + Buffer.byteLength(s), 0)
   console.log(
-    `已生成 ${pages.size} 条材料页到 dist/m/（${(bytes / 1024).toFixed(0)} KB，平均 ${(
-      bytes /
-      pages.size /
-      1024
-    ).toFixed(1)} KB/页）。`
+    `已生成 ${materials.length} 条材料页到 dist/m/、${categoryPages.length} 个分类页到 dist/c/（共 ${(bytes / 1024).toFixed(0)} KB）。`
   )
-  console.log(`站点地址：${homeUrl()} · 材料页形如 ${materialPath('m-0-0')}`)
+  console.log(
+    `站点地址：${homeUrl()} · 材料页形如 ${materialPath('m-0-0')} · 分类页形如 ${categoryPath(categories[0])}`
+  )
   return 0
+}
+
+/** pages 里落在 outDir 下的那些顶层目录名。 */
+function dirNames(pages, outDir) {
+  const prefix = `${path.basename(outDir)}/`
+  const names = new Set()
+  for (const rel of pages.keys())
+    if (rel.startsWith(prefix)) names.add(rel.slice(prefix.length).split('/')[0])
+  return names
 }
 
 try {

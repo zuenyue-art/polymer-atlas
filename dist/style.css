@@ -1038,6 +1038,39 @@ body {
 .card-fact.recycle > span {
   color: #4d6b72;
 }
+/* 命中溯源行：只在「搜索命中藏在卡片看不见的字段里」时出现，标明字段名并把
+   命中词标出来。用左侧一条细线而不是再画一个色块，是为了和上面三行事实区分
+   层级——它是解释「为什么搜到它」的注脚，不是材料的第四条属性。
+   .card .card-hit p 必须提权：.card p 有一套 -webkit-box 两行截断，不覆盖
+   会把溯源片段截成两行再吃掉一半。 */
+.card-hit {
+  margin: -6px 0 13px;
+  padding: 6px 0 6px 9px;
+  border-left: 2px solid #cdd8c4;
+  background: #f2f5ee;
+  border-radius: 0 5px 5px 0;
+}
+.card-hit > span {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 1px;
+}
+.card .card-hit p {
+  display: block;
+  -webkit-line-clamp: unset;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #4a5645;
+  min-height: 0;
+}
+.card-hit mark {
+  background: #fbf0cd;
+  color: inherit;
+  font-weight: 600;
+  padding: 0 1px;
+  border-radius: 2px;
+}
 /* 「形态与结晶性」是 14 个字段里唯一不用读句子就能消化的一个（平均 8 字），
    所以从正文里提出来做成标签，扫一列卡片时能被眼睛一次带过：想找半结晶的，
    不用打开 130 次弹窗。整句照录，不截断、不加 tooltip——这一层的作用就是

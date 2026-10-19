@@ -1,4 +1,4 @@
-/* 预渲染材料页（/m/<id>/）的版式。
+/* 预渲染内容页（材料页 /m/<id>/、分类页 /c/<slug>/）的版式。
    这一页由 scripts/prerender.mjs 生成，不加载 app.js，是给搜索引擎、分享卡片
    和「先读到内容再说」的场合准备的。字体、颜色、卡片语言都复用 style.css 与
    layout.css 里已有的类，这里只补这一页独有的骨架。
@@ -168,6 +168,55 @@
 .mp-siblings-more a {
   border-style: dashed;
   color: var(--muted);
+}
+
+/* 分类页（/c/<slug>/）的材料清单。跟材料页的 .mp-siblings 那种一行一颗的
+   药丸不同：这里每类最多 19 条，要能竖着扫读，所以一行一条、条目之间只留
+   一条细线。名称后面挂特点与回收两行，是选材时最先要横向对比的两栏。 */
+.cp-list {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.cp-list > li {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.cp-list > li:last-child {
+  border-bottom: 0;
+}
+.cp-name {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  font-size: 15px;
+  font-weight: 550;
+  color: var(--ink);
+  text-decoration: none;
+}
+.cp-name:hover {
+  color: var(--green);
+}
+.cp-name b {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--green);
+}
+.cp-list p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #53634c;
+}
+.cp-list .cp-recycle {
+  color: #5a6b70;
+}
+.cp-list .cp-recycle span {
+  margin-right: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #4d6b72;
 }
 
 .mp-foot {
