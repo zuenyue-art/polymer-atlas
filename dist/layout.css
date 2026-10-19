@@ -279,7 +279,7 @@ main {
 .badge {
   font-size: 10px;
   line-height: 1.5;
-  background: #edf3e9;
+  background: var(--grad-chip);
   border-radius: 5px;
   padding: 4px 7px;
   color: #42573b;

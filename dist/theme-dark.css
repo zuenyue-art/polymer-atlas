@@ -26,6 +26,9 @@
   --line: #2b312a;
   --green: #93b87c;
   --soft: #1f251d;
+  --grad-accent: linear-gradient(135deg, #a8c894, #7d9f68);
+  --grad-accent-hover: linear-gradient(135deg, #b6d3a2, #8aad74);
+  --grad-chip: linear-gradient(135deg, #2f3d2c, #253222);
 }
 
 html[data-theme='dark'] .sidebar {
@@ -111,7 +114,6 @@ html[data-theme='dark'] .card:hover {
 html[data-theme='dark'] .badge {
   border: 1px solid #404735;
   color: #d9e2d6;
-  background: #202919;
 }
 html[data-theme='dark'] .icon-btn {
   color: #d5d8d2;
@@ -425,9 +427,6 @@ html[data-theme='dark'] .mp-bar {
 }
 html[data-theme='dark'] .mp-cta {
   color: #ebebeb;
-}
-html[data-theme='dark'] .mp-cta:hover {
-  background: #334939;
 }
 html[data-theme='dark'] .mp-crumb span[aria-hidden] {
   color: #cbd0c8;

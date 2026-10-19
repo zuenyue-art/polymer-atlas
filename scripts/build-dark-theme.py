@@ -47,6 +47,11 @@ VARS = OrderedDict(
         ('--line', '#2b312a'),
         ('--green', '#93b87c'),
         ('--soft', '#1f251d'),
+        # 渐变不走机械映射：机械映射会把两端一起压暗，两端挤到一起就没有渐变感了。
+        # 深色下按钮是「亮底深字」，所以整条要往亮处抬，且深字在亮端也要过 4.5:1。
+        ('--grad-accent', 'linear-gradient(135deg, #a8c894, #7d9f68)'),
+        ('--grad-accent-hover', 'linear-gradient(135deg, #b6d3a2, #8aad74)'),
+        ('--grad-chip', 'linear-gradient(135deg, #2f3d2c, #253222)'),
     ]
 )
 
