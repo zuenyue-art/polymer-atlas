@@ -36,10 +36,8 @@ FREEZE = "C2"
 # 列宽同样沿用旧文件的取值，避免读者下载后排版突变。
 MATERIAL_WIDTHS = [24, 20, 42, 27, 43, 40, 42, 40, 45, 45, 43, 52, 48, 72]
 TERM_WIDTHS = [29, 76, 74]
-LITERATURE_WIDTHS = [23, 66, 24, 61, 66, 65, 76, 49]
 
 TERM_SHEET = "基础术语与使用说明"
-LITERATURE_SHEET = "重点回收文献"
 # 术语表只写这三列：与旧文件的列结构保持一致，"分类"用于站点上的筛选，
 # 放进表格反而会让读者以为它属于词条本身。
 TERM_COLUMNS = ["术语/阅读规则", "解释", "用途或易错点"]
@@ -96,20 +94,10 @@ def main():
         TERM_WIDTHS,
     )
 
-    literature = data["literature"]
-    lit_columns = list(literature[0].keys())
-    write_sheet(
-        wb,
-        LITERATURE_SHEET,
-        lit_columns,
-        [[r[c] for c in lit_columns] for r in literature],
-        LITERATURE_WIDTHS,
-    )
-
     wb.save(OUT)
     print(f"已生成 {os.path.relpath(OUT, ROOT)}")
     print(f"  材料 {len(materials)} 条 / {len(order)} 个分类工作表")
-    print(f"  术语 {len(terms)} 条 · 文献 {len(literature)} 条")
+    print(f"  术语 {len(terms)} 条")
     return 0
 
 

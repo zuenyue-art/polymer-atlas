@@ -727,17 +727,6 @@ dialog::backdrop {
 .term-card .card-bottom {
   margin-top: auto;
 }
-.literature-card {
-  min-height: 250px;
-}
-.literature-card h3 {
-  font-size: 13px;
-  line-height: 1.65;
-  margin: 17px 0 12px;
-}
-.literature-card p {
-  -webkit-line-clamp: 3;
-}
 .error {
   color: #875341;
 }
@@ -1141,19 +1130,16 @@ body {
   width: 14px;
   height: 14px;
 }
-.term-card p,
-.literature-card p {
+.term-card p {
   font-size: 14px;
 }
-.literature-card h3 {
+.term-card h3 {
   font-size: 15px;
 }
-.card.term-card,
-.card.literature-card {
+.card.term-card {
   min-height: 210px;
 }
-.term-card .card-bottom,
-.literature-card .card-bottom {
+.term-card .card-bottom {
   margin-top: 18px;
 }
 .sidebar-bottom small {

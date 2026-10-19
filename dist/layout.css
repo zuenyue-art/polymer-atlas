@@ -343,13 +343,11 @@ main {
 .icon-btn {
   border-radius: 7px;
 }
-.term-card h3,
-.literature-card h3 {
+.term-card h3 {
   font-size: 16px;
   line-height: 1.6;
 }
-.term-card > p,
-.literature-card > p {
+.term-card > p {
   font-size: 13px;
   line-height: 1.8;
 }
@@ -1372,11 +1370,6 @@ main {
 #favoriteTools[hidden] {
   display: none;
 }
-.literature-card .card-bottom .btn {
-  font-size: 11px;
-  min-height: 30px;
-  padding: 4px 8px;
-}
 @media (max-width: 1000px) {
   #content.unified-favorites {
     grid-template-columns: 1fr;
@@ -1509,8 +1502,7 @@ main {
   font-size: 12px;
   font-weight: 500;
 }
-.term-card > p,
-.literature-card > p {
+.term-card > p {
   font-size: 14px;
   color: #566357;
   line-height: 1.85;

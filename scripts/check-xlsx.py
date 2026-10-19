@@ -23,7 +23,6 @@ DIST = os.path.join(ROOT, "dist")
 XLSX = os.path.join(DIST, "materials.xlsx")
 
 TERM_SHEET = "基础术语与使用说明"
-LITERATURE_SHEET = "重点回收文献"
 TERM_COLUMNS = ["术语/阅读规则", "解释", "用途或易错点"]
 
 
@@ -93,18 +92,7 @@ def main():
         "术语",
     )
 
-    literature = data["literature"]
-    lit_columns = list(literature[0].keys())
-    compare_sheet(
-        problems,
-        wb,
-        LITERATURE_SHEET,
-        lit_columns,
-        [[r[c] for c in lit_columns] for r in literature],
-        "文献",
-    )
-
-    extra = [s for s in wb.sheetnames if s not in categories and s not in (TERM_SHEET, LITERATURE_SHEET)]
+    extra = [s for s in wb.sheetnames if s not in categories and s != TERM_SHEET]
     if extra:
         problems.append(f"多出未预期的工作表：{extra}")
 
@@ -116,7 +104,7 @@ def main():
         return 1
 
     print(
-        f"materials.xlsx 与数据一致（{len(materials)} 条材料 / {len(terms)} 条术语 / {len(literature)} 条文献）"
+        f"materials.xlsx 与数据一致（{len(materials)} 条材料 / {len(terms)} 条术语）"
     )
     return 0
 

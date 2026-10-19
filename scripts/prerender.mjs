@@ -312,7 +312,6 @@ ${renderSiblings(m, materials)}
             <a href="${BASE_PATH}#materials">材料图鉴</a>
             <a href="${BASE_PATH}#news">材料动态</a>
             <a href="${BASE_PATH}#terms">基础知识</a>
-            <a href="${BASE_PATH}#literature">回收文献</a>
           </nav>
           <p><a href="${esc(atlasLink)}">在交互图鉴中查看完整资料（搜索、对比、收藏、打印）↗</a></p>
         </footer>
@@ -462,7 +461,6 @@ ${renderCategoryItems(items)}
             <a href="${BASE_PATH}#materials">材料图鉴</a>
             <a href="${BASE_PATH}#news">材料动态</a>
             <a href="${BASE_PATH}#terms">基础知识</a>
-            <a href="${BASE_PATH}#literature">回收文献</a>
           </nav>
           <p><a href="${esc(atlasLink)}">在交互图鉴中查看全部材料（搜索、对比、收藏、打印）↗</a></p>
         </footer>
