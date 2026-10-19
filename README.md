@@ -61,12 +61,9 @@ npm run check    # 提交前跑一次，四步全过才算干净
 
 Cloudflare Workers，配置在根目录 `wrangler.jsonc`，发布目录 `dist`。
 
-push 到 `main` 会自动部署（`.github/workflows/deploy.yml`）。首次启用需要在仓库 Settings → Secrets 里配两个值：
+push 到 `main` 会自动部署：仓库已接入 Cloudflare Workers Builds（Workers & Pages → 该 Worker → 设置 → 构建 → Git 集成），Cloudflare 自己监视 `main`、拉取仓库并上传 `dist`，GitHub 侧不需要配任何 secret，每次推送会在 PR/commit 上出现一条「Workers Builds」检查。
 
-- `CLOUDFLARE_API_TOKEN` —— Cloudflare Dashboard → 我的资料 → API 令牌 → 创建令牌，用「编辑 Cloudflare Workers」模板
-- `CLOUDFLARE_ACCOUNT_ID` —— Workers & Pages 概览页右侧的 Account ID
-
-没配这两个值时部署步骤会跳过，不会把 CI 染红。也可以手动部署：
+CI 里因此**没有**部署工作流——两套部署机制同时开，一次推送会传两遍、还会在版本历史里互相顶替；GitHub Actions 也不能在 job 级 `if` 里引用 `secrets`，硬写只会让每次推送都挂一个红叉。手动部署仍可用：
 
 ```bash
 npx wrangler deploy    # 首次需要先 wrangler login
