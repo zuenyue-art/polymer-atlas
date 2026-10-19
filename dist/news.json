@@ -300,6 +300,137 @@
       "regulatory_status": "征集通知已发布；非入选名单",
       "date_basis": "官方账号发布日2026-09-24；工信部通知成文2026-09-23；北京配套通知公开2026-09-29",
       "verification_scope": "官方账号公开检索正文与北京市政府配套通知全文交叉核验"
+    },
+    {
+      "id": "20261009-china-new-quality-bio",
+      "published_at": "2026-10-09",
+      "added_at": "2026-10-19",
+      "materials": [
+        "生物制造"
+      ],
+      "kind": "政策与标准",
+      "title": "中央文件将生物制造列入未来产业前瞻布局",
+      "summary": "中共中央、国务院10月9日印发《关于发展新质生产力的意见》，在“前瞻布局未来产业”中把生物制造与量子科技、氢能、脑机接口等并列，提出探索多元技术路线、典型应用场景和监管规则，加快形成产业生态。文件属顶层部署，未给出生物基材料品种、产能或强制指标，具体任务仍待部门与地方配套。",
+      "source_name": "中国政府网（新华社）",
+      "source_title": "中共中央 国务院关于发展新质生产力的意见",
+      "url": "https://www.gov.cn/yaowen/liebiao/202610/content_7082819.htm",
+      "focus": "材料技术"
+    },
+    {
+      "id": "20261010-pet-to-benzene-decarboxylation",
+      "published_at": "2026-10-10",
+      "added_at": "2026-10-19",
+      "materials": [
+        "PET",
+        "苯"
+      ],
+      "kind": "回收与纯化",
+      "title": "废PET经连续脱羧“缩环”直接制苯，收率83.3%",
+      "summary": "浙江大学梅清清团队在JACS报道Ru/W0.4ZrOx催化剂，使废PET的对苯二甲酸C8骨架经连续脱羧收缩为C6，苯收率83.3%。WOx引入把ZrO2的Lewis酸位转为Brønsted酸，配合氧空位调控，抑制竞争性氢解并保住芳环。该路线不再保留C8骨架，为废聚酯直接制基础芳烃提供实验验证。",
+      "source_name": "Journal of the American Chemical Society",
+      "source_title": "Selective Consecutive Decarboxylation Enables Skeletal Contraction of Waste PET",
+      "url": "https://doi.org/10.1021/jacs.6c11537",
+      "focus": "材料技术"
+    },
+    {
+      "id": "20261013-shanghai-circular-economy-plan",
+      "published_at": "2026-10-13",
+      "added_at": "2026-10-19",
+      "materials": [
+        "再生材料",
+        "可降解材料",
+        "废塑料"
+      ],
+      "kind": "政策与标准",
+      "title": "上海循环经济“十五五”规划：攻关塑料化学回收与再生材料推广",
+      "summary": "上海市政府办公厅印发、10月13日公布《上海市节能降碳和循环经济发展“十五五”规划》，把“新型复合可降解材料、塑料化学回收”列入绿色低碳关键技术，提出开展再生材料应用推广、建溯源平台，推动废塑料与废橡胶化工材料再生利用；到2030年生活垃圾回收利用率达50%。规划已印发，目标期为2030年。",
+      "source_name": "上海市人民政府办公厅",
+      "source_title": "上海市人民政府办公厅关于印发《上海市节能降碳和循环经济发展“十五五”规划》的通知（沪府办发〔2026〕25号）",
+      "url": "https://www.shanghai.gov.cn/nw12344/20261013/9818972b5d6c4a50b7e08896ec412e02.html",
+      "focus": "材料技术"
+    },
+    {
+      "id": "20261013-petrochina-pentanediamine-pilot",
+      "published_at": "2026-10-13",
+      "added_at": "2026-10-19",
+      "materials": [
+        "1,5-戊二胺",
+        "PA56",
+        "生物基材料"
+      ],
+      "kind": "新材料与结构",
+      "title": "中石油南通千吨级生物基戊二胺中试平台进入环评拟批",
+      "summary": "南通市数据局10月13日公示，中石油昆冈先进制造拟在通州湾中试基地建设千吨级生物制造通用型平台，建成后形成1,5-戊二胺1000吨/年、氨基葡萄糖1吨/年的中试能力。戊二胺面向PA56聚合级验证，平台后续服务其他生物基二元胺、二元酸与二元醇放大。目前仅处于环评拟批准公示阶段，尚未开工。",
+      "source_name": "南通市数据局",
+      "source_title": "千吨级/年生物制造通用型中试平台建设（南通）、吨级生物基精细化学品转化平台生态环境影响报告书拟批准公示",
+      "url": "https://shuju.nantong.gov.cn/ntsxzspj/sphjgs/content/d44f6f3d-9c8a-4471-b64e-3a2e95d99cea.html",
+      "focus": "材料技术"
+    },
+    {
+      "id": "20261015-petrochina-poe-first-supply",
+      "published_at": "2026-10-15",
+      "added_at": "2026-10-19",
+      "materials": [
+        "POE",
+        "聚烯烃弹性体"
+      ],
+      "kind": "新品与应用",
+      "title": "国产溶液法POE首批31.5吨出厂，供光伏胶膜与汽车改性",
+      "summary": "大庆石化3万吨/年溶液法POE工业示范装置10月12日发出首批31.5吨辛烯共聚产品，发往华东客户用于光伏胶膜、汽车改性，标志中国石油首套万吨级溶液法POE从投产转入市场化供货。装置9月23日全流程贯通并产出颗粒、9月26日质量合格；7月5万吨/年1-己烯/1-辛烯装置已开车，形成乙烯—辛烯—POE链条。",
+      "source_name": "大庆石化／新浪财经",
+      "source_title": "大庆石化公司捷报频传",
+      "url": "https://finance.sina.com.cn/jjxw/2026-10-15/doc-inivhpnu1329129.shtml",
+      "focus": "材料技术"
+    },
+    {
+      "id": "20261015-neocle-continuous-bhet-rpet",
+      "published_at": "2026-10-15",
+      "added_at": "2026-10-19",
+      "materials": [
+        "PET",
+        "BHET",
+        "rPET"
+      ],
+      "kind": "回收与纯化",
+      "title": "国内首套连续式BHET装置试车，废涤纶纺织品解聚回rPET",
+      "summary": "诺可瑞循环技术（镇江）一期连续式BHET化学回收rPET线完成试车，以化纤废布为原料，将废旧涤纶解聚提纯为BHET后重新聚合，一期再生切片设计产能5000吨/年，二期计划再增5000吨。相比间歇式醇解，连续流程更短、单位能耗更低，可处理混纺染色废布，产品面向高端纺织；后续拟拓展尼龙、氨纶混纺分离。",
+      "source_name": "同花顺财经",
+      "source_title": "国内首套连续式 BHET 化学回收 rPET 生产线试车",
+      "url": "https://m.10jqka.com.cn/20261015/c680737068.shtml",
+      "focus": "材料技术"
+    },
+    {
+      "id": "20261016-pda-wuhai-phase1",
+      "published_at": "2026-10-16",
+      "added_at": "2026-10-19",
+      "materials": [
+        "PDA",
+        "生物可降解材料",
+        "BDO"
+      ],
+      "kind": "新材料与结构",
+      "title": "乌海3.3万吨PDA项目一期进度超九成，拟10月底试生产",
+      "summary": "内蒙古中科可蓝3.3万吨/年全自然域生物可降解材料PDA项目一期（3000吨/年）整体进度超90%，管道安装接近尾声，预计10月底具备试生产条件；二期规划3万吨/年。PDA定位第三代生物降解材料，可在土壤、淡水、海洋中完全降解且不产生微塑料，投产后拟以BDO为原料，面向水生态治理、生态农业、包装与3D打印。",
+      "source_name": "乌海日报",
+      "source_title": "中科可蓝PDA项目全速推进",
+      "url": "https://szb.wuhainews.org.cn/paper/pc/content/202610/16/content_79212.html",
+      "focus": "材料技术"
+    },
+    {
+      "id": "20261017-pet-reductive-amination-pxda",
+      "published_at": "2026-10-17",
+      "added_at": "2026-10-19",
+      "materials": [
+        "PET",
+        "PXDA"
+      ],
+      "kind": "回收与纯化",
+      "title": "调控Ru纳米粒尺寸，废PET选择性还原胺化制对苯二甲胺",
+      "summary": "天津大学团队在Nature Communications报道，氮掺杂碳负载Ru的粒径可切换PET还原胺化路径：约2.4 nm的Ru/NC-SNPs抑制过度加氢与脱氧，对苯二甲胺PXDA收率95.5%；1.3 nm偏向过度加氢，4.6 nm偏向对二甲苯。催化剂对消费后PET及含PET混合塑料同样适用。",
+      "source_name": "Nature Communications",
+      "source_title": "Size-dependent catalysis of Ru nanoparticles for selective reductive amination of PET plastic",
+      "url": "https://doi.org/10.1038/s41467-026-78873-3",
+      "focus": "材料技术"
     }
   ]
 }
