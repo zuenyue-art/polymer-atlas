@@ -1,0 +1,452 @@
+/*
+ * 深色模式覆盖层 —— 生成物，不要手改。
+ *
+ * 由 scripts/build-dark-theme.py 从 style.css / layout.css / news.css /
+ * material.css 扫描生成：每条含硬编码颜色的规则按角色（文字/底色/边框/阴影）
+ * 重新映射一份深色值。改配色请改上游样式表，然后：
+ *
+ *     python scripts/build-dark-theme.py
+ *
+ * 校验（CI 用，产物与上游不一致就失败）：
+ *
+ *     python scripts/build-dark-theme.py --check
+ */
+
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #111310;
+    --paper: #191d17;
+    --ink: #e6eae1;
+    --muted: #9fa89a;
+    --line: #2b312a;
+    --green: #93b87c;
+    --soft: #1f251d;
+  }
+
+  .sidebar {
+    background: #21261a;
+  }
+  .brand-mark {
+    color: #ebebeb;
+    background: #374e3d;
+  }
+  .nav {
+    color: #d1d4d1;
+  }
+  .nav.active {
+    background: #263120;
+    color: #d7e4db;
+  }
+  .nav:hover {
+    background: #272c20;
+  }
+  .category {
+    color: #ced1ce;
+  }
+  .category:hover,
+  .category.active {
+    background: #272f21;
+  }
+  .category small {
+    color: #b5b8b3;
+  }
+  .sidebar-bottom {
+    color: #d5d9d2;
+  }
+  .status-dot {
+    background: #435438;
+  }
+  .sep {
+    color: #e0e2df;
+  }
+  .molecule {
+    color: #c9d0c4;
+  }
+  .molecule span {
+    color: #bac0b6;
+  }
+  .search {
+    background: #171717;
+  }
+  .search svg {
+    stroke: #aaaea8;
+  }
+  .search input::placeholder {
+    color: #bfc2be;
+  }
+  .search kbd {
+    border: 1px solid #3e4335;
+    color: #c7cac5;
+  }
+  .btn {
+    color: #d1d5ce;
+    background: #171717;
+  }
+  .btn[aria-pressed='true'] {
+    border-color: #415139;
+    color: #d4e5d7;
+    background: #242f1b;
+  }
+  .quick-filters > span {
+    color: #b3b7af;
+  }
+  .quick-filters button {
+    background: #262a1e;
+    color: #cdd2c9;
+  }
+  .quick-filters button:hover {
+    background: #2b3522;
+  }
+  .results-heading span {
+    color: #b1b5ad;
+  }
+  .card:hover {
+    border-color: #42513b;
+  }
+  .badge {
+    border: 1px solid #404735;
+    color: #d1dcce;
+    background: #202919;
+  }
+  .icon-btn {
+    color: #b2b7ad;
+  }
+  .icon-btn:hover,
+  .icon-btn.saved {
+    background: #232a1a;
+  }
+  .abbr {
+    color: #dce5d9;
+  }
+  .card p {
+    color: #a6aaa3;
+  }
+  .card-bottom {
+    border-top: 1px solid #3f4235;
+    color: #b8bcb3;
+    border-color: #3d4433;
+  }
+  .arrow {
+    color: #afb8a5;
+  }
+  .empty button {
+    background: #171717;
+  }
+  footer {
+    color: #b3b7af;
+  }
+  .dialog-top {
+    background: #1f2419;
+  }
+  .detail-section {
+    border-top: 1px solid #404434;
+  }
+  .formula {
+    background: #22271a;
+  }
+  .source-text {
+    color: #a4a8a1;
+  }
+  .primary {
+    color: #ebebeb;
+  }
+  .text-btn {
+    color: #a8aea3;
+  }
+  .compare-tray {
+    background: #171717;
+  }
+  .toast {
+    background: #30432a;
+    color: #ebebeb;
+  }
+  .comparison th {
+    background: #222918;
+  }
+  .comparison td:first-child {
+    color: #9da597;
+    background: #1e2213;
+  }
+  .error {
+    color: #e0ccc6;
+  }
+  .card .card-fact p {
+    color: #d4d9d4;
+  }
+  .card .limitation p {
+    color: #d2cfcb;
+  }
+  .card-fact.limitation > span {
+    color: #d1cbc3;
+  }
+  .card-fact.recycle > span {
+    color: #cdd9db;
+  }
+  .card-hit {
+    border-left: 2px solid #414c38;
+    background: #202519;
+  }
+  .card .card-hit p {
+    color: #d9ded7;
+  }
+  .card-hit mark {
+    background: #42350c;
+  }
+  .card .card-form {
+    background: #21271b;
+    color: #d2d8d0;
+  }
+  .detail-nav {
+    background: #171717;
+  }
+  .detail-tab {
+    color: #ccd0ca;
+  }
+  .detail-tab:hover {
+    background: #22271a;
+  }
+  .structure-figure {
+    background: #1c2015;
+  }
+  .structure-image {
+    background: #171717;
+  }
+  .repeat-formula strong {
+    color: #dfe9e2;
+  }
+  .edition {
+    background: #171717;
+  }
+  .btn:hover {
+    background: #202919;
+    border-color: #414e3d;
+  }
+  .latest-news {
+    background: #23281c;
+  }
+  .latest-heading {
+    background: #202719;
+  }
+  .latest-row + .latest-row {
+    border-top: 1px solid #3d4433;
+  }
+  .latest-news details[open] .latest-toggle {
+    background: #202719;
+  }
+  .favorite-backup .btn[data-favorite-export] {
+    background: #202a18;
+    border-color: #405132;
+    color: #d7e4db;
+  }
+  .card .abbr {
+    color: #d5e2d8;
+  }
+  .card-fact > span {
+    color: #cad0c8;
+  }
+  .card .card-fact.limitation p {
+    color: #ced0cb;
+  }
+  #detailDialog {
+    border-color: #3d4836;
+  }
+  .detail-tab.active {
+    background: #26311d;
+    color: #d7e4db;
+  }
+  .detail-pane {
+    background: #171717;
+  }
+  .detail-section h3 {
+    color: #d0dbce;
+  }
+  .detail-section p {
+    color: #d8ded9;
+  }
+  .structure-figure-top {
+    background: #1f2518;
+  }
+  .recycling-guide dd {
+    color: #d8ded9;
+  }
+  .news-filters {
+    background: #22281b;
+  }
+  .news-item p {
+    color: #d0d4ce;
+  }
+  .related-materials {
+    background: #1f2517;
+  }
+  .related-material {
+    border: 1px solid #3d4934;
+    background: #171717;
+  }
+  .related-material:hover {
+    border-color: #43533e;
+    background: #19230f;
+  }
+  .inline-term {
+    border-bottom: 1px dotted #6b875e;
+  }
+  .inline-term:hover,
+  .inline-term:focus-visible {
+    background: #242e19;
+    color: #d4e4d8;
+  }
+  .term-help-note {
+    background: #212917;
+  }
+  .term-help-note p {
+    color: #d3dad0;
+  }
+  .comparison-controls {
+    background: #202417;
+  }
+  .comparison tbody th {
+    background: #202417;
+  }
+  .comparison-same td {
+    color: #a6aba2;
+    background: #1c2015;
+  }
+  .comparison-different td.comparison-distinct {
+    background: #212b15;
+  }
+  .comparison-different > th small {
+    color: #d3dfce;
+  }
+  .term-categories button {
+    background: #171717;
+  }
+  .term-categories button[aria-pressed='true'] {
+    background: #242f1b;
+    color: #d7e4db;
+    border-color: #42503b;
+  }
+  .atlas-guide {
+    background: #212819;
+  }
+  .atlas-guide p {
+    color: #d0d6cd;
+  }
+  .polymer-motion {
+    color: #c6d2c6;
+  }
+  .loader-symbol i {
+    border: 2px solid #698065;
+  }
+  .loader-symbol i:not(:last-child)::after {
+    background: #445140;
+  }
+  .news-tags button:hover,
+  .news-tags button:focus-visible {
+    background: #27321e;
+    border-color: #45543d;
+  }
+  #atlasPanel > .intro p,
+  #newsPanel > .news-hero p {
+    color: #ced3cf;
+  }
+  #newsPanel .news-stats {
+    color: #c9cfca;
+  }
+  .news-meta {
+    color: #9ca19c;
+  }
+  .news-meta .news-source {
+    color: #9ca19c;
+  }
+  .news-kind {
+    background: #20251d;
+    color: #d0d6ce;
+  }
+  .news-kind[data-kind='政策与标准'] {
+    background: #322a15;
+    color: #ded7c8;
+  }
+  .news-kind[data-kind='研究进展'],
+  .news-kind[data-kind='新材料与结构'] {
+    background: #172129;
+    color: #c7cfd6;
+  }
+  .news-kind[data-kind='回收与纯化'] {
+    background: #1f2a1b;
+    color: #cedccc;
+  }
+  .news-kind[data-kind='新品与应用'],
+  .news-kind[data-kind='配方与性能'] {
+    background: #1f1a26;
+    color: #cec8d2;
+  }
+  #newsPanel .news-item,
+  .unified-favorites .news-item {
+    border-color: #3d4636;
+  }
+  #newsPanel .news-item h3,
+  .unified-favorites .news-item h3 {
+    color: #e0e8e3;
+  }
+  #newsPanel .news-item p,
+  .unified-favorites .news-item p {
+    color: #d4d9d4;
+  }
+  #newsPanel .news-bottom,
+  .unified-favorites .news-bottom {
+    border-top: 1px solid #3d4433;
+  }
+  .term-card > p,
+  .literature-card > p {
+    color: #d3d8d3;
+  }
+  .news-filters select {
+    background: #171717;
+  }
+  .news-item {
+    background: #171717;
+  }
+  .latest-row {
+    color: #d3d8d0;
+  }
+  .nav a:hover,
+  a.nav:hover {
+    background: #272c20;
+  }
+  .material-page {
+    background: #1f2117;
+  }
+  .mp-bar {
+    background: #21261a;
+  }
+  .mp-cta {
+    color: #ebebeb;
+  }
+  .mp-cta:hover {
+    background: #334939;
+  }
+  .mp-crumb span[aria-hidden] {
+    color: #e0e3de;
+  }
+  .cp-list p {
+    color: #d5dcd3;
+  }
+  .cp-list .cp-recycle {
+    color: #ced5d7;
+  }
+  .cp-list .cp-recycle span {
+    color: #cdd9db;
+  }
+
+  @media print {
+    .print-group-title {
+      border-top: 2px solid #5e5e5e;
+    }
+  }
+
+  /* ---- 手写兜底：见 scripts/build-dark-theme.py 的 MANUAL ---- */
+  .primary, .mp-cta {
+    color: #14170f;
+  }
+}

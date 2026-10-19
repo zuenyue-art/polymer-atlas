@@ -216,7 +216,8 @@ function renderPage(m, materials) {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="#46684f" />
+    <meta name="theme-color" content="#46684f" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#111310" media="(prefers-color-scheme: dark)" />
     <link rel="icon" type="image/svg+xml" href="${BASE_PATH}favicon.svg?v=1" />
     <meta name="description" content="${esc(description)}" />
     <link rel="canonical" href="${esc(url)}" />
@@ -237,6 +238,7 @@ function renderPage(m, materials) {
     <link rel="stylesheet" href="${BASE_PATH}style.css" />
     <link rel="stylesheet" href="${BASE_PATH}layout.css" />
     <link rel="stylesheet" href="${BASE_PATH}material.css" />
+    <link rel="stylesheet" href="${BASE_PATH}theme-dark.css" />
     <script type="application/ld+json">
       ${jsonLd}
     </script>
@@ -352,7 +354,8 @@ function renderCategoryPage(name, materials, categories) {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="#46684f" />
+    <meta name="theme-color" content="#46684f" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#111310" media="(prefers-color-scheme: dark)" />
     <link rel="icon" type="image/svg+xml" href="${BASE_PATH}favicon.svg?v=1" />
     <meta name="description" content="${esc(description)}" />
     <link rel="canonical" href="${esc(url)}" />
@@ -373,6 +376,7 @@ function renderCategoryPage(name, materials, categories) {
     <link rel="stylesheet" href="${BASE_PATH}style.css" />
     <link rel="stylesheet" href="${BASE_PATH}layout.css" />
     <link rel="stylesheet" href="${BASE_PATH}material.css" />
+    <link rel="stylesheet" href="${BASE_PATH}theme-dark.css" />
     <script type="application/ld+json">
       ${jsonLd}
     </script>

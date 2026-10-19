@@ -4,3 +4,7 @@
 # 生成器本身（scripts/prerender.mjs）照常参与格式化。
 dist/m/
 dist/c/
+
+# 深色主题覆盖层是生成物（scripts/build-dark-theme.py），不做格式化：
+# 格式化会改字节，而 check:dark 是靠逐字节比对判断同步的。
+dist/theme-dark.css
