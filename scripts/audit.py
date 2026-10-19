@@ -105,6 +105,39 @@ def audit(root):
     span = collections.Counter(len(m.get("fields") or {}) for m in materials)
     a.check(len(span) == 1, "data.json", f"materials 字段数量不一致：{dict(span)}")
 
+    # ---------- 数值字段 props ----------
+    # 数值是要被别人当依据用的，错值比缺值更糟：缺值只是筛不出来，错值会被采信。
+    spec = data.get("propsSpec")
+    a.check(isinstance(spec, list), "data.json", "缺少 propsSpec，数值字段无从校验")
+    spec_keys = {s.get("key") for s in spec or []}
+    a.check(
+        len(spec_keys) == len(spec or []), "data.json", "propsSpec 存在重复 key"
+    )
+
+    bad_key, bad_val, have_props = [], [], 0
+    for m in materials:
+        props = m.get("props")
+        if not props:
+            continue
+        have_props += 1
+        for k, v in props.items():
+            if k not in spec_keys:
+                bad_key.append(f"{m.get('id')}.{k}")
+                continue
+            kind = next((s.get("type") for s in spec if s.get("key") == k), "number")
+            ok = (
+                isinstance(v, list)
+                and len(v) == 2
+                and all(isinstance(x, (int, float)) and not isinstance(x, bool) for x in v)
+                if kind == "range"
+                else isinstance(v, (int, float)) and not isinstance(v, bool)
+            )
+            if not ok:
+                bad_val.append(f"{m.get('id')}.{k}={v!r}")
+    a.check(not bad_key, "data.json", f"props 用了 propsSpec 里没有的字段：{bad_key[:5]}")
+    a.check(not bad_val, "data.json", f"props 值的类型不对：{bad_val[:5]}")
+    a.stats["materials_with_props"] = have_props
+
     a.stats["materials_by_category"] = dict(collections.Counter(m.get("category") for m in materials))
     a.stats["material_field_count"] = span.most_common(1)[0][0] if span else 0
     a.stats["materials_with_source_url"] = sum(

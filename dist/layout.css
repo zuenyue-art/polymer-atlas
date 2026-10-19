@@ -1590,3 +1590,107 @@ main {
     display: none;
   }
 }
+
+/* ---------- 数值筛选与数值表 ----------
+ * 颜色一律走变量，不用硬编码：深色主题是扫描硬编码颜色生成的覆盖表
+ * （scripts/build-dark-theme.py），这里写死颜色就会在深色模式下漏掉。 */
+
+.prop-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin: 14px 0 0;
+  padding: 12px 15px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--soft);
+}
+
+.prop-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.prop-filter > span {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.prop-filter small {
+  opacity: 0.75;
+}
+
+.prop-filter input {
+  width: 74px;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--paper);
+  color: var(--ink);
+  font: 12px var(--font);
+}
+
+.prop-filter input:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 1px;
+}
+
+.prop-filter i {
+  font-style: normal;
+  color: var(--muted);
+}
+
+.prop-clear {
+  padding: 6px 12px;
+  font-size: 11.5px;
+}
+
+.prop-note {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* 详情页的数值表 */
+.props-table dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 9px 18px;
+  margin: 0;
+}
+
+.prop-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--line);
+}
+
+.prop-row dt {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.prop-row dd {
+  margin: 0;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.prop-row dd small {
+  margin-left: 3px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.props-note {
+  margin: 10px 0 0;
+  font-size: 11.5px;
+  color: var(--muted);
+}
