@@ -53,14 +53,16 @@
   min-height: 36px;
   padding: 8px 15px;
   border-radius: 9px;
-  background: var(--green);
+  background: var(--grad-accent);
   color: #fff;
   font-size: 12px;
   text-decoration: none;
   white-space: nowrap;
 }
+/* hover 也换一整条渐变，而不是盖一层纯色：纯色会把渐变顶掉，
+   鼠标一放上去按钮就从渐变退回色块。 */
 .mp-cta:hover {
-  background: #3c5a44;
+  background: var(--grad-accent-hover);
 }
 
 .mp-main {

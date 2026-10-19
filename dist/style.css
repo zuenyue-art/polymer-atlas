@@ -6,6 +6,13 @@
   --line: #e1e4dc;
   --green: #527044;
   --soft: #eaf0e4;
+  /* 渐变只用在主按钮与分类标签这类小面积元素上：大面积渐变会把这一版
+     的纸质感压掉。两端明度差控制在「一眼能看出是渐变、又不刺眼」，
+     且两端各自都要过白字/深字的 4.5:1 —— 亮端是最容易翻车的那一头。
+     深色版在 build-dark-theme.py 的 VARS 里，不走机械映射。 */
+  --grad-accent: linear-gradient(135deg, #5b7a4b, #455c3c);
+  --grad-accent-hover: linear-gradient(135deg, #4e6a41, #3a4f32);
+  --grad-chip: linear-gradient(135deg, #edf5e8, #d5e3cb);
   --font: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
 }
 * {
@@ -604,7 +611,7 @@ dialog::backdrop {
 }
 .primary {
   color: white;
-  background: var(--green);
+  background: var(--grad-accent);
   border: 0;
   border-radius: 7px;
   padding: 9px 16px;
