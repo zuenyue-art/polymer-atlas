@@ -560,6 +560,76 @@ function hitRow(key) {
     : ''
 }
 
+/** 数值筛选：{ 字段: { min, max } }，两侧都可留空。 */
+const propFilters = {}
+
+/** 只列出「至少有一条材料填了」的数值字段——没有数据的字段摆出来是空筛选器。 */
+function propsInUse() {
+  const spec = DATA?.propsSpec || []
+  return spec.filter(s => DATA.materials.some(m => (m.props || {})[s.key] != null))
+}
+
+function propFiltersMarkup() {
+  const used = propsInUse()
+  if (!used.length) return ''
+  return (
+    used
+      .map(s => {
+        const v = propFilters[s.key] || {}
+        const step = s.key === '密度' ? '0.01' : '1'
+        return (
+          `<label class="prop-filter"><span>${esc(s.label)}<small>${esc(s.unit)}</small></span>` +
+          `<input type="number" step="${step}" inputmode="decimal" data-prop="${esc(s.key)}" data-bound="min" placeholder="≥" aria-label="${esc(s.label)}下限" value="${v.min ?? ''}" />` +
+          `<i>–</i>` +
+          `<input type="number" step="${step}" inputmode="decimal" data-prop="${esc(s.key)}" data-bound="max" placeholder="≤" aria-label="${esc(s.label)}上限" value="${v.max ?? ''}" />` +
+          `</label>`
+        )
+      })
+      .join('') +
+    `<button class="btn prop-clear" id="propClear">清除数值筛选</button>` +
+    `<span class="prop-note">只有填了该项数值的材料会留下</span>`
+  )
+}
+
+/**
+ * 数值筛选的语义：**填了条件就等于要求这条材料必须有这个数**。
+ * 没填的材料会被排除——用户既然在问「HDT 大于 150 的有哪些」，
+ * 给他一堆没测过 HDT 的材料，等于把「没数据」伪装成「不符合」。
+ */
+function propMatch(m) {
+  const p = m.props || {}
+  for (const [key, r] of Object.entries(propFilters)) {
+    if (r.min == null && r.max == null) continue
+    const v = p[key]
+    if (v == null) return false
+    if (Array.isArray(v)) {
+      // 区间字段（加工温度）：与目标区间有交集即算命中
+      if (r.min != null && v[1] < r.min) return false
+      if (r.max != null && v[0] > r.max) return false
+    } else {
+      if (r.min != null && v < r.min) return false
+      if (r.max != null && v > r.max) return false
+    }
+  }
+  return true
+}
+
+function propsTable(m) {
+  const spec = DATA?.propsSpec || []
+  const rows = spec
+    .filter(s => (m.props || {})[s.key] != null)
+    .map(s => {
+      const v = m.props[s.key]
+      const text = Array.isArray(v) ? `${v[0]} ~ ${v[1]}` : `${v}`
+      return `<div class="prop-row"><dt>${esc(s.label)}</dt><dd>${esc(text)}<small>${esc(s.unit)}</small></dd></div>`
+    })
+  if (!rows.length) return ''
+  return (
+    `<section class="detail-section props-table"><h3>数值</h3><dl>${rows.join('')}</dl>` +
+    `<p class="props-note">本站只收录了部分材料的数值，留空的字段表示还没有填。</p></section>`
+  )
+}
+
 function items() {
   const q = $('#search').value.trim().toLowerCase()
   if (view === 'terms') {
@@ -583,6 +653,7 @@ function items() {
     m =>
       (category === '全部材料' || m.category === category) &&
       (!(onlyFavorites || view === 'favorites') || favorites.has(m.id)) &&
+      propMatch(m) &&
       Object.values(m.fields).join(' ').toLowerCase().includes(q)
   )
   indexHits(list, q, 'materials')
@@ -661,6 +732,15 @@ function render() {
   $('#latestNews').hidden = view !== 'materials'
   if (view === 'materials') import('./news-preview.js')
   $('#quickFilters').hidden = !isMaterial
+  // 数值筛选器只建一次：每次 render 都重写 innerHTML 会把正在输入的框弄丢焦点
+  const pf = $('#propFilters')
+  if (pf) {
+    pf.hidden = !isMaterial || !propsInUse().length
+    if (isMaterial && !pf.dataset.built) {
+      pf.innerHTML = propFiltersMarkup()
+      pf.dataset.built = '1'
+    }
+  }
   $('#favoriteToggle').hidden = !isMaterial || view === 'favorites'
   $('#compareOpen').hidden = !isMaterial
   $('#favoriteToggle').setAttribute('aria-pressed', onlyFavorites)
@@ -767,7 +847,7 @@ function detail(id, open = true) {
         )
       }
     }
-    if (g.id === 'overview') body += relatedMarkup(m, DATA.materials)
+    if (g.id === 'overview') body += propsTable(m) + relatedMarkup(m, DATA.materials)
     body += '</div>'
   }
   $('#detailContent').innerHTML = body
@@ -995,6 +1075,14 @@ document.addEventListener('click', e => {
     window.print()
     return
   }
+  if (el.id === 'propClear') {
+    for (const k of Object.keys(propFilters)) delete propFilters[k]
+    $('#propFilters')
+      .querySelectorAll('input[data-prop]')
+      .forEach(i => (i.value = ''))
+    render()
+    return
+  }
   if (el.id === 'reset') {
     if (view === 'favorites') {
       viewStates.delete('materials')
@@ -1005,6 +1093,11 @@ document.addEventListener('click', e => {
     termCategory = '全部知识'
     onlyFavorites = false
     $('#search').value = ''
+    // 「清除筛选」得把数值条件也清掉，否则用户以为清空了却还是只剩几条
+    for (const k of Object.keys(propFilters)) delete propFilters[k]
+    $('#propFilters')
+      .querySelectorAll('input[data-prop]')
+      .forEach(i => (i.value = ''))
     render()
     return
   }
@@ -1052,6 +1145,20 @@ $('#search').addEventListener('input', () => {
   clearTimeout(searchTimer)
   if (DATA && $('#search').value === '') render()
   else searchTimer = setTimeout(render, 180)
+})
+
+// 数值筛选：同样防抖（每敲一位就重排 130 条没必要），但不重建输入框——
+// render() 看到 dataset.built 就会跳过 innerHTML，输入焦点不会丢。
+$('#propFilters').addEventListener('input', e => {
+  const el = e.target
+  if (!el.dataset.prop) return
+  const key = el.dataset.prop
+  const v = el.value.trim()
+  propFilters[key] = propFilters[key] || {}
+  propFilters[key][el.dataset.bound] = v === '' ? null : Number(v)
+  if (!isFinite(propFilters[key][el.dataset.bound])) propFilters[key][el.dataset.bound] = null
+  clearTimeout(searchTimer)
+  searchTimer = setTimeout(render, 180)
 })
 
 let atlasRequest,

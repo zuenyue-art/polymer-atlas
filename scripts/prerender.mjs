@@ -60,6 +60,9 @@ const OUT = path.join(DIST, 'm')
 const CAT_OUT = path.join(DIST, 'c')
 const CHECK_ONLY = process.argv.includes('--check')
 
+/** 数值字段定义，从 data.json 的 propsSpec 读（main 里赋值）。 */
+let PROPS_SPEC = []
+
 const SOURCE_KEY = '参考来源与核验范围'
 
 // 这两项是页头的身份信息（大号缩写 + 标题），跟 app.js 一样不进任何分组。
@@ -131,6 +134,32 @@ function splitSource(value) {
 }
 
 // ---------- 正文 ----------
+
+/**
+ * 数值表。材料没填数值时整块不渲染——一个只有标题的空表和没有它没区别。
+ * 字段清单从 data.json 的 propsSpec 读，和填写表格、筛选器共用同一份定义。
+ */
+function renderProps(m) {
+  const spec = PROPS_SPEC
+  const rows = spec
+    .filter(s => (m.props || {})[s.key] != null)
+    .map(s => {
+      const v = m.props[s.key]
+      const text = Array.isArray(v) ? `${v[0]} ~ ${v[1]}` : `${v}`
+      return `<div class="prop-row"><dt>${esc(s.label)}</dt><dd>${esc(text)}<small>${esc(s.unit)}</small></dd></div>`
+    })
+  // 返回空串时连换行也不留：模板里 `${renderProps(m)}${renderGroups(m)}` 是紧挨着的，
+  // 否则 130 个没有数值的页面会各自多出一个空行，变成一次毫无意义的全站 diff。
+  if (!rows.length) return ''
+  return `        <section class="props-table mp-props">
+          <h2>数值</h2>
+          <dl>
+            ${rows.join('\n            ')}
+          </dl>
+          <p class="props-note">本站只收录了部分材料的数值，未列出的字段表示还没有填。</p>
+        </section>
+`
+}
 
 function renderGroups(m) {
   const f = m.fields
@@ -265,7 +294,7 @@ function renderPage(m, materials) {
           </div>
           <p class="mp-meta"><span class="badge">${esc(m.category)}</span>材料图鉴 · 共 ${materials.length} 条记录</p>
         </header>
-${renderGroups(m)}
+${renderProps(m)}${renderGroups(m)}
 ${renderSiblings(m, materials)}
         <footer class="mp-foot">
           <p>${esc(SITE_TAGLINE)}资料核验范围见「资料来源」，性能与工艺需按具体牌号确认。</p>
@@ -499,6 +528,7 @@ async function main() {
   const data = JSON.parse(await readFile(path.join(DIST, 'data.json'), 'utf8'))
   const materials = data.materials ?? []
   if (!materials.length) throw Error('data.json 里没有 materials，先确认数据文件')
+  PROPS_SPEC = data.propsSpec ?? []
 
   checkFieldCoverage(materials)
 
