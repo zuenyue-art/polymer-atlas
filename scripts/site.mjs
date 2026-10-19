@@ -29,3 +29,39 @@ export const materialUrl = id => `${SITE_ORIGIN}${materialPath(id)}`
 
 /** 首页地址。 */
 export const homeUrl = () => `${SITE_ORIGIN}${BASE_PATH}`
+
+/**
+ * 分类页的地址片段。
+ *
+ * 分类名是中文的，直接进 URL 编码出来是一串 %E6%A9%A1…：既读不出来也没法口述
+ * 分享，而且 Workers 匹配静态资源时对百分号路径的解码行为不好赌。所以每个分类
+ * 显式登记一个英文片段。data.json 里出现没登记的分类时构建直接失败——宁可逼着
+ * 补一行，也不要悄悄生成一个难看又难记的地址。
+ */
+const CATEGORY_SLUGS = {
+  通用塑料: 'commodity-plastics',
+  工程塑料: 'engineering-plastics',
+  特种工程塑料: 'high-performance-plastics',
+  橡胶弹性体: 'elastomers',
+  合成纤维高分子: 'synthetic-fibers',
+  热固性树脂: 'thermosets',
+  功能高分子: 'functional-polymers',
+  天然高分子: 'natural-polymers',
+  生物可降解高分子: 'biodegradable-polymers'
+}
+
+/** 分类名 → 地址片段。未登记的分类抛错，由构建拦下。 */
+export const categorySlug = name => {
+  const slug = CATEGORY_SLUGS[name]
+  if (!slug)
+    throw Error(
+      `分类「${name}」没有登记地址片段。请在 scripts/site.mjs 的 CATEGORY_SLUGS 里补上，再重跑构建。`
+    )
+  return slug
+}
+
+/** 分类页在站内的路径，例如 /c/elastomers/ —— 末尾斜杠同材料页，见 sitemap 注释。 */
+export const categoryPath = name => `${BASE_PATH}c/${categorySlug(name)}/`
+
+/** 分类页的完整地址，用作 canonical 与 og:url。 */
+export const categoryUrl = name => `${SITE_ORIGIN}${categoryPath(name)}`

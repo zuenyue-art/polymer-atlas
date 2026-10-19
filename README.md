@@ -15,14 +15,16 @@ npm run serve    # 本地预览 http://localhost:8080
 
 ## 材料的独立页面（预渲染）
 
-每条材料都有一份真实存在的静态页：`dist/m/<id>/index.html`，线上地址形如 `/m/m-0-0/`。
+每条材料都有一份真实存在的静态页：`dist/m/<id>/index.html`，线上地址形如 `/m/m-0-0/`；每个材料分类另有一份分类页：`dist/c/<slug>/index.html`，线上地址形如 `/c/elastomers/`。
 
 为什么要单独做这一层：图鉴是纯前端渲染的，材料正文只存在于 `data.json` 里，搜索引擎只看得到一个根地址。预渲染之后，每条材料有自己的地址、标题、描述、canonical 和分享卡片，被 `sitemap.xml` 收录，并通过「同分类的其他材料」互相链接，成为一张可爬取的图。页面不加载 `app.js`——它的定位是内容页，读取快、关掉 JS 也读得完；搜索、对比、收藏留在图鉴里，页面上给了回链（`/#materials/<id>`，图鉴会自动展开那条材料）。
+
+分类页补的是这张链接图里缺的一层枢纽：材料页只会横向连到同类的十几条，9 个分类页各自列出本类全部材料并互链到其他分类，既让「橡胶弹性体这一类」能被单独分享，也给爬虫一条从首页直达任意材料的中间路。分类的地址片段登记在 `scripts/site.mjs` 的 `CATEGORY_SLUGS`——data.json 里出现没登记的新分类时，构建会直接失败并提示补上，而不是生成一串百分号编码的地址。
 
 - 生成器：`scripts/prerender.mjs`（字段分组与 `app.js` 的 `detailGroups` 对齐，脚本会检查 data.json 的每个字段都被收录，漏了直接报错）
 - 版式：`dist/material.css`，只补这一页独有的骨架，颜色与组件复用 `style.css` / `layout.css`
 - 站点地址可用环境变量 `SITE_ORIGIN` 覆盖（绑定自定义域名后不用改代码）
-- `wrangler.jsonc` 里显式声明了 `html_handling: auto-trailing-slash`，`/m/<id>/` 由这个策略解析到 `index.html`
+- `wrangler.jsonc` 里显式声明了 `html_handling: auto-trailing-slash`，`/m/<id>/` 与 `/c/<slug>/` 由这个策略解析到各自的 `index.html`
 
 ## 可下载的 Excel
 
@@ -45,8 +47,8 @@ npm run check    # 提交前跑一次，四步全过才算干净
 ```
 
 - `npm run check:derived` —— 两步。先看新闻归档：用 `news.json` 重建索引与月度文件，与仓库现有内容不一致即失败，专治「只改了 `news.json`，忘了同步派生文件」。再看可下载的 Excel：`dist/materials.xlsx` 由 `scripts/build-xlsx.py` 从 JSON 生成，`check-xlsx.py` 读回来逐格比对，专治「改了数据忘了重新生成，读者下载到过期内容」。
-- `npm run check:prerender` —— 逐字节比对 130 份材料页与 `data.json` 当前内容。专治「改了数据，忘了重跑预渲染」——漏一页就是 sitemap 少收录一条内容，而且不会有任何报错。
-- `npm run check:seo` —— 校验首页与 `news.html` 的分享卡片信息，并要求每条材料都有预渲染页，然后与 `robots.txt` / `sitemap.xml` 对账。
+- `npm run check:prerender` —— 逐字节比对 130 份材料页与 9 个分类页跟 `data.json` 当前内容。专治「改了数据，忘了重跑预渲染」——漏一页就是 sitemap 少收录一条内容，而且不会有任何报错。
+- `npm run check:seo` —— 校验首页与 `news.html` 的分享卡片信息，并要求每个分类、每条材料都有预渲染页，然后与 `robots.txt` / `sitemap.xml` 对账。
 - `npm run audit` —— 校验 id / url 去重、必填字段、日期合法性、月度分档并集、索引覆盖等。数据错误时命令返回非 0；工程习惯类问题只告警，不拦截提交。
 
 另有 `npm run check:links` 单独查链接：dist 下全部 HTML（含材料页）的站内引用必须存在，数据文件里的外链逐一探测可达性。401/403/429 这类「站点在但拒绝脚本」不计为失效，连不上默认只告警。

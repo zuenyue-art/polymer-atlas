@@ -10,9 +10,10 @@
  * 站点地址与材料页路径都取自 scripts/site.mjs（可用环境变量 SITE_ORIGIN 覆盖），
  * 绑定自定义域名后不用改这里的代码。
  *
- * sitemap 收录哪两类页面：
+ * sitemap 收录哪三类页面：
  *   /                     首页
- *   /m/<id>/              每条材料一页，由 scripts/prerender.mjs 生成
+ *   /c/<slug>/            每个分类一页，由 scripts/prerender.mjs 生成
+ *   /m/<id>/              每个材料一页，由 scripts/prerender.mjs 生成
  *
  * 不收的页面：
  *   news.html   跳转存根（news.js 里 location.replace 到 index.html#news）。
@@ -28,7 +29,7 @@ import { access, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { SITE_ORIGIN, materialPath, materialUrl } from './site.mjs'
+import { SITE_ORIGIN, categoryPath, categoryUrl, materialPath, materialUrl } from './site.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const DIST = path.join(ROOT, 'dist')
@@ -97,6 +98,27 @@ const pages = [
   { loc: `${SITE_ORIGIN}/`, priority: '1.0', changefreq: 'weekly', lastmod: homeLastmod }
 ]
 
+// 分类页先于材料页入表：它是从首页到材料的中间层，权重也略高一点。
+// categoryPath 对未登记的分类会抛错，这里不额外兜——让它在构建期就炸出来。
+const categories = [...new Set(materials.map(m => m.category))]
+const missingCategoryPages = []
+for (const name of categories) {
+  const rel = categoryPath(name).replace(/^\//, '') + 'index.html'
+  if (!(await exists(rel))) missingCategoryPages.push(name)
+  pages.push({
+    loc: categoryUrl(name),
+    priority: '0.7',
+    changefreq: 'monthly',
+    lastmod: homeLastmod
+  })
+}
+if (missingCategoryPages.length) {
+  problems.push(
+    `${missingCategoryPages.length} 个分类没有预渲染页（例如 ${missingCategoryPages.slice(0, 3).join('、')}），` +
+      '先跑 node scripts/prerender.mjs'
+  )
+}
+
 const missingPages = []
 for (const m of materials) {
   if (!m?.id) continue
@@ -125,7 +147,9 @@ if (problems.length) {
 }
 
 if (CHECK_ONLY) {
-  console.log(`站点元信息校验通过（首页元信息齐全，${materials.length} 条材料页均已预渲染）。`)
+  console.log(
+    `站点元信息校验通过（首页元信息齐全，${categories.length} 个分类页与 ${materials.length} 条材料页均已预渲染）。`
+  )
   process.exit(0)
 }
 
@@ -158,6 +182,6 @@ await writeFile(path.join(DIST, 'robots.txt'), robots, 'utf8')
 await writeFile(path.join(DIST, 'sitemap.xml'), sitemap, 'utf8')
 
 console.log(
-  `已生成 robots.txt（1 条 Sitemap 声明）与 sitemap.xml（${pages.length} 个页面：首页 + ${materials.length} 条材料）。`
+  `已生成 robots.txt（1 条 Sitemap 声明）与 sitemap.xml（${pages.length} 个页面：首页 + ${categories.length} 个分类 + ${materials.length} 条材料）。`
 )
 console.log(`站点地址：${SITE_ORIGIN}`)

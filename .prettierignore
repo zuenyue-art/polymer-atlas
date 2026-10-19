@@ -3,3 +3,4 @@
 # 而按 prettier 的要求重排又会让「重建后内容一致」这条断言变得没有意义。
 # 生成器本身（scripts/prerender.mjs）照常参与格式化。
 dist/m/
+dist/c/

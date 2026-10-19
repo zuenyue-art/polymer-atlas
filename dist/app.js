@@ -312,10 +312,101 @@ function onDetailClosed() {
   detailHashId = ''
   if (shouldRewind) history.back()
 }
+// ---- 搜索命中溯源 ----
+// 搜索拿整条记录的所有字段做全文匹配，但卡片只呈现其中几个。实测 18 个常用
+// 关键词下 62% 的命中落在卡片看不见的字段上：搜「注塑」出来 38 条，37 条卡片上
+// 找不到这两个字——它藏在「加工与干燥要点」里，结果页看着像搜错了。
+// 所以命中只存在于隐藏字段时补一行，标明落在哪个字段并高亮命中词。本来就看
+// 得到的（名称、缩写、特点…）不补，否则每张卡都挂一行废话。
+const VISIBLE_FIELDS = {
+  materials: ['材料名称', '英文缩写', '形态与结晶性', '突出特点', '主要弱点', '回收路线与分离难点'],
+  terms: ['术语/阅读规则', '解释', '分类'],
+  literature: ['材料', '题名/资料', '年份或公开日', '技术路线/可学习内容']
+}
+
+// 本轮渲染里「命中落在隐藏字段」的记录。卡片渲染时各自查一次，按视图整体重建，
+// 不往 DATA 上挂东西——DATA 是数据，渲染态是渲染态。
+let hitMap = new Map()
+
+/** 截命中词前后各一段。不追求完整句子，够指出位置在哪就行。 */
+function hitSnippet(text, at, len) {
+  const start = Math.max(0, at - 20)
+  const end = Math.min(text.length, at + len + 44)
+  return `${start > 0 ? '…' : ''}${text.slice(start, end)}${end < text.length ? '…' : ''}`
+}
+
+/** 把命中词包成 <mark>。用 indexOf 逐段切，不走正则——关键词里带 . * ( ) 也不会出事。 */
+function markQuery(text, q) {
+  const lower = text.toLowerCase(),
+    out = []
+  let i = 0
+  for (;;) {
+    const at = lower.indexOf(q, i)
+    if (at < 0) {
+      out.push(esc(text.slice(i)))
+      return out.join('')
+    }
+    out.push(esc(text.slice(i, at)), `<mark>${esc(text.slice(at, at + q.length))}</mark>`)
+    i = at + q.length
+  }
+}
+
+/**
+ * 找出这条记录「看不见的那处命中」。可见字段里已经有的一律返回 null——用户
+ * 自己看得到，再补一行就是噪音。隐藏字段按数据里的原始顺序取第一个命中。
+ */
+function hiddenHit(record, q, visible) {
+  if (!q) return null
+  const fields = record.fields ?? record
+  for (const key of visible)
+    if (
+      String(fields[key] ?? '')
+        .toLowerCase()
+        .includes(q)
+    )
+      return null
+  for (const [key, value] of Object.entries(fields)) {
+    if (visible.includes(key)) continue
+    const at = String(value ?? '')
+      .toLowerCase()
+      .indexOf(q)
+    if (at >= 0) return { field: key, snippet: hitSnippet(String(value), at, q.length), q }
+  }
+  return null
+}
+
+function indexHits(list, q, kind) {
+  hitMap = new Map()
+  if (!q) return
+  const visible = VISIBLE_FIELDS[kind]
+  // 术语与文献的卡片下标用的是它们在 DATA 里的位置（termCard / literatureCard
+  // 就是这样算的），而 list 是过滤后的——两个下标不是一回事，所以回原数组里查。
+  for (const x of list) {
+    const hit = hiddenHit(x, q, visible)
+    if (!hit) continue
+    hitMap.set(
+      kind === 'materials'
+        ? x.id
+        : kind === 'terms'
+          ? DATA.terms.indexOf(x)
+          : DATA.literature.indexOf(x),
+      hit
+    )
+  }
+}
+
+/** 命中溯源行。没有隐藏命中时返回空串，卡片结构不变。 */
+function hitRow(key) {
+  const hit = hitMap.get(key)
+  return hit
+    ? `<div class="card-hit"><span>${esc(hit.field)}</span><p>${markQuery(hit.snippet, hit.q)}</p></div>`
+    : ''
+}
+
 function items() {
   const q = $('#search').value.trim().toLowerCase()
-  if (view === 'terms')
-    return DATA.terms.filter(
+  if (view === 'terms') {
+    const list = DATA.terms.filter(
       x =>
         (termCategory === '全部知识' || x['分类'] === termCategory) &&
         [x['术语/阅读规则'], x['解释'], x['用途或易错点'], x['分类']]
@@ -323,28 +414,34 @@ function items() {
           .toLowerCase()
           .includes(q)
     )
-  if (view === 'literature')
-    return DATA.literature.filter(x => Object.values(x).join(' ').toLowerCase().includes(q))
-  return DATA.materials
-    .filter(
-      m =>
-        (category === '全部材料' || m.category === category) &&
-        (!(onlyFavorites || view === 'favorites') || favorites.has(m.id)) &&
-        Object.values(m.fields).join(' ').toLowerCase().includes(q)
-    )
-    .sort((a, b) => {
-      const score = m =>
-        q &&
-        m.fields['英文缩写']
-          .toLowerCase()
-          .split(/[\s/、]+/)
-          .includes(q)
-          ? 2
-          : q && m.fields['材料名称'].toLowerCase().includes(q)
-            ? 1
-            : 0
-      return score(b) - score(a)
-    })
+    indexHits(list, q, 'terms')
+    return list
+  }
+  if (view === 'literature') {
+    const list = DATA.literature.filter(x => Object.values(x).join(' ').toLowerCase().includes(q))
+    indexHits(list, q, 'literature')
+    return list
+  }
+  const list = DATA.materials.filter(
+    m =>
+      (category === '全部材料' || m.category === category) &&
+      (!(onlyFavorites || view === 'favorites') || favorites.has(m.id)) &&
+      Object.values(m.fields).join(' ').toLowerCase().includes(q)
+  )
+  indexHits(list, q, 'materials')
+  return list.sort((a, b) => {
+    const score = m =>
+      q &&
+      m.fields['英文缩写']
+        .toLowerCase()
+        .split(/[\s/、]+/)
+        .includes(q)
+        ? 2
+        : q && m.fields['材料名称'].toLowerCase().includes(q)
+          ? 1
+          : 0
+    return score(b) - score(a)
+  })
 }
 function render() {
   updateFavoriteCount()
@@ -427,15 +524,15 @@ function render() {
 function card(m) {
   const f = m.fields,
     abbr = f['英文缩写']
-  return `<article class="card material-card" tabindex="0" role="button" data-detail="${m.id}" aria-label="查看${esc(f['材料名称'])}详情"><div class="card-top"><span class="badge">${esc(m.category)}</span><button class="icon-btn ${favorites.has(m.id) ? 'saved' : ''}" data-star="${m.id}" aria-pressed="${favorites.has(m.id)}" aria-label="${favorites.has(m.id) ? '取消收藏' : '收藏'}${esc(f['材料名称'])}">${favorites.has(m.id) ? '★' : '☆'}</button></div><div class="abbr ${abbr.length > 12 ? 'long' : ''}">${esc(abbr)}</div><h3>${esc(f['材料名称'])}</h3><span class="card-form">${esc(f['形态与结晶性'])}</span><div class="card-facts"><div class="card-fact"><span>特点</span><p>${esc(f['突出特点'])}</p></div><div class="card-fact limitation"><span>局限</span><p>${esc(f['主要弱点'])}</p></div><div class="card-fact recycle"><span>回收</span><p>${esc(f['回收路线与分离难点'])}</p></div></div><div class="card-bottom"><label class="check"><input type="checkbox" data-compare="${m.id}" ${selected.includes(m.id) ? 'checked' : ''}>加入对比</label><span>查看资料 <span class="arrow">↗</span></span></div></article>`
+  return `<article class="card material-card" tabindex="0" role="button" data-detail="${m.id}" aria-label="查看${esc(f['材料名称'])}详情"><div class="card-top"><span class="badge">${esc(m.category)}</span><button class="icon-btn ${favorites.has(m.id) ? 'saved' : ''}" data-star="${m.id}" aria-pressed="${favorites.has(m.id)}" aria-label="${favorites.has(m.id) ? '取消收藏' : '收藏'}${esc(f['材料名称'])}">${favorites.has(m.id) ? '★' : '☆'}</button></div><div class="abbr ${abbr.length > 12 ? 'long' : ''}">${esc(abbr)}</div><h3>${esc(f['材料名称'])}</h3><span class="card-form">${esc(f['形态与结晶性'])}</span><div class="card-facts"><div class="card-fact"><span>特点</span><p>${esc(f['突出特点'])}</p></div><div class="card-fact limitation"><span>局限</span><p>${esc(f['主要弱点'])}</p></div><div class="card-fact recycle"><span>回收</span><p>${esc(f['回收路线与分离难点'])}</p></div></div>${hitRow(m.id)}<div class="card-bottom"><label class="check"><input type="checkbox" data-compare="${m.id}" ${selected.includes(m.id) ? 'checked' : ''}>加入对比</label><span>查看资料 <span class="arrow">↗</span></span></div></article>`
 }
 function termCard(x) {
   const index = DATA.terms.indexOf(x)
-  return `<article class="card term-card" tabindex="0" role="button" data-term="${index}"><span class="badge">${esc(x['分类'] || '基础知识')}</span><h3>${esc(x['术语/阅读规则'])}</h3><p>${esc(x['解释'])}</p><div class="card-bottom">阅读完整解释 <span class="arrow">↗</span></div></article>`
+  return `<article class="card term-card" tabindex="0" role="button" data-term="${index}"><span class="badge">${esc(x['分类'] || '基础知识')}</span><h3>${esc(x['术语/阅读规则'])}</h3><p>${esc(x['解释'])}</p>${hitRow(index)}<div class="card-bottom">阅读完整解释 <span class="arrow">↗</span></div></article>`
 }
 function literatureCard(x) {
   const index = DATA.literature.indexOf(x)
-  return `<article class="card literature-card" tabindex="0" role="button" data-literature="${index}"><div class="card-top"><span class="badge">${esc(x['材料'])}</span><span style="font-size:10px;color:var(--muted)">${esc(x['年份或公开日'])}</span></div><h3>${esc(x['题名/资料'])}</h3><p>${esc(x['技术路线/可学习内容'])}</p><div class="card-bottom"><button class="btn" data-lit-save="${index}" aria-pressed="${readSaved(LIT_FAVORITES).has(litKey(x))}">${readSaved(LIT_FAVORITES).has(litKey(x)) ? '★ 已收藏' : '☆ 收藏'}</button><span>技术路线与来源 ↗</span></div></article>`
+  return `<article class="card literature-card" tabindex="0" role="button" data-literature="${index}"><div class="card-top"><span class="badge">${esc(x['材料'])}</span><span style="font-size:10px;color:var(--muted)">${esc(x['年份或公开日'])}</span></div><h3>${esc(x['题名/资料'])}</h3><p>${esc(x['技术路线/可学习内容'])}</p>${hitRow(index)}<div class="card-bottom"><button class="btn" data-lit-save="${index}" aria-pressed="${readSaved(LIT_FAVORITES).has(litKey(x))}">${readSaved(LIT_FAVORITES).has(litKey(x)) ? '★ 已收藏' : '☆ 收藏'}</button><span>技术路线与来源 ↗</span></div></article>`
 }
 function renderTermTools() {
   let tools = $('#termTools')
