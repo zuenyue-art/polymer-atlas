@@ -217,6 +217,28 @@ main {
   font-size: 11px;
   color: var(--green);
 }
+/* 收藏的导出/导入。这一行跟「全部/材料/动态/文献」那排分类按钮是两件事：
+   那排是筛选，这排是搬数据，所以放在它下面、单独成行，并把「收藏存在当前
+   浏览器」这句前提写在旁边——不然用户点导出之前不知道自己在防什么。 */
+.favorite-backup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: -4px 0 18px;
+}
+.favorite-backup p {
+  margin: 0;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+/* 筛选那一排按钮是白底的，导出跟它长一样会被当成第四个筛选标签。
+   给「导出」一点底色，让这一看就知道是操作而不是筛选。 */
+.favorite-backup .btn[data-favorite-export] {
+  background: #eef4e9;
+  border-color: #cfdfc2;
+  color: #35543e;
+}
 .results-heading {
   margin: 27px 0 15px;
 }

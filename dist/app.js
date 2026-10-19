@@ -74,6 +74,7 @@ function renderUnifiedFavorites() {
   }
   tools.hidden = view !== 'favorites'
   if (view !== 'favorites') return
+  ensureBackupTools()
   const counts = {
     材料: DATA.materials.filter(x => favorites.has(x.id)).length,
     动态: ns.size,
@@ -153,6 +154,162 @@ function saveFavorite(id) {
   render()
   if ($('#detailDialog').open) detail(id, false)
 }
+// ---- 收藏的导出与导入 ----
+// 收藏只写在 localStorage 里：换浏览器、换设备、清一次站点数据就全没了，而且
+// 事前事后都没有任何提示。这里给一个纯文本的出口——导出的就是一份 JSON，
+// 不依赖本站也能留着，换台机器再导回来。
+const BACKUP_KIND = 'polymer-atlas-favorites'
+
+function backupPayload() {
+  return {
+    kind: BACKUP_KIND,
+    exported_at: new Date().toISOString().slice(0, 10),
+    materials: [...favorites],
+    news: [...readSaved(NEWS_FAVORITES)],
+    literature: [...readSaved(LIT_FAVORITES)]
+  }
+}
+
+function exportFavorites() {
+  const payload = backupPayload()
+  const total = payload.materials.length + payload.news.length + payload.literature.length
+  if (!total) {
+    toast('还没有任何收藏，先收藏几条再导出')
+    return
+  }
+  const url = URL.createObjectURL(
+    new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
+  )
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `polymer-atlas-收藏-${payload.exported_at}.json`
+  a.click()
+  URL.revokeObjectURL(url)
+  toast(`已导出 ${total} 项收藏`)
+}
+
+/** 只加不删。合并语义，不覆盖——导入不该有能力清掉现有的收藏。 */
+function addSaved(key, id) {
+  const set = readSaved(key)
+  if (set.has(id)) return false
+  set.add(id)
+  try {
+    localStorage.setItem(key, JSON.stringify([...set]))
+  } catch {
+    toast('浏览器未允许保存收藏')
+  }
+  return true
+}
+
+async function importFavorites(file) {
+  let payload
+  try {
+    payload = JSON.parse(await file.text())
+  } catch {
+    toast('这个文件读不出来，可能不是 JSON')
+    return
+  }
+  if (!payload || typeof payload !== 'object') {
+    toast('这不像是图鉴导出的收藏文件')
+    return
+  }
+  const strings = key =>
+    Array.isArray(payload[key]) ? payload[key].filter(x => typeof x === 'string') : []
+  const incoming = {
+    材料: strings('materials'),
+    动态: strings('news'),
+    文献: strings('literature')
+  }
+  const total = incoming.材料.length + incoming.动态.length + incoming.文献.length
+  if (!total) {
+    toast('文件里没有可导入的收藏')
+    return
+  }
+
+  // 数据是唯一事实来源：文件可能来自旧版本，里面的 id 本站早就不存在了。
+  // 导入前逐条对照，认不出来的直接丢掉并如实报出来，不写进收藏。
+  await ensureAtlas().catch(() => {})
+  if (!favoriteNews.length)
+    await getNewsItems({ all: true })
+      .then(items => {
+        favoriteNews = items
+        favoriteNewsState = 'ready'
+      })
+      .catch(() => {})
+  const knownMaterials = new Set((DATA?.materials ?? []).map(m => m.id))
+  const knownLit = new Set((DATA?.literature ?? []).map(litKey))
+  const knownNews = new Set(favoriteNews.map(x => x.id))
+
+  const added = { 材料: 0, 动态: 0, 文献: 0 }
+  let existed = 0
+  const dropped = { 材料: 0, 动态: 0, 文献: 0 }
+
+  for (const id of incoming.材料) {
+    if (knownMaterials.size && !knownMaterials.has(id)) dropped.材料++
+    else if (favorites.has(id)) existed++
+    else {
+      favorites.add(id)
+      added.材料++
+    }
+  }
+  try {
+    if (added.材料) localStorage.setItem('polymer-atlas-favorites', JSON.stringify([...favorites]))
+  } catch {
+    toast('浏览器未允许保存收藏')
+  }
+  for (const id of incoming.动态) {
+    if (knownNews.size && !knownNews.has(id)) dropped.动态++
+    else if (!addSaved(NEWS_FAVORITES, id)) existed++
+    else added.动态++
+  }
+  for (const id of incoming.文献) {
+    if (knownLit.size && !knownLit.has(id)) dropped.文献++
+    else if (!addSaved(LIT_FAVORITES, id)) existed++
+    else added.文献++
+  }
+
+  const gain = added.材料 + added.动态 + added.文献
+  const lost = dropped.材料 + dropped.动态 + dropped.文献
+  updateFavoriteCount()
+  render()
+  toast(
+    gain
+      ? `导入 ${gain} 项收藏${existed ? `，${existed} 项本来就在收藏里` : ''}${
+          lost ? `，${lost} 项本站已没有、已跳过` : ''
+        }`
+      : existed
+        ? '文件里的收藏都已经在收藏里了'
+        : `文件里的 ${lost} 项记录本站已没有，没有可导入的内容`
+  )
+}
+
+/** 导出/导入的入口。只建一次，之后每次渲染只切换显隐，避免事件监听反复重建。 */
+function ensureBackupTools() {
+  let box = $('#favoriteBackup')
+  if (!box) {
+    box = document.createElement('div')
+    box.id = 'favoriteBackup'
+    box.className = 'favorite-backup'
+    box.innerHTML =
+      '<button class="btn" data-favorite-export>导出收藏</button>' +
+      '<button class="btn" data-favorite-import>导入收藏</button>' +
+      '<input type="file" accept="application/json,.json" hidden />' +
+      '<p>收藏保存在当前浏览器：换设备或清理浏览器数据之前，导出一份带走。</p>'
+    $('.results-heading').before(box)
+    const file = box.querySelector('input[type=file]')
+    box.querySelector('[data-favorite-export]').addEventListener('click', exportFavorites)
+    box.querySelector('[data-favorite-import]').addEventListener('click', () => file.click())
+    file.addEventListener('change', () => {
+      const picked = file.files[0]
+      // 清掉值，否则同一个文件连着选两次不会触发 change
+      file.value = ''
+      if (picked) importFavorites(picked)
+    })
+  }
+  box.hidden = false
+  return box
+}
+
 function compare(id) {
   if (selected.includes(id)) selected = selected.filter(x => x !== id)
   else if (selected.length < 3) selected.push(id)
@@ -447,6 +604,7 @@ function render() {
   updateFavoriteCount()
   $('#content').classList.toggle('unified-favorites', view === 'favorites')
   if ($('#favoriteTools')) $('#favoriteTools').hidden = view !== 'favorites'
+  if ($('#favoriteBackup')) $('#favoriteBackup').hidden = view !== 'favorites'
   const news = view === 'news'
   $('#atlasPanel').hidden = news
   $('#newsPanel').hidden = !news
