@@ -749,7 +749,9 @@ function render() {
   $('#resultsTitle').textContent = view === 'materials' ? category : names()[view]
   $('#resultCount').textContent =
     `${list.length} ${isMaterial ? '条记录' : view === 'terms' ? '个词条' : '项资料'}`
-  $('#resultsHint').textContent = isMaterial ? '点击卡片，查看完整资料' : '点击卡片，阅读说明'
+  $('#resultsHint').textContent = isMaterial
+    ? '点击卡片，查看完整资料 · 方向键逐张浏览'
+    : '点击卡片，阅读说明'
   $('#content').innerHTML = list.length
     ? list
         .map(x => (isMaterial ? card(x) : view === 'terms' ? termCard(x) : literatureCard(x)))
@@ -1109,12 +1111,74 @@ document.addEventListener('click', e => {
       otherDetail('literature', Number(article.dataset.literature))
   }
 })
+/**
+ * 把同一网格里的卡片按行分组。
+ * 卡片是 grid 布局，一行几个由视口宽度决定，所以不能按「索引 ±1」算上下——
+ * 那样按 ↓ 会往右边跳一格。这里以 offsetTop 分行、offsetLeft 排序，运行时才知道
+ * 每行有几个，窗口缩放后自然跟着变。
+ */
+function cardRows() {
+  const rows = []
+  for (const c of document.querySelectorAll('#content article.card')) {
+    if (c.offsetParent === null) continue
+    const row = rows.find(r => Math.abs(r.top - c.offsetTop) <= 4)
+    if (row) row.items.push(c)
+    else rows.push({ top: c.offsetTop, items: [c] })
+  }
+  rows.sort((a, b) => a.top - b.top)
+  for (const r of rows) r.items.sort((a, b) => a.offsetLeft - b.offsetLeft)
+  return rows
+}
+
+/** 在卡片之间移动焦点。返回 true 表示确实移动了，调用方据此决定要不要拦掉默认行为。 */
+function moveCardFocus(key) {
+  const rows = cardRows()
+  let row = null
+  let col = -1
+  for (const r of rows) {
+    const i = r.items.indexOf(document.activeElement)
+    if (i >= 0) {
+      row = r
+      col = i
+      break
+    }
+  }
+  if (!row) return false
+  let target = null
+  if (key === 'ArrowRight' && col + 1 < row.items.length) target = row.items[col + 1]
+  else if (key === 'ArrowLeft' && col > 0) target = row.items[col - 1]
+  else if (key === 'ArrowDown' || key === 'ArrowUp') {
+    const next = rows[rows.indexOf(row) + (key === 'ArrowDown' ? 1 : -1)]
+    if (next) {
+      // 上下移动时挑横向最接近的那张，不是直接取同列——最后一列常常不满
+      const cx = document.activeElement.offsetLeft + document.activeElement.offsetWidth / 2
+      target = next.items.reduce((best, c) =>
+        Math.abs(c.offsetLeft + c.offsetWidth / 2 - cx) <
+        Math.abs(best.offsetLeft + best.offsetWidth / 2 - cx)
+          ? c
+          : best
+      )
+    }
+  }
+  if (!target) return false
+  target.focus({ preventScroll: true })
+  target.scrollIntoView({ block: 'nearest' })
+  return true
+}
+
 document.addEventListener('keydown', e => {
-  if (
-    e.key === '/' &&
-    !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName) &&
-    !$('dialog[open]')
-  ) {
+  const field = document.activeElement
+  // Esc：搜索框里有内容就先清空（并立即重绘），已经空了再交出焦点。
+  // 默认行为在 input type=search 上各浏览器不一致，这条由我们自己接管。
+  if (e.key === 'Escape' && field.matches('input[type="search"]') && !$('dialog[open]')) {
+    e.preventDefault()
+    if (field.value) {
+      field.value = ''
+      field.dispatchEvent(new Event('input', { bubbles: true }))
+    } else field.blur()
+    return
+  }
+  if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(field.tagName) && !$('dialog[open]')) {
     e.preventDefault()
     $(view === 'news' ? '#newsSearch' : '#search').focus()
   }
@@ -1122,6 +1186,12 @@ document.addEventListener('keydown', e => {
     e.preventDefault()
     e.target.click()
   }
+  if (
+    e.target.matches('#content article.card') &&
+    ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key) &&
+    moveCardFocus(e.key)
+  )
+    e.preventDefault()
 })
 document.querySelectorAll('dialog').forEach(d =>
   d.addEventListener('click', e => {
