@@ -1,6 +1,24 @@
 {
   "items": [
     {
+      "id": "20261014-pet-crystallinity-methanolysis",
+      "published_at": "2026-10-14",
+      "added_at": "2026-10-19",
+      "materials": [
+        "PET",
+        "DMT"
+      ],
+      "kind": "回收与纯化",
+      "title": "PET结晶度工程实现65℃甲醇解，冷却分离获高纯DMT",
+      "summary": "研究先以DMSO溶解PET并低温淬冷制得低结晶无定形料，再于65℃甲醇解；2小时实现完全转化，冷却结晶获得约82%分离收率、纯度>99%的DMT。真实纺织及混合塑料废料也得到验证，甲醇和催化剂可循环5次。该路线通过调控链段堆积改善低温反应与结晶分离，值得关注预处理溶剂回收和放大能耗。",
+      "source_name": "Polymer Degradation and Stability（Elsevier）",
+      "source_title": "Sustainable low-energy methanolysis of waste PET to dimethyl terephthalate through crystallinity engineering",
+      "url": "https://doi.org/10.1016/j.polymdegradstab.2026.112545",
+      "focus": "材料技术",
+      "date_basis": "原文在线发布日期（2026-10-14）",
+      "region": "韩国"
+    },
+    {
       "id": "20261001-avantium-parana",
       "published_at": "2026-10-01",
       "added_at": "2026-10-15",

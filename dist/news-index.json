@@ -1,9 +1,10 @@
 {
   "version": 1,
-  "updated_at": "2026-10-15",
-  "checked_at": "2026-10-16",
-  "total": 15,
+  "updated_at": "2026-10-19",
+  "checked_at": "2026-10-19",
+  "total": 16,
   "materials": [
+    "DMT",
     "FDCA",
     "PA",
     "PBT",
@@ -47,7 +48,7 @@
   "months": [
     {
       "month": "2026-10",
-      "count": 4,
+      "count": 5,
       "url": "news/2026-10.json"
     },
     {
