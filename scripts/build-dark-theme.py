@@ -76,11 +76,17 @@ HEADER = """/*
  *
  *     python scripts/build-dark-theme.py
  *
+ * 生效条件是 <html data-theme="dark">，由 theme-init.js 在首屏前写入：
+ * 默认按系统偏好，点过外观开关后按用户的选择。这里不用
+ * @media (prefers-color-scheme: dark) —— 那样用户想手动切回浅色就切不动了。
+ *
  * 校验（CI 用，产物与上游不一致就失败）：
  *
  *     python scripts/build-dark-theme.py --check
  */
 """
+
+PREFIX = "html[data-theme='dark']"
 
 
 def clamp(v, lo, hi):
@@ -250,22 +256,24 @@ def collect():
 
 
 def render(groups):
-    lines = [HEADER, '', '@media (prefers-color-scheme: dark) {', '  :root {', '    color-scheme: dark;']
+    lines = [HEADER, '', ":root[data-theme='dark'] {", '  color-scheme: dark;']
     for name, value in VARS.items():
-        lines.append('    %s: %s;' % (name, value))
-    lines.append('  }')
+        lines.append('  %s: %s;' % (name, value))
+    lines.append('}')
     lines.append('')
 
     for stack, selectors in groups.items():
-        indent = '  '
+        indent = ''
         opened = []
         for at in stack:
             lines.append('%s%s {' % (indent, at))
             opened.append(indent)
             indent += '  '
         for selector, decls in selectors.items():
-            # 选择器可能是多行（A:hover,\nB.active），续行要跟着缩进
-            sel = '\n'.join(indent + part for part in selector.split('\n'))
+            # 前缀加在每一个逗号分隔的选择器上：只加在整条最前面的话，
+            # "A, B" 里的 B 会变成不受作用域限制的全局规则。
+            parts = [p.strip() for p in selector.split(',') if p.strip()]
+            sel = (',\n' + indent).join(indent + PREFIX + ' ' + p for p in parts)
             lines.append('%s {' % sel)
             for d in decls.values():
                 lines.append('%s  %s' % (indent, d))
@@ -274,17 +282,17 @@ def render(groups):
             lines.append('%s}' % ind)
         lines.append('')
 
-    lines.append('  /* ---- 手写兜底：见 scripts/build-dark-theme.py 的 MANUAL ---- */')
+    lines.append('/* ---- 手写兜底：见 scripts/build-dark-theme.py 的 MANUAL ---- */')
     for selector, decls in MANUAL.items():
-        lines.append('  %s {' % selector)
+        parts = [p.strip() for p in selector.split(',') if p.strip()]
+        lines.append('%s {' % (',\n'.join(PREFIX + ' ' + p for p in parts)))
         for d in decls:
-            lines.append('    %s' % d)
-        lines.append('  }')
+            lines.append('  %s' % d)
+        lines.append('}')
     lines.append('')
 
     while lines and lines[-1] == '':
         lines.pop()
-    lines.append('}')
     return '\n'.join(lines) + '\n'
 
 

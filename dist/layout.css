@@ -282,7 +282,7 @@ main {
   background: #edf3e9;
   border-radius: 5px;
   padding: 4px 7px;
-  color: #55714c;
+  color: #42573b;
 }
 .card .abbr {
   font-size: 31px;
@@ -316,7 +316,7 @@ main {
 .card-fact > span {
   font-size: 10px;
   padding: 2px 0;
-  color: #73836d;
+  color: #525e4e;
 }
 .card .card-fact p {
   font-size: 12px;
@@ -329,7 +329,7 @@ main {
   overflow: hidden;
 }
 .card .card-fact.limitation p {
-  color: #7e8279;
+  color: #5a5c56;
 }
 .card-bottom {
   font-size: 11px;
@@ -404,7 +404,7 @@ main {
 }
 .detail-section h3 {
   font-size: 12px;
-  color: #54714e;
+  color: #41573c;
   margin: 0 0 8px;
 }
 .detail-section p {
@@ -881,7 +881,7 @@ footer {
   margin-top: 6px;
 }
 .comparison-same td {
-  color: #879080;
+  color: #5b6256;
   background: #fafbf8;
 }
 .comparison-different td.comparison-distinct {
@@ -982,7 +982,7 @@ footer {
 .atlas-guide p {
   font-size: 12px;
   line-height: 1.85;
-  color: #63745b;
+  color: #4b5845;
   margin: 0;
 }
 .term-reference {
@@ -1152,7 +1152,7 @@ main {
 .polymer-motion {
   width: 330px;
   height: 140px;
-  color: #688967;
+  color: #4a6149;
   justify-self: end;
   pointer-events: none;
 }
@@ -1385,7 +1385,7 @@ main {
 
 /* Consistent heading rhythm and a clearer reading hierarchy. */
 :root {
-  --muted: #657267;
+  --muted: #5a6359;
 }
 .nav-icon {
   display: inline-flex;
@@ -1422,7 +1422,7 @@ main {
 #atlasPanel > .intro p,
 #newsPanel > .news-hero p {
   font-size: 14px;
-  color: #657267;
+  color: #4d564e;
   line-height: 1.8;
 }
 #newsPanel .news-stats {
@@ -1431,7 +1431,7 @@ main {
   left: 0;
   margin: 0;
   font-size: 11px;
-  color: #718074;
+  color: #525c54;
   gap: 18px;
 }
 #newsPanel .news-hero > div:first-child {
@@ -1441,7 +1441,7 @@ main {
   grid-template-columns: minmax(0, 1fr) 330px;
 }
 .news-meta {
-  color: #7b857c;
+  color: #575e57;
   gap: 8px 10px;
 }
 .news-meta .news-source {
@@ -1450,7 +1450,7 @@ main {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  color: #7b857c;
+  color: #575e57;
   font-size: 10px;
 }
 .news-kind {
@@ -1458,25 +1458,25 @@ main {
   border-radius: 5px;
   font-size: 10px;
   background: #eef1ec;
-  color: #5f705b;
+  color: #495646;
 }
 .news-kind[data-kind='政策与标准'] {
   background: #f5efdf;
-  color: #827047;
+  color: #625436;
 }
 .news-kind[data-kind='研究进展'],
 .news-kind[data-kind='新材料与结构'] {
   background: #eaf0f5;
-  color: #5c7486;
+  color: #455765;
 }
 .news-kind[data-kind='回收与纯化'] {
   background: #e9f1e6;
-  color: #53774c;
+  color: #3f5a3a;
 }
 .news-kind[data-kind='新品与应用'],
 .news-kind[data-kind='配方与性能'] {
   background: #f0edf4;
-  color: #796884;
+  color: #5c4f65;
 }
 #newsPanel .news-item,
 .unified-favorites .news-item {
@@ -1520,7 +1520,7 @@ main {
   color: #536155;
 }
 .card .card-fact.limitation p {
-  color: #747a6d;
+  color: #555950;
 }
 @media (max-width: 1100px) and (min-width: 761px) {
   #newsPanel .news-hero {
@@ -1693,4 +1693,10 @@ main {
   margin: 10px 0 0;
   font-size: 11.5px;
   color: var(--muted);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
