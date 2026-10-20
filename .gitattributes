@@ -14,6 +14,7 @@
 *.mjs text eol=lf
 *.css text eol=lf
 *.html text eol=lf
+*.md text eol=lf
 
 # scripts/build-seo.mjs 生成的 robots.txt 与 sitemap.xml 同样钉死 LF，
 # 理由与上面的 JSON 一致：本机检出为 CRLF 时，重新生成会显示假差异，
