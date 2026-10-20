@@ -32,8 +32,16 @@ def read_json(name):
 
 
 def cell(value):
-    """表格里的数字、None、字符串统一成字符串再比，避免类型差异造成假失败。"""
-    return "" if value is None else str(value).strip()
+    """表格里的数字、None、字符串统一成字符串再比，避免类型差异造成假失败。
+
+    整数值的 float（58.0）单独归一：openpyxl 写进去再读回来是 58，两边对不上，
+    这种差异读者根本看不见，不该算不一致。
+    """
+    if value is None:
+        return ""
+    if isinstance(value, float) and value.is_integer():
+        return str(int(value))
+    return str(value).strip()
 
 
 def compare_sheet(problems, wb, title, columns, rows, label):
@@ -61,6 +69,27 @@ def compare_sheet(problems, wb, title, columns, rows, label):
             break
 
 
+def prop_columns(data):
+    """与 build-xlsx.py 保持一致：数值列来自 propsSpec，不另写一份字段名。"""
+    return [f'{s["label"]}({s["unit"]})' for s in (data.get("propsSpec") or [])]
+
+
+def num(value):
+    """58.0 写成 58：表格里不该出现「160.0 ~ 240.0」这种加工温度。"""
+    if isinstance(value, float) and value.is_integer():
+        return int(value)
+    return value
+
+
+def prop_cells(m, spec):
+    p = m.get("props") or {}
+    out = []
+    for s in spec:
+        v = p.get(s["key"])
+        out.append(f"{num(v[0])} ~ {num(v[1])}" if isinstance(v, list) else num(v))
+    return out
+
+
 def main():
     if not os.path.exists(XLSX):
         print(f"缺少 {os.path.relpath(XLSX, ROOT)}，请先运行 npm run build:xlsx")
@@ -72,14 +101,20 @@ def main():
     problems = []
 
     materials = data["materials"]
-    columns = list(materials[0]["fields"].keys())
+    spec = data.get("propsSpec") or []
+    field_keys = list(materials[0]["fields"].keys())
+    columns = field_keys + prop_columns(data)
     categories = []
     for m in materials:
         if m["category"] not in categories:
             categories.append(m["category"])
 
     for category in categories:
-        rows = [[m["fields"][c] for c in columns] for m in materials if m["category"] == category]
+        rows = [
+            [m["fields"][c] for c in field_keys] + prop_cells(m, spec)
+            for m in materials
+            if m["category"] == category
+        ]
         compare_sheet(problems, wb, category, columns, rows, f"材料·{category}")
 
     terms = knowledge["terms"]

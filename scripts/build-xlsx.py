@@ -34,7 +34,8 @@ HEAD_HEIGHT = 36
 FREEZE = "C2"
 
 # 列宽同样沿用旧文件的取值，避免读者下载后排版突变。
-MATERIAL_WIDTHS = [24, 20, 42, 27, 43, 40, 42, 40, 45, 45, 43, 52, 48, 72]
+# 末尾 5 列是数值（Tg / Tm / HDT / 密度 / 加工温度），与 propsSpec 顺序一致。
+MATERIAL_WIDTHS = [24, 20, 42, 27, 43, 40, 42, 40, 45, 45, 43, 52, 48, 72, 11, 11, 11, 12, 16]
 TERM_WIDTHS = [29, 76, 74]
 
 TERM_SHEET = "基础术语与使用说明"
@@ -67,12 +68,38 @@ def write_sheet(wb, title, columns, rows, widths, first=False):
     return ws
 
 
+def prop_columns(data):
+    """数值列。字段定义只有 propsSpec 一处，表里不再写第二份。"""
+    return [f'{s["label"]}({s["unit"]})' for s in (data.get("propsSpec") or [])]
+
+
+def num(value):
+    """58.0 写成 58：表格里不该出现「160.0 ~ 240.0」这种加工温度。"""
+    if isinstance(value, float) and value.is_integer():
+        return int(value)
+    return value
+
+
+def prop_cells(m, spec):
+    """没填的数值留空而不是填 0——留空表示「没数据」，0 会被当成测过。"""
+    p = m.get("props") or {}
+    out = []
+    for s in spec:
+        v = p.get(s["key"])
+        if isinstance(v, list):
+            out.append(f"{num(v[0])} ~ {num(v[1])}")
+        else:
+            out.append(num(v))
+    return out
+
+
 def main():
     data = read_json("data.json")
     knowledge = read_json("terms.json")
 
     materials = data["materials"]
-    columns = list(materials[0]["fields"].keys())
+    spec = data.get("propsSpec") or []
+    columns = list(materials[0]["fields"].keys()) + prop_columns(data)
 
     # 分类按首次出现顺序，与站点侧栏、sitemap 的顺序一致。
     order = []
@@ -82,7 +109,11 @@ def main():
 
     wb = Workbook()
     for i, category in enumerate(order):
-        rows = [[m["fields"][c] for c in columns] for m in materials if m["category"] == category]
+        rows = [
+            [m["fields"][c] for c in materials[0]["fields"].keys()] + prop_cells(m, spec)
+            for m in materials
+            if m["category"] == category
+        ]
         write_sheet(wb, category, columns, rows, MATERIAL_WIDTHS, first=i == 0)
 
     terms = knowledge["terms"]
@@ -95,8 +126,10 @@ def main():
     )
 
     wb.save(OUT)
+    filled = sum(1 for m in materials for s in spec if (m.get("props") or {}).get(s["key"]) is not None)
     print(f"已生成 {os.path.relpath(OUT, ROOT)}")
     print(f"  材料 {len(materials)} 条 / {len(order)} 个分类工作表")
+    print(f"  数值 {filled} 个（{len(spec)} 列，没填的留空）")
     print(f"  术语 {len(terms)} 条")
     return 0
 
