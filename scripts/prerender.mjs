@@ -163,7 +163,7 @@ function renderProps(m) {
           <dl>
             ${rows.join('\n            ')}
           </dl>
-          <p class="props-note">本站只收录了部分材料的数值，未列出的字段表示还没有填。</p>
+          <p class="props-note">数值是未改性、通用牌号的典型值（HDT 按 0.45 MPa），不是某个牌号的实测数据；留空的字段表示还没有填。用于粗筛可以，选材请以具体牌号的技术数据表为准。</p>
         </section>
 `
 }

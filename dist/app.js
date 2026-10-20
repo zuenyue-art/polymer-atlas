@@ -569,6 +569,11 @@ function hitRow(key) {
 /** 数值筛选：{ 字段: { min, max } }，两侧都可留空。 */
 const propFilters = {}
 
+/** 数值块下方的说明。两个文件各有一份（app.js 与 prerender.mjs），改文案时两边都要改。 */
+const PROPS_NOTE =
+  '数值是未改性、通用牌号的典型值（HDT 按 0.45 MPa），不是某个牌号的实测数据；' +
+  '留空的字段表示还没有填。用于粗筛可以，选材请以具体牌号的技术数据表为准。'
+
 /** 只列出「至少有一条材料填了」的数值字段——没有数据的字段摆出来是空筛选器。 */
 function propsInUse() {
   const spec = DATA?.propsSpec || []
@@ -593,7 +598,7 @@ function propFiltersMarkup() {
       })
       .join('') +
     `<button class="btn prop-clear" id="propClear">清除数值筛选</button>` +
-    `<span class="prop-note">只有填了该项数值的材料会留下</span>`
+    `<span class="prop-note">只有填了该项数值的材料会留下；热变形温度按 0.45 MPa</span>`
   )
 }
 
@@ -632,7 +637,7 @@ function propsTable(m) {
   if (!rows.length) return ''
   return (
     `<section class="detail-section props-table"><h3>数值</h3><dl>${rows.join('')}</dl>` +
-    `<p class="props-note">本站只收录了部分材料的数值，留空的字段表示还没有填。</p></section>`
+    `<p class="props-note">${PROPS_NOTE}</p></section>`
   )
 }
 
