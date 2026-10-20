@@ -569,6 +569,175 @@ function hitRow(key) {
 /** 数值筛选：{ 字段: { min, max } }，两侧都可留空。 */
 const propFilters = {}
 
+/**
+ * 排序。默认顺序是「搜索相关度」，其余按字段排。
+ *
+ * 数值排序里没填数值的材料一律沉底，升序降序都不翻面：翻过来会让「没测过」的
+ * 材料排在最前面，比排在最后更像结论。
+ */
+let sortBy = 'default',
+  sortDir = 'asc'
+const SORT_NAME = { id: 'name', label: '材料名称' }
+
+/** 可排序项随数值字段走：data.json 没填过 HDT 就不要给人一个全是空值的排序。 */
+function sortOptions() {
+  const numeric = propsInUse().map(s => ({ id: s.key, label: `${s.key} ${s.label}` }))
+  return [{ id: 'default', label: '默认顺序' }, SORT_NAME, ...numeric]
+}
+
+const collator = new Intl.Collator('zh-Hans-CN', { numeric: true })
+
+function sortValue(m) {
+  const v = (m.props || {})[sortBy]
+  // 区间字段（加工温度）按下限排：判「谁更容易加工」看的是下限
+  return Array.isArray(v) ? v[0] : v
+}
+
+function sortMaterials(list, q) {
+  const arr = list.slice()
+  if (sortBy === 'default') {
+    return arr.sort((a, b) => {
+      const score = m =>
+        q &&
+        m.fields['英文缩写']
+          .toLowerCase()
+          .split(/[\s/、]+/)
+          .includes(q)
+          ? 2
+          : q && m.fields['材料名称'].toLowerCase().includes(q)
+            ? 1
+            : 0
+      return score(b) - score(a)
+    })
+  }
+  if (sortBy === SORT_NAME.id) {
+    arr.sort((a, b) => collator.compare(a.fields['材料名称'], b.fields['材料名称']))
+    return sortDir === 'desc' ? arr.reverse() : arr
+  }
+  arr.sort((a, b) => {
+    const x = sortValue(a),
+      y = sortValue(b)
+    if (x == null && y == null) return collator.compare(a.fields['材料名称'], b.fields['材料名称'])
+    if (x == null) return 1
+    if (y == null) return -1
+    return sortDir === 'desc' ? y - x : x - y
+  })
+  return arr
+}
+
+/** 排序条只建一次 innerHTML：每次 render 重写会把正在操作的 select 弄丢。 */
+function renderSortBar(show) {
+  const bar = $('#sortBar')
+  if (!bar) return
+  bar.hidden = !show
+  if (!show) return
+  if (!bar.dataset.built) {
+    const opts = sortOptions()
+    bar.innerHTML =
+      `<label>排序<select id="sortBy">` +
+      opts.map(o => `<option value="${esc(o.id)}">${esc(o.label)}</option>`).join('') +
+      `</select></label>` +
+      `<button class="btn sort-dir" id="sortDir" type="button">升序 ↑</button>`
+    bar.dataset.built = '1'
+  }
+  const sel = $('#sortBy'),
+    dir = $('#sortDir')
+  if (sel.value !== sortBy) sel.value = sortBy
+  // 名称与相关度没有「升/降」的直观含义之前先留着，但默认顺序下按钮没意义
+  dir.hidden = sortBy === 'default'
+  dir.textContent = sortDir === 'desc' ? '降序 ↓' : '升序 ↑'
+  dir.setAttribute(
+    'aria-label',
+    sortDir === 'desc' ? '当前降序，点击改为升序' : '当前升序，点击改为降序'
+  )
+}
+
+// ---- 筛选状态与地址栏 ----
+// 查询串描述「看的是哪一批」，哈希仍然描述「打开的是哪一条」。
+// 只 replaceState 不 pushState：搜索框每敲一个字都算一条历史记录的话，
+// 返回键要一个字一个字往回退。参数写进地址的价值在于刷新不丢、能直接发给别人。
+const URL_FIXED = ['q', 'c', 'f', 'sort', 'dir']
+
+function propParamKey(key, bound) {
+  return `${key}-${bound}`
+}
+
+/** 保留地址里不认识的参数（EdgeOne 预览链接的 eo_token / eo_time 就在查询串上）。 */
+function syncUrl() {
+  if (!DATA) return
+  const p = new URLSearchParams(location.search)
+  for (const k of URL_FIXED) p.delete(k)
+  for (const s of DATA.propsSpec || []) {
+    p.delete(propParamKey(s.key, 'min'))
+    p.delete(propParamKey(s.key, 'max'))
+  }
+  const listView = view === 'materials' || view === 'favorites'
+  if (listView) {
+    const q = $('#search').value.trim()
+    if (q) p.set('q', q)
+    if (category !== '全部材料') p.set('c', category)
+    if (onlyFavorites) p.set('f', '1')
+    if (sortBy !== 'default') {
+      p.set('sort', sortBy)
+      p.set('dir', sortDir)
+    }
+    for (const [key, r] of Object.entries(propFilters)) {
+      if (r.min != null) p.set(propParamKey(key, 'min'), String(r.min))
+      if (r.max != null) p.set(propParamKey(key, 'max'), String(r.max))
+    }
+  }
+  const qs = p.toString()
+  const url = location.pathname + (qs ? `?${qs}` : '') + location.hash
+  if (url !== location.pathname + location.search + location.hash)
+    history.replaceState(history.state, '', url)
+}
+
+/** 从地址读回筛选状态。只认 propsSpec 里登记过的字段，免得手改地址塞进垃圾键。 */
+function readUrlState() {
+  const p = new URLSearchParams(location.search)
+  const spec = DATA?.propsSpec || []
+  const props = {}
+  for (const s of spec) {
+    const min = p.get(propParamKey(s.key, 'min')),
+      max = p.get(propParamKey(s.key, 'max'))
+    const lo = min === null ? null : Number(min),
+      hi = max === null ? null : Number(max)
+    if ((lo != null && isFinite(lo)) || (hi != null && isFinite(hi)))
+      props[s.key] = {
+        min: lo != null && isFinite(lo) ? lo : null,
+        max: hi != null && isFinite(hi) ? hi : null
+      }
+  }
+  const c = p.get('c')
+  const cats = ['全部材料', ...new Set((DATA?.materials || []).map(m => m.category))]
+  const sort = p.get('sort')
+  return {
+    query: p.get('q') || '',
+    category: c && cats.includes(c) ? c : '全部材料',
+    onlyFavorites: p.get('f') === '1',
+    props,
+    sortBy: sortOptions().some(o => o.id === sort) ? sort : 'default',
+    sortDir: p.get('dir') === 'desc' ? 'desc' : 'asc'
+  }
+}
+
+function applyUrlState(st) {
+  $('#search').value = st.query
+  category = st.category
+  onlyFavorites = st.onlyFavorites
+  sortBy = st.sortBy
+  sortDir = st.sortDir
+  for (const k of Object.keys(propFilters)) delete propFilters[k]
+  for (const [k, v] of Object.entries(st.props)) propFilters[k] = v
+  // 筛选器只在首次建一次，值要自己回填
+  const pf = $('#propFilters')
+  if (pf && pf.dataset.built)
+    pf.querySelectorAll('input[data-prop]').forEach(i => {
+      const r = propFilters[i.dataset.prop]
+      i.value = r && r[i.dataset.bound] != null ? String(r[i.dataset.bound]) : ''
+    })
+}
+
 /** 数值块下方的说明。两个文件各有一份（app.js 与 prerender.mjs），改文案时两边都要改。 */
 const PROPS_NOTE =
   '数值是未改性、通用牌号的典型值（HDT 按 0.45 MPa），不是某个牌号的实测数据；' +
@@ -663,19 +832,7 @@ function items() {
       Object.values(m.fields).join(' ').toLowerCase().includes(q)
   )
   indexHits(list, q, 'materials')
-  return list.sort((a, b) => {
-    const score = m =>
-      q &&
-      m.fields['英文缩写']
-        .toLowerCase()
-        .split(/[\s/、]+/)
-        .includes(q)
-        ? 2
-        : q && m.fields['材料名称'].toLowerCase().includes(q)
-          ? 1
-          : 0
-    return score(b) - score(a)
-  })
+  return sortMaterials(list, q)
 }
 function render() {
   updateFavoriteCount()
@@ -698,6 +855,8 @@ function render() {
     $('.categories-label').hidden = true
     $('#compareTray').hidden = true
     document.title = '材料动态 · 高分子材料图鉴'
+    // 动态页有自己的筛选器（在 news-view.js 里），材料那套参数带过来只会误导
+    syncUrl()
     return
   }
   document.title = names()[view] + ' · 高分子材料图鉴'
@@ -756,11 +915,13 @@ function render() {
   $('#resultsHint').textContent = isMaterial
     ? '点击卡片，查看完整资料 · 方向键逐张浏览'
     : '点击卡片，阅读说明'
+  renderSortBar(isMaterial)
   $('#content').innerHTML = list.length
     ? list.map(x => (isMaterial ? card(x) : termCard(x))).join('')
     : `<div class="empty"><h3>${view === 'favorites' ? '还没有收藏的材料' : '没有找到匹配内容'}</h3><p>${view === 'favorites' ? '点击材料卡片右上角的星标，即可收藏。' : '试试更短的关键词，或切换回全部分类。'}</p><button id="reset">${view === 'favorites' ? '浏览材料' : '清除筛选'}</button></div>`
   renderTermTools()
   renderTray()
+  syncUrl()
   if (view === 'favorites') renderUnifiedFavorites()
 }
 function card(m) {
@@ -996,6 +1157,14 @@ document.addEventListener('change', e => {
     comparisonOnlyDifferences = e.target.checked
     openCompare()
     $('#differencesOnly').focus({ preventScroll: true })
+    return
+  }
+  if (e.target.id === 'sortBy') {
+    sortBy = e.target.value
+    // 切到数值排序时默认从小到大：想看「最耐热的」再点一次方向，比反过来少见
+    sortDir = 'asc'
+    render()
+    e.target.focus({ preventScroll: true })
   }
 })
 async function copyMaterial(id) {
@@ -1127,6 +1296,12 @@ document.addEventListener('click', e => {
     copyMaterial(el.dataset.copy)
     return
   }
+  if (el.id === 'sortDir') {
+    sortDir = sortDir === 'asc' ? 'desc' : 'asc'
+    render()
+    $('#sortDir').focus({ preventScroll: true })
+    return
+  }
   if (el.id === 'favoriteToggle') {
     onlyFavorites = !onlyFavorites
     render()
@@ -1162,6 +1337,8 @@ document.addEventListener('click', e => {
     category = '全部材料'
     termCategory = '全部知识'
     onlyFavorites = false
+    sortBy = 'default'
+    sortDir = 'asc'
     $('#search').value = ''
     // 「清除筛选」得把数值条件也清掉，否则用户以为清空了却还是只剩几条
     for (const k of Object.keys(propFilters)) delete propFilters[k]
@@ -1361,6 +1538,24 @@ try {
   if (initialView !== 'news') {
     await ensureAtlas()
     if (initialView === 'terms') await ensureKnowledge()
+  }
+  // 地址里带了筛选条件（?q=…&c=…&Tg-min=100）：分享链接、刷新、从别处跳回来都靠这条。
+  // 直接写进 viewStates 而不是先 switchView 再 applyUrlState —— 后者要白渲染一遍
+  // 130 张卡片，而且会打断 switchView 里记着的滚动位置恢复。
+  if (DATA && ['materials', 'favorites'].includes(initialView) && location.search) {
+    const st = readUrlState()
+    const seeded = {
+      category: st.category,
+      termCategory: '全部知识',
+      onlyFavorites: st.onlyFavorites,
+      query: st.query,
+      scroll: 0
+    }
+    viewStates.set('materials', seeded)
+    if (initialView === 'favorites') viewStates.set('favorites', seeded)
+    sortBy = st.sortBy
+    sortDir = st.sortDir
+    for (const [k, v] of Object.entries(st.props)) propFilters[k] = v
   }
   if (initialView !== view) switchView(initialView, { historyMode: 'none' })
   else render()
