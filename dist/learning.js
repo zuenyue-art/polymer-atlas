@@ -46,6 +46,42 @@ const normalize = v =>
   String(v ?? '')
     .replace(/\s+/g, ' ')
     .trim()
+/**
+ * 对比表里的数值行。
+ *
+ * 和文字行分开算，因为语义不一样：文字比的是「表述是否一样」，数值比的是
+ * 「大小是否一样」，而且数值可能压根没填——没填要显示成「—」而不是「未收录」，
+ * 后者会被读成「测过，结果是没这回事」。
+ *
+ * 区间字段（加工温度）按下限比：判断「谁更容易加工」看的是下限。
+ */
+export function comparisonPropRows(materials, spec) {
+  const num = v =>
+    typeof v === 'number' && Number.isInteger(v)
+      ? v
+      : typeof v === 'number'
+        ? Number(v.toFixed(2))
+        : v
+  return (spec || [])
+    .filter(s => materials.some(m => (m.props || {})[s.key] != null))
+    .map(s => {
+      const raw = materials.map(m => (m.props || {})[s.key] ?? null)
+      const values = raw.map(v => {
+        if (v == null) return ''
+        return Array.isArray(v) ? `${num(v[0])} ~ ${num(v[1])}` : `${num(v)}`
+      })
+      const flat = raw.filter(v => v != null).map(v => (Array.isArray(v) ? v[0] : v))
+      return {
+        key: s.key,
+        label: s.label,
+        unit: s.unit,
+        values,
+        // 有材料没填就不能判「相同」：一只 78 ℃、另一只没填，结论是「不知道」，
+        // 不是「一样」。判成相同的话勾上「只看差异」会连这一行一起吃掉。
+        same: flat.length === materials.length && new Set(flat).size === 1
+      }
+    })
+}
 export function comparisonRows(materials) {
   const fields = [...new Set(materials.flatMap(m => Object.keys(m.fields)))].filter(
     k => !['材料名称', '英文缩写', '参考来源与核验范围'].includes(k)

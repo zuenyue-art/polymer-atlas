@@ -1,7 +1,12 @@
 import { newsCard } from './news-utils.js'
 import { getNewsItems } from './news-store.js'
 import { mountNews, NEWS_TEMPLATE } from './news-view.js'
-let relatedMarkup, comparisonRows, annotateTerms, recyclingFigure, structureFigure
+let relatedMarkup,
+  comparisonRows,
+  comparisonPropRows,
+  annotateTerms,
+  recyclingFigure,
+  structureFigure
 const $ = s => document.querySelector(s)
 const esc = v =>
   String(v ?? '').replace(
@@ -1120,10 +1125,24 @@ function openCompare({ record = true } = {}) {
   if (selected.length < 2) return
   const ms = selected.map(material),
     rows = comparisonRows(ms),
-    visible = rows.filter(r => !comparisonOnlyDifferences || !r.same)
+    propRows = comparisonPropRows(ms, DATA.propsSpec || []),
+    visible = rows.filter(r => !comparisonOnlyDifferences || !r.same),
+    propVisible = propRows.filter(r => !comparisonOnlyDifferences || !r.same)
   const sameCount = rows.filter(r => r.same).length
+  const propSame = propRows.filter(r => r.same).length
+  // 表头两只材料共用一份：数值表和文字表并排放，各画一份表头反而看不出是同一组
+  const head = `<thead><tr><th scope="col">比较维度</th>${ms.map(m => `<th scope="col">${esc(m.fields['英文缩写'])}<div class="compare-name">${esc(m.fields['材料名称'])}</div></th>`).join('')}</tr></thead>`
+  const numbers = propVisible.length
+    ? `<div class="comparison"><table class="comparison-numbers"><caption>数值 · 未改性通用牌号的典型值，HDT 按 0.45 MPa；— 表示这条材料还没填，不是 0</caption>${head}<tbody>${propVisible.map(r => `<tr class="${r.same ? 'comparison-same' : 'comparison-different'}"><th scope="row">${esc(r.label)}<small>${esc(r.unit)}</small></th>${r.values.map(v => `<td>${v ? esc(v) : '<span class="prop-empty">—</span>'}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`
+    : ''
+  const summary = [
+    `${rows.length - sameCount} 项文本不同 · ${sameCount} 项文本相同`,
+    propRows.length ? `${propRows.length - propSame} 项数值不同 · ${propSame} 项数值相同` : ''
+  ]
+    .filter(Boolean)
+    .join(' · ')
   $('#compareContent').innerHTML =
-    `<div class="comparison-controls"><label><input type="checkbox" id="differencesOnly" ${comparisonOnlyDifferences ? 'checked' : ''}>只看差异</label><span>${rows.length - sameCount} 项文本不同 · ${sameCount} 项文本相同</span><small>按文字内容比较，相近表述仍可能标为不同；不代表性能差异大小。</small></div><div class="comparison"><table><thead><tr><th scope="col">比较维度</th>${ms.map(m => `<th scope="col">${esc(m.fields['英文缩写'])}<div style="font-size:11px;font-weight:400;margin-top:6px">${esc(m.fields['材料名称'])}</div></th>`).join('')}</tr></thead><tbody>${visible.map(r => `<tr class="${r.same ? 'comparison-same' : 'comparison-different'}"><th scope="row">${esc(r.key)}<small>${r.same ? '相同' : '不同'}</small></th>${r.values.map((v, i) => `<td class="${!r.same && !r.shared[i] ? 'comparison-distinct' : ''}">${esc(v || '未收录')}</td>`).join('')}</tr>`).join('')}</tbody></table>${visible.length ? '' : '<div class="empty">所选资料在当前比较维度中没有文本差异。</div>'}</div>`
+    `<div class="comparison-controls"><label><input type="checkbox" id="differencesOnly" ${comparisonOnlyDifferences ? 'checked' : ''}>只看差异</label><span>${summary}</span><small>按文字内容比较，相近表述仍可能标为不同；不代表性能差异大小。</small></div>${numbers}<div class="comparison"><table>${head}<tbody>${visible.map(r => `<tr class="${r.same ? 'comparison-same' : 'comparison-different'}"><th scope="row">${esc(r.key)}<small>${r.same ? '相同' : '不同'}</small></th>${r.values.map((v, i) => `<td class="${!r.same && !r.shared[i] ? 'comparison-distinct' : ''}">${esc(v || '未收录')}</td>`).join('')}</tr>`).join('')}</tbody></table>${visible.length || propVisible.length ? '' : '<div class="empty">所选资料在当前比较维度中没有文本差异。</div>'}</div>`
   // 对比表是从详情里叠出来的第二层弹窗，也要占历史记录；否则返回键会先关掉
   // 底下的详情，对比表孤零零留在屏幕上。重复渲染（勾「只看差异」）不再压栈。
   if (record && popupKind !== 'compare') {
@@ -1496,7 +1515,7 @@ function ensureAtlas() {
       ])
       if (!r.ok) throw Error('资料载入失败')
       const data = await r.json()
-      ;({ relatedMarkup, comparisonRows, annotateTerms } = learning)
+      ;({ relatedMarkup, comparisonRows, comparisonPropRows, annotateTerms } = learning)
       ;({ recyclingFigure } = recycling)
       ;({ structureFigure } = structures)
       DATA = data

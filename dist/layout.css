@@ -893,6 +893,37 @@ footer {
   top: 0;
   z-index: 1;
 }
+
+/* 表头里的中文全称：缩写在上，全称在下，比全称和缩写挤一行好认 */
+.compare-name {
+  font-size: 11px;
+  font-weight: 400;
+  margin-top: 6px;
+}
+
+/* 数值表与文字表并排，两张表之间要留出间隔，否则看着像一张断了行的表 */
+.comparison + .comparison {
+  margin-top: 14px;
+}
+
+.comparison-numbers caption {
+  caption-side: top;
+  text-align: left;
+  font-size: 11px;
+  color: var(--muted);
+  padding: 0 0 9px;
+}
+
+/* 数字按等宽对齐：165 和 90 混排时右不对齐，扫一眼看不出谁大 */
+.comparison-numbers td {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 没填的数值画一道杠，不说「未收录」——那会被读成「测过但没这回事」 */
+.prop-empty {
+  color: var(--muted);
+}
+
 #compareDialog {
   max-width: 1100px;
 }
