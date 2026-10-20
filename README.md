@@ -44,7 +44,7 @@ pip install -r scripts/requirements.txt
 
 每条材料可选填 `Tg` / `Tm` / `HDT` / `密度` / `加工温度` 五个数值，用于「耐温 > 150 ℃ 且密度 < 1.1」这类筛选。数据在 `data.json` 的 `materials[].props`，字段定义是同文件的 `propsSpec`（唯一来源）。
 
-填表流程：`python scripts/build-props-sheet.py` 生成 `props-待填.xlsx` → 填好 → `python scripts/apply-props.py <表>` → `npm run build`。表格里留空表示「不改动」，已填的值不会因为这次留空被清掉。
+填表流程：`python scripts/build-props-sheet.py` 生成 `props-待填.xlsx` → 填好 → `python scripts/apply-props.py <表>` → `npm run build`。表格里留空表示「不改动」，已填的值不会因为这次留空被清掉——正因为如此，**要删掉一个已经填过的值，得直接改 `data.json`（或写新值覆盖），在表里把它清空是删不掉的**。
 
 口径三条，看数之前先看这里：
 
