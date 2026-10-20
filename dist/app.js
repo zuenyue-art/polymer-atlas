@@ -592,6 +592,52 @@ function sortOptions() {
 
 const collator = new Intl.Collator('zh-Hans-CN', { numeric: true })
 
+/**
+ * 当前有没有生效的筛选条件。视图本身（「我的收藏」）不算筛选——
+ * 那是换了看的范围，不是把范围收窄了，清掉它只会让人以为东西丢了。
+ */
+function hasFilters() {
+  return Boolean(
+    $('#search').value.trim() ||
+    category !== '全部材料' ||
+    onlyFavorites ||
+    sortBy !== 'default' ||
+    Object.keys(propFilters).length
+  )
+}
+
+/**
+ * 排序时把依据的那个数值摆在卡片上：按密度排完却看不出密度，
+ * 读者只能选择相信排对了，而排序恰恰是最该被检验的操作。
+ * 默认顺序和按名称排没有「数值」可言，这时不显示。
+ */
+function sortChip(m) {
+  if (sortBy === 'default' || sortBy === SORT_NAME.id) return ''
+  const spec = (DATA?.propsSpec || []).find(s => s.key === sortBy)
+  if (!spec) return ''
+  const raw = (m.props || {})[sortBy]
+  const text = Array.isArray(raw) ? `${raw[0]} ~ ${raw[1]}` : raw == null ? '' : String(raw)
+  return `<span class="card-sort${text ? '' : ' none'}">${esc(spec.label)} ${
+    text ? `${esc(text)}${spec.unit ? ' ' + esc(spec.unit) : ''}` : '—'
+  }</span>`
+}
+
+/** 清掉搜索、分类、只看收藏、数值条件与排序；不换视图，地址由 render 里的 syncUrl 收干净。 */
+function resetFilters() {
+  category = '全部材料'
+  termCategory = '全部知识'
+  onlyFavorites = false
+  sortBy = 'default'
+  sortDir = 'asc'
+  $('#search').value = ''
+  // 数值条件也一并清掉，否则用户以为清空了却还是只剩几条
+  for (const k of Object.keys(propFilters)) delete propFilters[k]
+  $('#propFilters')
+    ?.querySelectorAll('input[data-prop]')
+    .forEach(i => (i.value = ''))
+  render()
+}
+
 function sortValue(m) {
   const v = (m.props || {})[sortBy]
   // 区间字段（加工温度）按下限排：判「谁更容易加工」看的是下限
@@ -642,12 +688,16 @@ function renderSortBar(show) {
       `<label>排序<select id="sortBy">` +
       opts.map(o => `<option value="${esc(o.id)}">${esc(o.label)}</option>`).join('') +
       `</select></label>` +
-      `<button class="btn sort-dir" id="sortDir" type="button">升序 ↑</button>`
+      `<button class="btn sort-dir" id="sortDir" type="button">升序 ↑</button>` +
+      `<button class="btn sort-clear" id="clearFilters" type="button" hidden>清除筛选</button>`
     bar.dataset.built = '1'
   }
   const sel = $('#sortBy'),
-    dir = $('#sortDir')
+    dir = $('#sortDir'),
+    clear = $('#clearFilters')
   if (sel.value !== sortBy) sel.value = sortBy
+  // 没条件时不摆按钮：「清除筛选」点不动的东西摆在那里只会让人以为它坏了
+  clear.hidden = !hasFilters()
   // 名称与相关度没有「升/降」的直观含义之前先留着，但默认顺序下按钮没意义
   dir.hidden = sortBy === 'default'
   dir.textContent = sortDir === 'desc' ? '降序 ↓' : '升序 ↑'
@@ -932,7 +982,7 @@ function render() {
 function card(m) {
   const f = m.fields,
     abbr = f['英文缩写']
-  return `<article class="card material-card" tabindex="0" role="button" data-detail="${m.id}" aria-label="查看${esc(f['材料名称'])}详情"><div class="card-top"><span class="badge">${esc(m.category)}</span><button class="icon-btn ${favorites.has(m.id) ? 'saved' : ''}" data-star="${m.id}" aria-pressed="${favorites.has(m.id)}" aria-label="${favorites.has(m.id) ? '取消收藏' : '收藏'}${esc(f['材料名称'])}">${favorites.has(m.id) ? '★' : '☆'}</button></div><div class="abbr ${abbr.length > 12 ? 'long' : ''}">${esc(abbr)}</div><h3>${esc(f['材料名称'])}</h3><span class="card-form">${esc(f['形态与结晶性'])}</span><div class="card-facts"><div class="card-fact"><span>特点</span><p>${esc(f['突出特点'])}</p></div><div class="card-fact limitation"><span>局限</span><p>${esc(f['主要弱点'])}</p></div><div class="card-fact recycle"><span>回收</span><p>${esc(f['回收路线与分离难点'])}</p></div></div>${hitRow(m.id)}<div class="card-bottom"><label class="check"><input type="checkbox" data-compare="${m.id}" ${selected.includes(m.id) ? 'checked' : ''}>加入对比</label><span>查看资料 <span class="arrow">↗</span></span></div></article>`
+  return `<article class="card material-card" tabindex="0" role="button" data-detail="${m.id}" aria-label="查看${esc(f['材料名称'])}详情"><div class="card-top"><span class="badge">${esc(m.category)}</span><button class="icon-btn ${favorites.has(m.id) ? 'saved' : ''}" data-star="${m.id}" aria-pressed="${favorites.has(m.id)}" aria-label="${favorites.has(m.id) ? '取消收藏' : '收藏'}${esc(f['材料名称'])}">${favorites.has(m.id) ? '★' : '☆'}</button></div><div class="abbr ${abbr.length > 12 ? 'long' : ''}">${esc(abbr)}</div><h3>${esc(f['材料名称'])}</h3><span class="card-form">${esc(f['形态与结晶性'])}</span>${sortChip(m)}<div class="card-facts"><div class="card-fact"><span>特点</span><p>${esc(f['突出特点'])}</p></div><div class="card-fact limitation"><span>局限</span><p>${esc(f['主要弱点'])}</p></div><div class="card-fact recycle"><span>回收</span><p>${esc(f['回收路线与分离难点'])}</p></div></div>${hitRow(m.id)}<div class="card-bottom"><label class="check"><input type="checkbox" data-compare="${m.id}" ${selected.includes(m.id) ? 'checked' : ''}>加入对比</label><span>查看资料 <span class="arrow">↗</span></span></div></article>`
 }
 function termCard(x) {
   const index = DATA.terms.indexOf(x)
@@ -1348,23 +1398,18 @@ document.addEventListener('click', e => {
     return
   }
   if (el.id === 'reset') {
+    // 空结果里那颗按钮在收藏视图下是「浏览材料」——那里没有别的东西可清
     if (view === 'favorites') {
       viewStates.delete('materials')
       switchView('materials')
       return
     }
-    category = '全部材料'
-    termCategory = '全部知识'
-    onlyFavorites = false
-    sortBy = 'default'
-    sortDir = 'asc'
-    $('#search').value = ''
-    // 「清除筛选」得把数值条件也清掉，否则用户以为清空了却还是只剩几条
-    for (const k of Object.keys(propFilters)) delete propFilters[k]
-    $('#propFilters')
-      .querySelectorAll('input[data-prop]')
-      .forEach(i => (i.value = ''))
-    render()
+    resetFilters()
+    return
+  }
+  if (el.id === 'clearFilters') {
+    resetFilters()
+    $('#search').focus()
     return
   }
   const article = e.target.closest('article')
