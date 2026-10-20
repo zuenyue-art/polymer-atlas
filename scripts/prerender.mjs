@@ -163,7 +163,15 @@ function renderProps(m) {
     })
   // 返回空串时连换行也不留：模板里 `${renderProps(m)}${renderGroups(m)}` 是紧挨着的，
   // 否则 130 个没有数值的页面会各自多出一个空行，变成一次毫无意义的全站 diff。
-  if (!rows.length) return ''
+  if (!rows.length) {
+    // 有说明的写清原因（这类材料本来就没有通用典型值），没有说明的仍然整块不渲染。
+    if (!m.propsNote) return ''
+    return `        <section class="props-table mp-props">
+          <h2>数值</h2>
+          <p class="props-empty">${esc(m.propsNote)}</p>
+        </section>
+`
+  }
   return `        <section class="props-table mp-props">
           <h2>数值</h2>
           <dl>

@@ -223,7 +223,12 @@
             <h2 id="resultsTitle">全部材料</h2>
             <span id="resultCount" aria-live="polite">正在载入…</span>
           </div>
-          <span id="resultsHint">点击卡片，查看完整资料</span>
+          <div class="results-side">
+            <span id="resultsHint">点击卡片，查看完整资料</span>
+            <button class="btn results-clear" id="clearFilters" type="button" hidden>
+              清除筛选
+            </button>
+          </div>
         </div>
         <section class="sort-bar" id="sortBar" aria-label="结果排序" hidden></section>
         <div id="content" class="grid"></div>

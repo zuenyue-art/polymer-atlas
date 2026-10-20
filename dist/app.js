@@ -23,6 +23,12 @@ try {
   const saved = JSON.parse(localStorage.getItem('polymer-atlas-favorites') || '[]')
   if (Array.isArray(saved)) favorites = new Set(saved.filter(x => typeof x === 'string'))
 } catch {}
+// 对比选择也记在本机：勾好两只材料去别的页面看一眼，回来不该从头再勾一遍。
+// 这里只读原始 id，等 data.json 到位后再过滤掉已经不存在的（见 ensureAtlas）。
+try {
+  const picked = JSON.parse(localStorage.getItem('polymer-atlas-compare') || '[]')
+  if (Array.isArray(picked)) selected = picked.filter(x => typeof x === 'string')
+} catch {}
 let toastTimer
 const detailSelections = new Map()
 let termCategory = '全部知识'
@@ -292,10 +298,18 @@ function ensureBackupTools() {
   return box
 }
 
+/** 对比选择写回本机。写失败（隐私模式、配额满）不该影响使用，静默跳过。 */
+function saveCompare() {
+  try {
+    localStorage.setItem('polymer-atlas-compare', JSON.stringify(selected))
+  } catch {}
+}
+
 function compare(id) {
   if (selected.includes(id)) selected = selected.filter(x => x !== id)
   else if (selected.length < 3) selected.push(id)
   else toast('最多对比 3 条记录，请先移除一条')
+  saveCompare()
   render()
   if ($('#detailDialog').open) detail(id, false)
 }
@@ -593,16 +607,20 @@ function sortOptions() {
 const collator = new Intl.Collator('zh-Hans-CN', { numeric: true })
 
 /**
- * 当前有没有生效的筛选条件。视图本身（「我的收藏」）不算筛选——
- * 那是换了看的范围，不是把范围收窄了，清掉它只会让人以为东西丢了。
+ * 当前有没有生效的筛选条件。按视图分开判：术语页只有主题分类，
+ * 材料页的分类/收藏/排序/数值都不适用于它。混在一起判的话，
+ * 在术语页选过主题再切回来，材料页会莫名出现一颗「清除筛选」。
+ * 视图本身（「我的收藏」）也不算条件——那是换了看的范围，不是把范围收窄了。
  */
 function hasFilters() {
-  return Boolean(
-    $('#search').value.trim() ||
+  // 搜索框三种视图共用，所以先单独看
+  if ($('#search').value.trim()) return true
+  if (view === 'terms') return termCategory !== '全部知识'
+  return (
     category !== '全部材料' ||
     onlyFavorites ||
     sortBy !== 'default' ||
-    Object.keys(propFilters).length
+    Object.keys(propFilters).length > 0
   )
 }
 
@@ -688,16 +706,12 @@ function renderSortBar(show) {
       `<label>排序<select id="sortBy">` +
       opts.map(o => `<option value="${esc(o.id)}">${esc(o.label)}</option>`).join('') +
       `</select></label>` +
-      `<button class="btn sort-dir" id="sortDir" type="button">升序 ↑</button>` +
-      `<button class="btn sort-clear" id="clearFilters" type="button" hidden>清除筛选</button>`
+      `<button class="btn sort-dir" id="sortDir" type="button">升序 ↑</button>`
     bar.dataset.built = '1'
   }
   const sel = $('#sortBy'),
-    dir = $('#sortDir'),
-    clear = $('#clearFilters')
+    dir = $('#sortDir')
   if (sel.value !== sortBy) sel.value = sortBy
-  // 没条件时不摆按钮：「清除筛选」点不动的东西摆在那里只会让人以为它坏了
-  clear.hidden = !hasFilters()
   // 名称与相关度没有「升/降」的直观含义之前先留着，但默认顺序下按钮没意义
   dir.hidden = sortBy === 'default'
   dir.textContent = sortDir === 'desc' ? '降序 ↓' : '升序 ↑'
@@ -858,7 +872,12 @@ function propsTable(m) {
       const text = Array.isArray(v) ? `${v[0]} ~ ${v[1]}` : `${v}`
       return `<div class="prop-row"><dt>${esc(s.label)}</dt><dd>${esc(text)}<small>${esc(s.unit)}</small></dd></div>`
     })
-  if (!rows.length) return ''
+  if (!rows.length) {
+    // 一条数值都没有：这类材料本来就没有通用典型值，写清原因，
+    // 否则读者会以为资料没整理完。没有说明的仍然整块不渲染。
+    if (!m.propsNote) return ''
+    return `<section class="detail-section props-table"><h3>数值</h3><p class="props-empty">${esc(m.propsNote)}</p></section>`
+  }
   return (
     `<section class="detail-section props-table"><h3>数值</h3><dl>${rows.join('')}</dl>` +
     `<p class="props-note">${PROPS_NOTE}</p></section>`
@@ -889,6 +908,51 @@ function items() {
   indexHits(list, q, 'materials')
   return sortMaterials(list, q)
 }
+/**
+ * 空结果时说清楚是哪一层把它清空的。
+ * 数值筛选的语义是「填了条件＝要求该材料必须有这个数」，所以「一条都没有」
+ * 很可能不是搜错了，而是这些材料的数值还没整理——两者要分开讲，
+ * 否则用户会翻来覆去改关键词，改了八遍也出不来。
+ */
+function emptyState() {
+  const wrap = (title, text, btn) =>
+    `<div class="empty"><h3>${title}</h3><p>${text}</p><button id="reset">${btn}</button></div>`
+  if (view === 'favorites')
+    return wrap('还没有收藏的材料', '点击材料卡片右上角的星标，即可收藏。', '浏览材料')
+  if (view === 'terms')
+    return wrap('没有找到匹配内容', '试试更短的关键词，或切回全部主题。', '清除筛选')
+
+  const fields = Object.keys(propFilters)
+  if (fields.length) {
+    const q = $('#search').value.trim().toLowerCase()
+    // 与 items() 同样的条件，只是先不看数值：这样才知道是不是数值这一层挡掉的
+    const beforeProps = DATA.materials.filter(
+      m =>
+        (category === '全部材料' || m.category === category) &&
+        (!(onlyFavorites || view === 'favorites') || favorites.has(m.id)) &&
+        Object.values(m.fields).join(' ').toLowerCase().includes(q)
+    )
+    const missing = beforeProps.filter(m => fields.some(k => (m.props || {})[k] == null))
+    const outRange = beforeProps.filter(m => !missing.includes(m) && !propMatch(m))
+    if (missing.length || outRange.length) {
+      const labels = propsInUse()
+        .filter(s => fields.includes(s.key))
+        .map(s => s.label)
+        .join('、')
+      const reasons = []
+      if (missing.length) reasons.push(`${missing.length} 条没有填${labels}这一项`)
+      if (outRange.length) reasons.push(`${outRange.length} 条填了但不在你给的区间内`)
+      return wrap(
+        '没有材料同时满足这些条件',
+        `${reasons.join('，')}。数值筛选的语义是「必须填了这个数」，没填的不会留下。` +
+          `放宽区间，或者先不加数值条件看看有哪些材料。`,
+        '清除筛选'
+      )
+    }
+  }
+  return wrap('没有找到匹配内容', '试试更短的关键词，或切换回全部分类。', '清除筛选')
+}
+
 function render() {
   updateFavoriteCount()
   $('#content').classList.toggle('unified-favorites', view === 'favorites')
@@ -971,9 +1035,12 @@ function render() {
     ? '点击卡片，查看完整资料 · 方向键逐张浏览'
     : '点击卡片，阅读说明'
   renderSortBar(isMaterial)
+  // 没条件时不摆按钮：点不动的东西放在那儿只会让人以为它坏了。
+  // 放在结果标题行而不是排序条，是因为术语页没有排序条，而它同样会被筛空。
+  $('#clearFilters').hidden = !hasFilters()
   $('#content').innerHTML = list.length
     ? list.map(x => (isMaterial ? card(x) : termCard(x))).join('')
-    : `<div class="empty"><h3>${view === 'favorites' ? '还没有收藏的材料' : '没有找到匹配内容'}</h3><p>${view === 'favorites' ? '点击材料卡片右上角的星标，即可收藏。' : '试试更短的关键词，或切换回全部分类。'}</p><button id="reset">${view === 'favorites' ? '浏览材料' : '清除筛选'}</button></div>`
+    : emptyState()
   renderTermTools()
   renderTray()
   syncUrl()
@@ -1354,6 +1421,7 @@ document.addEventListener('click', e => {
   }
   if (el.dataset.remove) {
     selected = selected.filter(id => id !== el.dataset.remove)
+    saveCompare()
     render()
     return
   }
@@ -1382,6 +1450,7 @@ document.addEventListener('click', e => {
   }
   if (el.id === 'compareClear') {
     selected = []
+    saveCompare()
     render()
     return
   }
@@ -1565,6 +1634,14 @@ function ensureAtlas() {
       ;({ structureFigure } = structures)
       DATA = data
       favorites = new Set([...favorites].filter(id => material(id)))
+      // 数据改过之后旧 id 可能已经不存在；上限也跟着当前规则收一次。
+      // 先去重：数组里若有重复，计数会显示「3 条」而实际只有 2 个材料。
+      // 只有真的变了才写回，否则会凭空给没勾过任何东西的人留下一条空记录。
+      const kept = [...new Set(selected)].filter(id => material(id)).slice(0, 3)
+      if (kept.join() !== selected.join()) {
+        selected = kept
+        saveCompare()
+      }
     })().catch(e => {
       atlasRequest = null
       throw e

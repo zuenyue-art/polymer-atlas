@@ -1711,8 +1711,7 @@ main {
 }
 
 .sort-bar select:focus-visible,
-.sort-bar .sort-dir:focus-visible,
-.sort-bar .sort-clear:focus-visible {
+.sort-bar .sort-dir:focus-visible {
   outline: 2px solid var(--green);
   outline-offset: 1px;
 }
@@ -1728,14 +1727,21 @@ main {
   display: none;
 }
 
-/* 清除筛选靠右：它和排序是两类动作，挤在一起会被当成排序的一部分 */
-.sort-bar .sort-clear {
-  margin-left: auto;
-  padding: 6px 11px;
+/* 结果标题行右侧：提示文案 + 清除筛选。放在这里而不是排序条，
+   是因为术语页没有排序条，而它同样会被筛空。 */
+.results-side {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.results-clear {
+  padding: 5px 11px;
   font-size: 11.5px;
 }
 
-.sort-bar .sort-clear[hidden] {
+/* .btn 是 inline-flex，会盖掉浏览器默认的 [hidden] { display: none }，必须显式提权 */
+.results-clear[hidden] {
   display: none;
 }
 
@@ -1799,6 +1805,14 @@ main {
   margin: 10px 0 0;
   font-size: 11.5px;
   color: var(--muted);
+}
+
+/* 没有数值的材料在这里说明原因。比脚注大一号、用正文色：
+   它替代的是整张数值表，不是表格下面的一句备注。 */
+.props-empty {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.85;
 }
 
 /*
