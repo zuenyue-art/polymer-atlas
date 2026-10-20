@@ -802,6 +802,67 @@ function renderTray() {
 function section(title, text, extra = '') {
   return `<section class="detail-section"><h3>${esc(title)}</h3><p class="${extra}">${esc(text)}</p></section>`
 }
+
+/**
+ * 把「易混淆点」正文里提到的其他材料变成可点的链接。
+ *
+ * 为什么不预先在数据里存关系：130 条材料的易混淆关系是交叉的，存成字段就要维护
+ * 一份和正文不同步的索引，改正文忘了改索引就会指向错的材料。这里按名称即时匹配，
+ * 正文是唯一事实来源。
+ *
+ * 两条防误判：长名字优先（否则「聚丙烯」会先吃掉「聚丙烯酸」的前三个字）；
+ * 每条材料只链接第一次出现的地方，否则一段话里同一个名字点得到处都是。
+ */
+function linkifyMaterials(text, selfId) {
+  const src = String(text ?? '')
+  if (!src || !DATA?.materials) return esc(src)
+  const candidates = []
+  const selfTokens = new Set()
+  for (const m of DATA.materials) {
+    const names = new Set()
+    const name = String(m.fields['材料名称'] ?? '').trim()
+    if (name) names.add(name)
+    // 缩写字段里有「PPE/PPO、mPPE」「PU/TPU」这类并列写法，逐个拆出来
+    for (const part of String(m.fields['英文缩写'] ?? '').split(/[\/、,，\s]+/)) {
+      const token = part.trim()
+      if (token) names.add(token)
+    }
+    if (m.id === selfId) {
+      for (const n of names) selfTokens.add(n)
+      continue
+    }
+    for (const n of names) candidates.push({ n, id: m.id })
+  }
+  candidates.sort((a, b) => b.n.length - a.n.length)
+
+  const isAscii = /^[A-Za-z0-9][A-Za-z0-9-]*$/
+  const linked = new Set()
+  let out = ''
+  let i = 0
+  while (i < src.length) {
+    let hit = null
+    for (const c of candidates) {
+      if (linked.has(c.id) || selfTokens.has(c.n) || !src.startsWith(c.n, i)) continue
+      if (isAscii.test(c.n)) {
+        // 缩写要求两侧不是字母数字，否则 PET 里的 PE、PBT 里的 BT 都会被认出来
+        const before = src[i - 1] || ''
+        const after = src[i + c.n.length] || ''
+        if (/[A-Za-z0-9]/.test(before) || /[A-Za-z0-9]/.test(after)) continue
+      }
+      hit = c
+      break
+    }
+    if (hit) {
+      linked.add(hit.id)
+      out += `<button class="inline-material" type="button" data-related="${esc(hit.id)}">${esc(hit.n)}</button>`
+      i += hit.n.length
+    } else {
+      out += esc(src[i])
+      i += 1
+    }
+  }
+  return out
+}
 function showDialog(d) {
   if (!d.open) d.showModal()
 }
@@ -840,11 +901,16 @@ function detail(id, open = true) {
         if (url)
           body += `<section class="detail-section"><a class="source-link" href="${esc(url)}" target="_blank" rel="noopener noreferrer">查看参考来源 ↗</a></section>`
       } else {
-        body += section(
-          g.id === 'recycling' ? '原有资料补充' : k,
-          v,
-          k === '重复单元/结构' ? 'formula' : ''
-        )
+        const headline = g.id === 'recycling' ? '原有资料补充' : k
+        // 只在这两段做互链。结构式那类字段里「CO」是羰基不是氯醚橡胶的缩写，
+        // 全字段铺开必然误链；这两段本身就是在讲「和别的材料的关系」。
+        if (k === '易混淆点/使用限制' || k === '回收路线与分离难点') {
+          body +=
+            `<section class="detail-section"><h3>${esc(headline)}</h3>` +
+            `<p>${linkifyMaterials(v, m.id)}</p></section>`
+        } else {
+          body += section(headline, v, k === '重复单元/结构' ? 'formula' : '')
+        }
       }
     }
     if (g.id === 'overview') body += propsTable(m) + relatedMarkup(m, DATA.materials)

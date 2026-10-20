@@ -1687,6 +1687,28 @@ main {
   color: var(--muted);
 }
 
+/*
+ * 正文里指向其他材料的行内链接（「易混淆点」段落用）。
+ * 用虚线下划线而不是实线：整段都是正文，实线会把句子割成一条条链接，
+ * 读起来像目录。虚线只在「这个词能点」这一点上给提示。
+ */
+.inline-material {
+  font: inherit;
+  color: var(--green);
+  background: none;
+  border: 0;
+  padding: 0 1px;
+  border-bottom: 1px dashed var(--green);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.inline-material:hover,
+.inline-material:focus-visible {
+  background: var(--soft);
+  border-bottom-style: solid;
+}
+
 .topbar-right {
   display: flex;
   align-items: center;

@@ -70,6 +70,12 @@ const CHECK_ONLY = process.argv.includes('--check')
 /** 数值字段定义，从 data.json 的 propsSpec 读（main 里赋值）。 */
 let PROPS_SPEC = []
 
+/**
+ * 互链用的材料名索引：[{ n, id }]，长名字排前面（main 里赋值）。
+ * 每条材料的中文名 + 缩写拆分后的每个词都算一个候选。
+ */
+let MATERIAL_INDEX = []
+
 const SOURCE_KEY = '参考来源与核验范围'
 
 // 这两项是页头的身份信息（大号缩写 + 标题），跟 app.js 一样不进任何分组。
@@ -168,6 +174,65 @@ function renderProps(m) {
 `
 }
 
+/** 与 app.js 的候选构造保持一致：中文名 + 缩写拆词，长名字优先。 */
+function buildMaterialIndex(materials) {
+  const out = []
+  for (const m of materials) {
+    const names = new Set()
+    const name = String(m.fields['材料名称'] ?? '').trim()
+    if (name) names.add(name)
+    for (const part of String(m.fields['英文缩写'] ?? '').split(/[\/、,，\s]+/)) {
+      const token = part.trim()
+      if (token) names.add(token)
+    }
+    for (const n of names) out.push({ n, id: m.id })
+  }
+  return out.sort((a, b) => b.n.length - a.n.length)
+}
+
+/**
+ * 「易混淆点」里提到的其他材料做成链接。静态页不加载 app.js，只能给真 href，
+ * 点了直接跳到那一页；图鉴里的同一段文字由 app.js 的 linkifyMaterials 处理。
+ *
+ * 长名字优先、每条只链一次，原因同 app.js 里的那份实现——两份逻辑要保持一致，
+ * 否则同一段文字在静态页和图鉴里点出来的东西不一样。
+ */
+function linkifyMaterials(text, selfId) {
+  const src = String(text ?? '')
+  if (!src || !MATERIAL_INDEX.length) return esc(src)
+  // 当前材料自己的名字/缩写不算「提到的其他材料」。必须按词排除而不是只排除自己的
+  // id：缩写是共享的（PP 同时属于聚丙烯和丙纶），只排除 id 的话，聚丙烯页面里的
+  // 「PP」会被链到丙纶去——指向了一个同名但不相干的东西。
+  const selfTokens = new Set(MATERIAL_INDEX.filter(c => c.id === selfId).map(c => c.n))
+  const isAscii = /^[A-Za-z0-9][A-Za-z0-9-]*$/
+  const linked = new Set()
+  let out = ''
+  let i = 0
+  while (i < src.length) {
+    let hit = null
+    for (const c of MATERIAL_INDEX) {
+      if (c.id === selfId || selfTokens.has(c.n) || linked.has(c.id)) continue
+      if (!src.startsWith(c.n, i)) continue
+      if (isAscii.test(c.n)) {
+        const before = src[i - 1] || ''
+        const after = src[i + c.n.length] || ''
+        if (/[A-Za-z0-9]/.test(before) || /[A-Za-z0-9]/.test(after)) continue
+      }
+      hit = c
+      break
+    }
+    if (hit) {
+      linked.add(hit.id)
+      out += `<a class="inline-material" href="${esc(materialPath(hit.id))}">${esc(hit.n)}</a>`
+      i += hit.n.length
+    } else {
+      out += esc(src[i])
+      i += 1
+    }
+  }
+  return out
+}
+
 function renderGroups(m) {
   const f = m.fields
   return GROUPS.map(group => {
@@ -187,9 +252,12 @@ function renderGroups(m) {
         // 「回收」组里那条在 app.js 里是作为「原有资料补充」呈现的，这里保持一致。
         const headline = group.label === '回收' ? '原有资料补充' : key
         const cls = key === '重复单元/结构' ? ' class="formula"' : ''
+        // 与 app.js 一致：只在这两段做互链（结构式里的 CO 是羰基，全字段铺开会误链）
+        const linked = key === '易混淆点/使用限制' || key === '回收路线与分离难点'
+        const body = linked ? linkifyMaterials(f[key], m.id) : esc(f[key])
         return `<div class="detail-section">
           <h3>${esc(headline)}</h3>
-          <p${cls}>${esc(f[key])}</p>
+          <p${cls}>${body}</p>
         </div>`
       })
     if (!blocks.length) return ''
@@ -540,6 +608,7 @@ async function main() {
   const materials = data.materials ?? []
   if (!materials.length) throw Error('data.json 里没有 materials，先确认数据文件')
   PROPS_SPEC = data.propsSpec ?? []
+  MATERIAL_INDEX = buildMaterialIndex(materials)
 
   checkFieldCoverage(materials)
 
