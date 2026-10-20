@@ -834,6 +834,56 @@ footer {
   font-size: 12px;
   color: #586a50;
 }
+/* 术语 → 材料 的反向入口。样式跟「关联材料」一致：小圆角药丸，不抢正文。 */
+.term-help-materials {
+  margin-top: 18px;
+  padding-top: 15px;
+  border-top: 1px solid var(--line);
+}
+/* 放在材料/术语详情里时补上左右边距：详情各节自己有 28px，这块是裸 div 会贴边。
+   详情里各节之间本来没有分隔线，这里也不要画一条。 */
+#detailContent > .term-help-materials {
+  padding: 15px 28px 22px;
+  margin-top: 0;
+  border-top: 0;
+}
+.term-help-materials strong {
+  display: block;
+  font-size: 11px;
+  color: var(--green);
+  margin-bottom: 9px;
+}
+.term-help-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.term-help-chip {
+  font: inherit;
+  font-size: 12.5px;
+  line-height: 1.4;
+  padding: 5px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--soft);
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+.term-help-chip:hover {
+  border-color: var(--green);
+}
+.term-help-chip small {
+  color: var(--muted);
+  margin-left: 6px;
+}
+.term-help-materials > small {
+  display: block;
+  margin-top: 9px;
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--muted);
+}
 .comparison-controls {
   padding: 18px 25px;
   background: #f5f7f1;

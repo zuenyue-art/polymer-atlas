@@ -5,6 +5,7 @@ let relatedMarkup,
   comparisonRows,
   comparisonPropRows,
   annotateTerms,
+  materialsForTerm,
   recyclingFigure,
   structureFigure
 const $ = s => document.querySelector(s)
@@ -1196,7 +1197,8 @@ function detail(id, open = true) {
         }
       }
     }
-    if (g.id === 'overview') body += propsTable(m) + relatedMarkup(m, DATA.materials)
+    if (g.id === 'overview')
+      body += propsTable(m) + relatedMarkup(m, DATA.materials, DATA.propsSpec)
     body += '</div>'
   }
   $('#detailContent').innerHTML = body
@@ -1232,6 +1234,7 @@ function otherDetail(kind, index, { record = true } = {}) {
   for (const [k, v] of Object.entries(x)) if (k !== title && k !== '来源链接') body += section(k, v)
   if (x['来源链接'])
     body += `<section class="detail-section"><a class="source-link" href="${esc(x['来源链接'])}" target="_blank" rel="noopener noreferrer">打开原始来源 ↗</a></section>`
+  body += termMentionMarkup(x)
   $('#detailContent').innerHTML = body
   popupKind = kind
   if (record) history.pushState({ popup: kind, index }, '', location.href)
@@ -1268,6 +1271,27 @@ function openCompare({ record = true } = {}) {
   }
   showDialog($('#compareDialog'))
 }
+/**
+ * 反向入口：读到「软段与硬段」想知道哪些材料讲了这个概念。
+ * 匹配用的是正文高亮同一份别名表，所以不会出现「正文里高亮着、
+ * 这里却说没有材料提到」的矛盾。没有别名或确实没材料提到时整块不出现。
+ */
+function termMentionMarkup(term) {
+  if (!materialsForTerm) return ''
+  const mentioned = materialsForTerm(term, DATA.materials)
+  if (!mentioned.length) return ''
+  return (
+    `<div class="term-help-materials"><strong>正文提到这一概念的材料</strong><div class="term-help-chips">` +
+    mentioned
+      .slice(0, 6)
+      .map(
+        ({ material: mt, count }) =>
+          `<button class="term-help-chip" type="button" data-related="${esc(mt.id)}">${esc(mt.fields['材料名称'])}<small>${count} 处</small></button>`
+      )
+      .join('') +
+    `</div><small>共 ${mentioned.length} 条，按提及次数排序；点开看完整资料。</small></div>`
+  )
+}
 function showTermHelp(index) {
   const term = DATA.terms[index]
   if (!term) return
@@ -1285,7 +1309,9 @@ function showTermHelp(index) {
         dialog.close()
     })
   }
-  dialog.innerHTML = `<div class="dialog-top"><span>术语速读 · 关闭后继续阅读</span><button class="icon-btn" data-close aria-label="关闭术语解释">×</button></div><div class="term-help-body"><h2 id="termHelpTitle">${esc(term['术语/阅读规则'])}</h2><p>${esc(term['解释'])}</p>${term['用途或易错点'] ? `<div class="term-help-note"><strong>注意区分</strong><p>${esc(term['用途或易错点'])}</p></div>` : ''}${term['来源链接'] ? `<a class="term-reference" href="${esc(term['来源链接'])}" target="_blank" rel="noopener noreferrer">术语 / 方法参考 ↗</a>` : ''}</div>`
+  // 反向入口：从术语弹窗点进材料时，先把这张速读卡收起来，否则两层弹窗叠着
+  const mentionBlock = termMentionMarkup(term)
+  dialog.innerHTML = `<div class="dialog-top"><span>术语速读 · 关闭后继续阅读</span><button class="icon-btn" data-close aria-label="关闭术语解释">×</button></div><div class="term-help-body"><h2 id="termHelpTitle">${esc(term['术语/阅读规则'])}</h2><p>${esc(term['解释'])}</p>${term['用途或易错点'] ? `<div class="term-help-note"><strong>注意区分</strong><p>${esc(term['用途或易错点'])}</p></div>` : ''}${mentionBlock}${term['来源链接'] ? `<a class="term-reference" href="${esc(term['来源链接'])}" target="_blank" rel="noopener noreferrer">术语 / 方法参考 ↗</a>` : ''}</div>`
   showDialog(dialog)
 }
 document.addEventListener('change', e => {
@@ -1383,6 +1409,10 @@ document.addEventListener('click', e => {
     return
   }
   if (el.dataset.related) {
+    // 从术语卡里点进材料：先把术语解释收起来，否则两层弹窗叠在一起，
+    // 读者看到的还是那张覆盖在上面的卡片。
+    const help = $('#termHelpDialog')
+    if (help?.open) help.close()
     detailSelections.set(el.dataset.related, 'overview')
     openDetail(el.dataset.related)
     document.querySelector('.detail-tab.active')?.focus({ preventScroll: true })
@@ -1629,7 +1659,8 @@ function ensureAtlas() {
       ])
       if (!r.ok) throw Error('资料载入失败')
       const data = await r.json()
-      ;({ relatedMarkup, comparisonRows, comparisonPropRows, annotateTerms } = learning)
+      ;({ relatedMarkup, comparisonRows, comparisonPropRows, annotateTerms, materialsForTerm } =
+        learning)
       ;({ recyclingFigure } = recycling)
       ;({ structureFigure } = structures)
       DATA = data
