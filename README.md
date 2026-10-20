@@ -40,6 +40,20 @@ npm run serve    # 本地预览 http://localhost:8080
 pip install -r scripts/requirements.txt
 ```
 
+## 材料数值
+
+每条材料可选填 `Tg` / `Tm` / `HDT` / `密度` / `加工温度` 五个数值，用于「耐温 > 150 ℃ 且密度 < 1.1」这类筛选。数据在 `data.json` 的 `materials[].props`，字段定义是同文件的 `propsSpec`（唯一来源）。
+
+填表流程：`python scripts/build-props-sheet.py` 生成 `props-待填.xlsx` → 填好 → `python scripts/apply-props.py <表>` → `npm run build`。表格里留空表示「不改动」，已填的值不会因为这次留空被清掉。
+
+口径三条，看数之前先看这里：
+
+1. **值为典型值**，取未改性、通用牌号，不是某个厂商某个牌号的数据。牌号差异大的材料（LCP、PPA、改性 PP）备注里会写明。
+2. **HDT 统一按 0.45 MPa**。同样的材料 1.8 MPa 下要低 30–50 ℃，两个条件混着比会得出错误结论。
+3. **没有物理意义的格子留空**，不是填 0：热固性树脂没有 Tm、纤维没有 HDT、橡胶的「加工温度」不是熔融窗口。筛选器的语义是「填了条件＝要求该材料必须有这个数」，所以没填的材料不会出现在筛选结果里——这是刻意的，不把「没数据」伪装成「不符合」。
+
+覆盖情况随数据增长，`npm run check` 里的 `audit` 会报当前条数。
+
 ## 本地校验
 
 ```bash

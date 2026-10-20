@@ -9,3 +9,7 @@ dist/.wrangler/
 
 # 给作者填数值用的草稿表（scripts/build-props-sheet.py 生成），不是站点内容
 props-待填.xlsx
+
+# 填数值时的过程文件（含来源与置信度），只做审阅用
+props-已填.xlsx
+props-values.csv
