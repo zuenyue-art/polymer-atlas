@@ -912,6 +912,21 @@ footer {
   font-size: 11px;
   color: var(--muted);
 }
+/* 结果得能带走：按钮靠右，「只看差异」和差异统计仍留在左边一行里。 */
+.compare-actions {
+  margin-left: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.compare-actions .btn {
+  font-size: 12px;
+  padding: 7px 12px;
+}
+/* 打印头只在纸上出现，屏幕上弹窗顶栏已经交代过这是什么。 */
+.compare-print-head {
+  display: none;
+}
 .comparison tbody th {
   font-size: 12px;
   font-weight: 500;
@@ -1891,4 +1906,70 @@ main {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+/*
+ * 打印对比表。对比表是叠在详情之上的第二层弹窗，两份 dialog 在打印时都是
+ * position: static，不藏掉底下的详情就会连整份材料一起印出来。
+ * .comparison 平时是 overflow: auto（表宽了横向滚），纸上没有滚动条，
+ * 必须放开，否则右边几列直接被裁掉。
+ */
+@media print {
+  body:has(#compareDialog[open]) #detailDialog {
+    display: none !important;
+  }
+  #compareDialog .dialog-top,
+  .compare-actions,
+  .comparison-controls label {
+    display: none !important;
+  }
+  /* 旧打印规则把这块整个藏了（那是给材料详情页写的）；对比表里「差异统计」
+     和口径说明要留在纸上，只藏掉「只看差异」的勾选框。 */
+  #compareDialog .comparison-controls {
+    display: flex !important;
+  }
+  #compareDialog {
+    width: 100%;
+    max-width: none;
+  }
+  .compare-print-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+    border-bottom: 2px solid var(--line);
+  }
+  .compare-print-head strong {
+    font-size: 15px;
+  }
+  .compare-print-head span {
+    margin-left: 10px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .compare-print-head small {
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .comparison-controls {
+    padding: 0 0 12px;
+    background: none;
+    border-bottom: 0;
+  }
+  #compareDialog .comparison {
+    overflow: visible;
+    padding: 0;
+  }
+  #compareDialog .comparison table {
+    font-size: 10.5px;
+  }
+  /* 表头每页重复，行不跨页断开——一张对比表断在半行上就没法看了。 */
+  #compareDialog thead {
+    display: table-header-group;
+  }
+  #compareDialog tr {
+    break-inside: avoid;
+  }
 }

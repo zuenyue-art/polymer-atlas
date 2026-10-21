@@ -191,6 +191,33 @@ export function comparisonRows(materials) {
     }
   })
 }
+/**
+ * 对比结果排成 TSV：贴进 Excel 直接是一张表，贴进邮件也看得出哪一格属于谁。
+ *
+ * 表头用「缩写（全名）」而不是只用缩写——收到表的人未必认得 PET 和 PBT 的
+ * 全称；只用全名又太宽，一眼扫不出是哪几条。两样都给。
+ * 数值表和文本表之间隔一个空行：数值行和整段文字混在一起，读的人分不清
+ * 哪几行是数、哪几行是描述。空行在 Excel 里也正好把两块分开。
+ * 没填的数值写「—」，与表格里一致，不用 0 冒充。
+ */
+export function comparisonTsv(materials, rows, propRows) {
+  const cell = v => String(v ?? '').replace(/[\t\r\n]+/g, ' ')
+  const line = cells => cells.map(cell).join('\t')
+  const head = line([
+    '比较维度',
+    ...materials.map(m => {
+      const abbr = m.fields['英文缩写'],
+        name = m.fields['材料名称']
+      return abbr ? `${abbr}（${name}）` : name
+    })
+  ])
+  const numeric = (propRows || []).map(r =>
+    line([r.unit ? `${r.label}（${r.unit}）` : r.label, ...r.values.map(v => v || '—')])
+  )
+  const text = rows.map(r => line([r.key, ...r.values.map(v => v || '未收录')]))
+  const gap = numeric.length && text.length ? [''] : []
+  return [head, ...numeric, ...gap, ...text].join('\n')
+}
 export const termAliases = [
   ['玻璃化转变', 'Tg 玻璃化转变'],
   ['Tg', 'Tg 玻璃化转变'],

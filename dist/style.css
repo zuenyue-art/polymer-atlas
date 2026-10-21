@@ -929,6 +929,10 @@ body:has(dialog[open]) {
   }
   dialog[open] {
     position: static;
+    /* top-layer 的定位残留（inset: 0 + margin: auto）不会因为改成 static 而消失，
+       弹窗整体悬在纸面之外，页头会被裁掉一截——全部归零。 */
+    inset: auto;
+    margin: 0;
     width: 100%;
     max-height: none;
     border: 0;

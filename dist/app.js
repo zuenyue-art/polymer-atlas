@@ -4,6 +4,7 @@ import { mountNews, NEWS_TEMPLATE } from './news-view.js'
 let relatedMarkup,
   comparisonRows,
   comparisonPropRows,
+  comparisonTsv,
   annotateTerms,
   materialsForTerm,
   recyclingFigure,
@@ -1240,6 +1241,46 @@ function otherDetail(kind, index, { record = true } = {}) {
   if (record) history.pushState({ popup: kind, index }, '', location.href)
   showDialog($('#detailDialog'))
 }
+/**
+ * 分享链接指向 canonical 地址而不是当前地址：EdgeOne 镜像要带令牌才能进，
+ * 把当前地址发给同事，对方打开是 401。canonical 是公开站，谁都能开。
+ */
+function canonicalBase() {
+  const href = document.querySelector('link[rel="canonical"]')?.href || location.href
+  const u = new URL(href, location.href)
+  return u.origin + (u.pathname.endsWith('/') ? u.pathname : u.pathname + '/')
+}
+/** 当前这张表的行（含「只看差异」的筛选）：屏幕上看到什么，就带走什么。 */
+function comparedParts() {
+  const ms = selected.map(material).filter(Boolean)
+  return {
+    ms,
+    rows: comparisonRows(ms).filter(r => !comparisonOnlyDifferences || !r.same),
+    propRows: comparisonPropRows(ms, DATA.propsSpec || []).filter(
+      r => !comparisonOnlyDifferences || !r.same
+    )
+  }
+}
+async function copyCompareTable() {
+  if (selected.length < 2) return
+  const { ms, rows, propRows } = comparedParts()
+  try {
+    await navigator.clipboard.writeText(comparisonTsv(ms, rows, propRows))
+    toast(`已复制 ${ms.length} 条材料、${rows.length + propRows.length} 行，可直接粘进表格`)
+  } catch {
+    toast('浏览器未允许复制，可在对比表里选中文字复制')
+  }
+}
+async function copyCompareLink() {
+  if (selected.length < 2) return
+  const url = `${canonicalBase()}?compare=${selected.join(',')}#materials`
+  try {
+    await navigator.clipboard.writeText(url)
+    toast('分享链接已复制，对方打开会直接摆好这张对比表')
+  } catch {
+    toast('浏览器未允许复制，请手动复制地址栏')
+  }
+}
 let comparisonOnlyDifferences = false
 function openCompare({ record = true } = {}) {
   if (selected.length < 2) return
@@ -1261,8 +1302,14 @@ function openCompare({ record = true } = {}) {
   ]
     .filter(Boolean)
     .join(' · ')
+  // 结果得能带走：选完料要发给同事、贴进选型表、留一份 PDF。
+  // 三个按钮都只读当前这张表，不改动任何状态。
+  const actions = `<div class="compare-actions"><button class="btn" id="compareCopy">复制表格</button><button class="btn" id="comparePrint">打印 / 存为 PDF</button><button class="btn" id="compareShare">复制分享链接</button></div>`
+  // 打印头只在纸上出现：屏幕上有弹窗顶栏，纸上什么都没有，不知道这张表是什么、
+  // 什么时候印的、从哪来的。
+  const printHead = `<div class="compare-print-head"><div><strong>材料对比</strong><span>${ms.map(m => esc(m.fields['英文缩写'])).join(' · ')}</span></div><small>polymer-atlas · ${new Date().toLocaleDateString('zh-CN')} · ${esc(canonicalBase())}</small></div>`
   $('#compareContent').innerHTML =
-    `<div class="comparison-controls"><label><input type="checkbox" id="differencesOnly" ${comparisonOnlyDifferences ? 'checked' : ''}>只看差异</label><span>${summary}</span><small>按文字内容比较，相近表述仍可能标为不同；不代表性能差异大小。</small></div>${numbers}<div class="comparison"><table>${head}<tbody>${visible.map(r => `<tr class="${r.same ? 'comparison-same' : 'comparison-different'}"><th scope="row">${esc(r.key)}<small>${r.same ? '相同' : '不同'}</small></th>${r.values.map((v, i) => `<td class="${!r.same && !r.shared[i] ? 'comparison-distinct' : ''}">${esc(v || '未收录')}</td>`).join('')}</tr>`).join('')}</tbody></table>${visible.length || propVisible.length ? '' : '<div class="empty">所选资料在当前比较维度中没有文本差异。</div>'}</div>`
+    `${printHead}<div class="comparison-controls"><label><input type="checkbox" id="differencesOnly" ${comparisonOnlyDifferences ? 'checked' : ''}>只看差异</label><span>${summary}</span>${actions}<small>按文字内容比较，相近表述仍可能标为不同；不代表性能差异大小。</small></div>${numbers}<div class="comparison"><table>${head}<tbody>${visible.map(r => `<tr class="${r.same ? 'comparison-same' : 'comparison-different'}"><th scope="row">${esc(r.key)}<small>${r.same ? '相同' : '不同'}</small></th>${r.values.map((v, i) => `<td class="${!r.same && !r.shared[i] ? 'comparison-distinct' : ''}">${esc(v || '未收录')}</td>`).join('')}</tr>`).join('')}</tbody></table>${visible.length || propVisible.length ? '' : '<div class="empty">所选资料在当前比较维度中没有文本差异。</div>'}</div>`
   // 对比表是从详情里叠出来的第二层弹窗，也要占历史记录；否则返回键会先关掉
   // 底下的详情，对比表孤零零留在屏幕上。重复渲染（勾「只看差异」）不再压栈。
   if (record && popupKind !== 'compare') {
@@ -1484,6 +1531,18 @@ document.addEventListener('click', e => {
     render()
     return
   }
+  if (el.id === 'compareCopy') {
+    copyCompareTable()
+    return
+  }
+  if (el.id === 'comparePrint') {
+    window.print()
+    return
+  }
+  if (el.id === 'compareShare') {
+    copyCompareLink()
+    return
+  }
   if (el.id === 'printDetail') {
     window.print()
     return
@@ -1659,8 +1718,14 @@ function ensureAtlas() {
       ])
       if (!r.ok) throw Error('资料载入失败')
       const data = await r.json()
-      ;({ relatedMarkup, comparisonRows, comparisonPropRows, annotateTerms, materialsForTerm } =
-        learning)
+      ;({
+        relatedMarkup,
+        comparisonRows,
+        comparisonPropRows,
+        comparisonTsv,
+        annotateTerms,
+        materialsForTerm
+      } = learning)
       ;({ recyclingFigure } = recycling)
       ;({ structureFigure } = structures)
       DATA = data
@@ -1734,6 +1799,37 @@ try {
   if (view === 'news') await newsController.ready
 } catch {
   toast('资料暂时未能载入，请稍后重试')
+}
+// 分享链接 ?compare=a,b,c#materials：打开就把对比表摆好，不用对方再勾一遍。
+// 参数只认一次，用完就从地址里抹掉——留着的话，改完勾选再刷新，又会被旧参数
+// 拉回别人当初那三条，看起来像自己选错了。
+{
+  const params = new URLSearchParams(location.search)
+  const raw = params.get('compare')
+  if (raw !== null) {
+    const ids = [
+      ...new Set(
+        raw
+          .split(',')
+          .map(x => x.trim())
+          .filter(Boolean)
+      )
+    ].slice(0, 3)
+    const kept = DATA ? ids.filter(id => material(id)) : []
+    // 不足两条没法比：不弹一张空表，勾选也不动（可能是链接被截断了）。
+    if (kept.length >= 2) {
+      selected = kept
+      saveCompare()
+      openCompare({ record: false })
+    }
+    params.delete('compare')
+    const qs = params.toString()
+    history.replaceState(
+      history.state,
+      '',
+      location.pathname + (qs ? `?${qs}` : '') + location.hash
+    )
+  }
 }
 // 用分享链接直接打开某条材料时，先垫一条「列表态」历史记录，
 // 这样关闭详情按返回键是回到材料列表，而不是退出站点。
