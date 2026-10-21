@@ -1323,20 +1323,32 @@ function openCompare({ record = true } = {}) {
  * 匹配用的是正文高亮同一份别名表，所以不会出现「正文里高亮着、
  * 这里却说没有材料提到」的矛盾。没有别名或确实没材料提到时整块不出现。
  */
+// 展开过的术语记在内存里：同一个术语在详情弹窗和速读卡里都会出现，
+// 读者在其中一处展开过，另一处也该是展开的。
+const expandedMentions = new Set()
 function termMentionMarkup(term) {
   if (!materialsForTerm) return ''
   const mentioned = materialsForTerm(term, DATA.materials)
   if (!mentioned.length) return ''
+  const title = term['术语/阅读规则']
+  const expanded = expandedMentions.has(title)
+  const shown = expanded ? mentioned : mentioned.slice(0, 6)
+  // 默认只摆 6 条是怕撑破卡片，但「共 19 条」不给入口就成了看得见摸不着的断头路
+  const more =
+    mentioned.length > 6
+      ? `<button class="term-help-more" type="button" data-term-expand="${esc(title)}">${
+          expanded ? '收起' : `展开其余 ${mentioned.length - 6} 条`
+        }</button>`
+      : ''
   return (
     `<div class="term-help-materials"><strong>正文提到这一概念的材料</strong><div class="term-help-chips">` +
-    mentioned
-      .slice(0, 6)
+    shown
       .map(
         ({ material: mt, count }) =>
           `<button class="term-help-chip" type="button" data-related="${esc(mt.id)}">${esc(mt.fields['材料名称'])}<small>${count} 处</small></button>`
       )
       .join('') +
-    `</div><small>共 ${mentioned.length} 条，按提及次数排序；点开看完整资料。</small></div>`
+    `</div>${more}<small>共 ${mentioned.length} 条，按提及次数排序；点开看完整资料。</small></div>`
   )
 }
 function showTermHelp(index) {
@@ -1453,6 +1465,21 @@ document.addEventListener('click', e => {
   }
   if (el.dataset.termHelp !== undefined) {
     showTermHelp(Number(el.dataset.termHelp))
+    return
+  }
+  if (el.dataset.termExpand !== undefined) {
+    // 只换这一块、不重建整张卡片：弹窗里的滚动位置还在原地，读者不会找不到刚才看的词
+    const block = el.closest('.term-help-materials')
+    const term = DATA.terms.find(x => x['术语/阅读规则'] === el.dataset.termExpand)
+    if (block && term) {
+      const title = term['术语/阅读规则']
+      if (expandedMentions.has(title)) expandedMentions.delete(title)
+      else expandedMentions.add(title)
+      block.outerHTML = termMentionMarkup(term)
+      document
+        .querySelector(`[data-term-expand="${CSS.escape(title)}"]`)
+        ?.focus({ preventScroll: true })
+    }
     return
   }
   if (el.dataset.related) {

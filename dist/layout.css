@@ -877,6 +877,18 @@ footer {
   color: var(--muted);
   margin-left: 6px;
 }
+.term-help-more {
+  font: inherit;
+  font-size: 12px;
+  margin-top: 9px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--green);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .term-help-materials > small {
   display: block;
   margin-top: 9px;
