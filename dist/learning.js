@@ -119,11 +119,22 @@ export function relatedMaterials(m, all, spec) {
   )
   return ranked.slice(0, 4)
 }
+/**
+ * 关联块的说明句。图鉴（app.js 经 relatedMarkup）与预渲染的独立页（prerender.mjs）
+ * 共用这一份：两处推荐的次序本来就是同一个函数算出来的，说明句再各写一份就会
+ * 出现「同一条材料在图鉴里说是 A、在独立页里说是 B」。
+ *
+ * 不说「同分类」：家族关系是跨分类的（聚酯那一组横跨塑料与弹性体），写了会与
+ * 实际结果矛盾。
+ */
+export const RELATED_NOTE =
+  '按结构关联、正文提到或数值最接近挑出；关联不表示性能相同，也不代表可以直接替代。'
+
 export function relatedMarkup(m, all, spec) {
   const list = relatedMaterials(m, all, spec)
   if (!list.length) return ''
   const e = escapeHtml
-  return `<section class="related-materials"><h3>关联材料</h3><p>同分类里优先给出正文提到的、或数值最接近的几条；关联不表示性能相同或能够直接替代。</p><div>${list.map(({ material: x, label }) => `<button class="related-material" data-related="${e(x.id)}"><strong>${e(x.fields['英文缩写'])}</strong><span>${e(x.fields['材料名称'])}</span><small>${e(label)} ↗</small></button>`).join('')}</div></section>`
+  return `<section class="related-materials"><h3>关联材料</h3><p>${RELATED_NOTE}</p><div>${list.map(({ material: x, label }) => `<button class="related-material" data-related="${e(x.id)}"><strong>${e(x.fields['英文缩写'])}</strong><span>${e(x.fields['材料名称'])}</span><small>${e(label)} ↗</small></button>`).join('')}</div></section>`
 }
 const normalize = v =>
   String(v ?? '')

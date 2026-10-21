@@ -54,6 +54,11 @@ import {
   materialUrl
 } from './site.mjs'
 
+// 关联材料复用图鉴那一份实现（dist/learning.js）。这一份不碰 DOM，Node 可以直接
+// 引入；关联次序如果在两处各算一次，同一条材料在图鉴和独立页里就会推荐不同的
+// 东西——互链已经这么处理过一次（linkifyMaterials 两份逻辑保持一致）。
+import { RELATED_NOTE, relatedMaterials } from '../dist/learning.js'
+
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const DIST = path.join(ROOT, 'dist')
 const OUT = path.join(DIST, 'm')
@@ -278,8 +283,39 @@ function renderGroups(m) {
     .join('\n')
 }
 
-function renderSiblings(m, materials) {
-  const peers = materials.filter(x => x.category === m.category && x.id !== m.id)
+/**
+ * 关联材料块。内容与次序直接取图鉴的 relatedMaterials()，理由也照搬过来写在
+ * 每条后面（「正文提到」「Tg 差 8 ℃」之类）——独立页是搜索进来的第一站，读者
+ * 在这页上看到的推荐理由必须和图鉴里的一致。
+ *
+ * 返回已列出的 id：下面那份「同分类的其他材料」要把它们排除掉，否则同一条材料
+ * 在同一页里出现两个链接，既啰嗦也把内链权重摊薄了。
+ */
+function renderRelated(m, materials) {
+  const list = relatedMaterials(m, materials, PROPS_SPEC)
+  if (!list.length) return { html: '', ids: new Set() }
+  const items = list
+    .map(
+      ({ material: x, label }) =>
+        `<li><a href="${esc(materialPath(x.id))}"><b>${esc(x.fields['英文缩写'])}</b>${esc(x.fields['材料名称'])}<small>${esc(label)}</small></a></li>`
+    )
+    .join('\n          ')
+  return {
+    ids: new Set(list.map(r => r.material.id)),
+    html: `      <section class="mp-group">
+        <h2 class="mp-group-title">关联材料</h2>
+        <p class="mp-group-note">${esc(RELATED_NOTE)}</p>
+        <ul class="mp-related">
+          ${items}
+        </ul>
+      </section>`
+  }
+}
+
+function renderSiblings(m, materials, exclude = new Set()) {
+  const peers = materials.filter(
+    x => x.category === m.category && x.id !== m.id && !exclude.has(x.id)
+  )
   const shown = peers.slice(0, SIBLING_LIMIT)
   const rest = peers.length - shown.length
   const items = shown
@@ -303,6 +339,7 @@ function renderSiblings(m, materials) {
 
 function renderPage(m, materials) {
   const f = m.fields
+  const related = renderRelated(m, materials)
   const id = m.id
   const url = materialUrl(id)
   const home = homeUrl()
@@ -381,7 +418,7 @@ function renderPage(m, materials) {
           <p class="mp-meta"><span class="badge">${esc(m.category)}</span>材料图鉴 · 共 ${materials.length} 条记录</p>
         </header>
 ${renderProps(m)}${renderGroups(m)}
-${renderSiblings(m, materials)}
+${related.html ? `${related.html}\n` : ''}${renderSiblings(m, materials, related.ids)}
         <footer class="mp-foot">
           <p>${esc(SITE_TAGLINE)}资料核验范围见「资料来源」，性能与工艺需按具体牌号确认。</p>
           <nav class="mp-links" aria-label="站内其他栏目">

@@ -138,7 +138,9 @@
   margin-bottom: 6px;
 }
 
-.mp-siblings {
+/* 同分类清单与关联材料共用一种药丸：都是一行一颗、点了就走。 */
+.mp-siblings,
+.mp-related {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -146,7 +148,8 @@
   padding: 0;
   list-style: none;
 }
-.mp-siblings a {
+.mp-siblings a,
+.mp-related a {
   display: inline-flex;
   align-items: baseline;
   gap: 6px;
@@ -158,17 +161,32 @@
   color: var(--ink);
   text-decoration: none;
 }
-.mp-siblings a:hover {
+.mp-siblings a:hover,
+.mp-related a:hover {
   border-color: var(--green);
   color: var(--green);
 }
-.mp-siblings b {
+.mp-siblings b,
+.mp-related b {
   font-size: 11px;
   font-weight: 600;
   color: var(--green);
 }
 .mp-siblings-more a {
   border-style: dashed;
+  color: var(--muted);
+}
+/* 关联材料多挂一句挑选理由（「正文提到」「Tg 差 8 ℃」）。弱化色、更小一号，
+   让它跟在名称后面当注解，不去和名称争注意力。 */
+.mp-related small {
+  font-size: 11px;
+  color: var(--muted);
+}
+/* 分组标题下的说明句：说清这一组为什么这么挑。关联不等于可替代，这句话得在。 */
+.mp-group-note {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.7;
   color: var(--muted);
 }
 
