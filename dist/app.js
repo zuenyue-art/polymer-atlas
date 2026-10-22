@@ -403,6 +403,13 @@ function switchView(next, { historyMode = 'push' } = {}) {
 let detailHashId = ''
 // 术语 / 文献详情弹窗在历史里的标记（地址不变，只靠 state 区分）
 let popupKind = ''
+// 当前弹窗里是哪一条术语：术语互链在同一张卡片里换内容，返回键要靠它判断换没换
+let popupIndex = -1
+/** 这一层 popup 在历史里垫了几条记录（互链每跳一层多一条）。 */
+function popupDepth() {
+  const s = history.state
+  return s && s.popup && Number.isInteger(s.depth) ? s.depth : 1
+}
 let hashDriven = false
 let handledHash = location.hash
 
@@ -457,6 +464,13 @@ function syncFromHash() {
 
 function onLocationChange() {
   const popup = history.state && history.state.popup
+  const index = Number(history.state && history.state.index)
+  // 术语互链：还是同一张卡片、同一层 popup，只是换了一条内容。
+  // 以前术语弹窗里没有「翻页」，这条分支用不上；现在不认的话返回键就退不动。
+  if (popup && popup === popupKind && popup !== 'compare' && index !== popupIndex) {
+    otherDetail(popup, index, { record: false })
+    return
+  }
   // 术语 / 文献 / 对比弹窗：前进键回到那条记录就重新打开，返回键离开就收起来
   if (popup && !popupKind) {
     if (popup === 'compare') openCompare({ record: false })
@@ -466,6 +480,7 @@ function onLocationChange() {
   if (!popup && popupKind) {
     const was = popupKind
     popupKind = ''
+    popupIndex = -1
     hashDriven = true
     if (was === 'compare') {
       const dialog = $('#compareDialog')
@@ -486,10 +501,13 @@ window.addEventListener('hashchange', onLocationChange)
 // hashDriven 为真说明这次关闭是 hash 变化引起的，不能再回溯一次。
 function onDetailClosed() {
   if (hashDriven) return
-  // 术语 / 文献 / 对比弹窗：历史里那条记录就是它自己，后退一步即可
+  // 术语 / 文献 / 对比弹窗：历史里那条记录就是它自己；顺着互链读过几层就得退几层
   if (popupKind) {
     popupKind = ''
-    history.back()
+    popupIndex = -1
+    const depth = popupDepth()
+    if (depth > 1) history.go(-depth)
+    else history.back()
     return
   }
   const shouldRewind = detailHashId && routeMaterialId() === detailHashId
@@ -1237,8 +1255,17 @@ function otherDetail(kind, index, { record = true } = {}) {
     body += `<section class="detail-section"><a class="source-link" href="${esc(x['来源链接'])}" target="_blank" rel="noopener noreferrer">打开原始来源 ↗</a></section>`
   body += termMentionMarkup(x)
   $('#detailContent').innerHTML = body
+  linkifyTerms($('#detailContent'), index)
+  $('#detailContent').scrollTop = 0
   popupKind = kind
-  if (record) history.pushState({ popup: kind, index }, '', location.href)
+  popupIndex = index
+  if (record) {
+    // 顺着互链读了三层，历史里就有三层：关闭时要一次退干净，否则返回键
+    // 会把已经关掉的弹窗又弹出来。depth 从上一层接着数，材料详情也是这么做的。
+    const prev = history.state
+    const depth = prev && prev.popup === kind && Number.isInteger(prev.depth) ? prev.depth + 1 : 1
+    history.pushState({ popup: kind, index, depth }, '', location.href)
+  }
   showDialog($('#detailDialog'))
 }
 /**
@@ -1351,6 +1378,16 @@ function termMentionMarkup(term) {
     `</div>${more}<small>共 ${mentioned.length} 条，按提及次数排序；点开看完整资料。</small></div>`
   )
 }
+/**
+ * 术语解释里的互链：写着「取决于 Tg 和结晶度」，那 Tg 就该能点进去。
+ *
+ * 用的是材料正文那一套别名和同一份样式，只有「点了以后干什么」不一样：材料正文里
+ * 点开是叠一张速读卡；在术语自己的卡片里点，得换成那一条术语的内容——顺着读三层
+ * 术语不能叠三层弹窗。自己提到自己的名字不做链接（点了原地打转）。
+ */
+function linkifyTerms(root, currentIndex) {
+  annotateTerms(root, DATA.terms, { skip: [currentIndex], attr: 'termGoto' })
+}
 function showTermHelp(index) {
   const term = DATA.terms[index]
   if (!term) return
@@ -1371,6 +1408,9 @@ function showTermHelp(index) {
   // 反向入口：从术语弹窗点进材料时，先把这张速读卡收起来，否则两层弹窗叠着
   const mentionBlock = termMentionMarkup(term)
   dialog.innerHTML = `<div class="dialog-top"><span>术语速读 · 关闭后继续阅读</span><button class="icon-btn" data-close aria-label="关闭术语解释">×</button></div><div class="term-help-body"><h2 id="termHelpTitle">${esc(term['术语/阅读规则'])}</h2><p>${esc(term['解释'])}</p>${term['用途或易错点'] ? `<div class="term-help-note"><strong>注意区分</strong><p>${esc(term['用途或易错点'])}</p></div>` : ''}${mentionBlock}${term['来源链接'] ? `<a class="term-reference" href="${esc(term['来源链接'])}" target="_blank" rel="noopener noreferrer">术语 / 方法参考 ↗</a>` : ''}</div>`
+  linkifyTerms(dialog.querySelector('.term-help-body'), index)
+  // 换了一张卡片后是从头读的：卷动位置回顶，目光不会落在半句中间
+  dialog.querySelector('.term-help-body').parentElement.scrollTop = 0
   showDialog(dialog)
 }
 document.addEventListener('change', e => {
@@ -1461,6 +1501,20 @@ document.addEventListener('click', e => {
   if (el.dataset.termCategory) {
     termCategory = el.dataset.termCategory
     render()
+    return
+  }
+  if (el.dataset.termGoto !== undefined) {
+    const index = Number(el.dataset.termGoto)
+    // 在哪个卡片里点，就换哪张卡片：速读卡原地换内容，术语详情换整个正文。
+    // 都不再往上叠——读术语顺着读三层，屏幕上不该有三层弹窗。
+    if (el.closest('#termHelpDialog')) showTermHelp(index)
+    else otherDetail('term', index)
+    document
+      .querySelector('#termHelpDialog[open] h2, #detailContent h2')
+      ?.setAttribute('tabindex', '-1')
+    document.querySelector('#termHelpDialog[open] h2, #detailContent h2')?.focus({
+      preventScroll: true
+    })
     return
   }
   if (el.dataset.termHelp !== undefined) {

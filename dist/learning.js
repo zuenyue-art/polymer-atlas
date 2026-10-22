@@ -424,7 +424,15 @@ export function materialsForTerm(term, all) {
         collator.compare(a.material.fields['材料名称'], b.material.fields['材料名称'])
     )
 }
-export function annotateTerms(root, terms) {
+/**
+ * 把正文里出现的术语变成可解释的小按钮。
+ *
+ * attr 决定「点了以后去哪」：默认走 data-term-help（弹一张速读卡）；术语自己的
+ * 解释里要用另一种（换当前卡片），见 app.js 的 linkifyTerms。
+ * skip 里的术语不包成按钮——在自己的解释里提到自己的名字，点它是原地打转。
+ */
+export function annotateTerms(root, terms, { skip = [], attr = 'termHelp' } = {}) {
+  const skipSet = new Set(skip)
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT)
   const nodes = []
   while (walker.nextNode()) {
@@ -443,11 +451,12 @@ export function annotateTerms(root, terms) {
     const fragment = document.createDocumentFragment()
     let at = 0
     for (const m of matches) {
+      if (skipSet.has(m.index)) continue
       fragment.append(document.createTextNode(n.textContent.slice(at, m.start)))
       const b = document.createElement('button')
       b.type = 'button'
       b.className = 'inline-term'
-      b.dataset.termHelp = String(m.index)
+      b.dataset[attr] = String(m.index)
       b.textContent = m.text
       b.setAttribute('aria-label', `解释术语：${m.text}`)
       b.setAttribute('aria-haspopup', 'dialog')
