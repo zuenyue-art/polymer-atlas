@@ -1829,10 +1829,11 @@ function ensureKnowledge() {
   if (knowledgeReady) return Promise.resolve()
   if (!knowledgeRequest)
     knowledgeRequest = (async () => {
-      await ensureAtlas()
+      // 术语表和主体数据互不依赖，并行取；串行的话每个页面白白多一个来回。
+      // 取不到就退回 data.json 里那 18 条，页面照常能用。
+      const [r] = await Promise.all([fetch('terms.json').catch(() => null), ensureAtlas()])
       try {
-        const r = await fetch('terms.json')
-        if (!r.ok) throw Error()
+        if (!r || !r.ok) throw Error()
         const k = await r.json()
         DATA.terms = k.terms
         TERM_GUIDE = k.guide
@@ -1855,7 +1856,10 @@ const initialView = initial.view
 try {
   if (initialView !== 'news') {
     await ensureAtlas()
-    if (initialView === 'terms') await ensureKnowledge()
+    // terms.json 不只是术语页要用的：材料正文的术语高亮、速读卡里的互链都按这张表算。
+    // 只给术语页加载的话，从分享链接直接进 #materials/<id> 的人拿到的是 data.json 里
+    // 那 18 条回退术语——高亮少一截，速读卡里「提到别的术语」还会一条都点不出来。
+    await ensureKnowledge()
   }
   // 地址里带了筛选条件（?q=…&c=…&Tg-min=100）：分享链接、刷新、从别处跳回来都靠这条。
   // 直接写进 viewStates 而不是先 switchView 再 applyUrlState —— 后者要白渲染一遍
