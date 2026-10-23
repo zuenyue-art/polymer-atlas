@@ -167,6 +167,53 @@
       "regulatory_status": "征集通知已发布；非入选名单",
       "date_basis": "官方账号发布日2026-09-24；工信部通知成文2026-09-23；北京配套通知公开2026-09-29",
       "verification_scope": "官方账号公开检索正文与北京市政府配套通知全文交叉核验"
+    },
+    {
+      "id": "20260922-antai-reed-pla",
+      "published_at": "2026-09-22",
+      "added_at": "2026-10-23",
+      "materials": [
+        "聚乳酸",
+        "PLA",
+        "纤维素聚乳酸",
+        "生物基材料"
+      ],
+      "kind": "新材料与结构",
+      "title": "万吨级芦苇生物炼制投料试车，规划2万吨/年纤维素聚乳酸",
+      "summary": "湖南安碳生物科技（上海汉和生物全资子公司）万吨级芦苇生物炼制项目9月22日投料试车，规划2万吨/年纤维素聚乳酸，年消纳约12.5万吨湿地废弃芦苇。路线为蒸汽爆破预处理、酶解制糖、五碳糖与六碳糖共发酵产乳酸再聚合；副产酶解木质素用于生物树脂与多孔碳，产品面向3C、医疗器械与生物塑料。",
+      "source_name": "CCM化工数据库（行业报道）",
+      "source_title": "Hunan Antan's 10,000 t/a Common Reed Biomanufacturing Project was commissioned & trial production",
+      "url": "https://www.cnchemicals.com/databases/single-report/hunan-antan-s-10-000-t-a-common-reed-biomanufacturing-project-was-commissioned-trial-production_13463_232088?mainProductCategoryCode=A",
+      "focus": "材料技术",
+      "region": "中国",
+      "date_basis": "项目投料试车日2026-09-22",
+      "supporting_urls": [
+        "https://news.hubeidaily.net/pc/c_6006853.html"
+      ],
+      "verification_scope": "行业数据库事件报道与湖北日报现场报道交叉核对"
+    },
+    {
+      "id": "20260928-biodegradable-film-standards",
+      "published_at": "2026-09-28",
+      "added_at": "2026-10-23",
+      "materials": [
+        "全生物降解地膜",
+        "PHA",
+        "生物降解薄膜"
+      ],
+      "kind": "政策与标准",
+      "title": "两项生物降解薄膜国标发布：地膜改按使用寿命分类，2027年4月起实施",
+      "summary": "市场监管总局（国家标准委）9月28日发布GB/T 35795—2026《全生物降解农用地面覆盖薄膜》与GB/T 33897—2026《生物聚酯 聚羟基烷酸酯（PHA）吹塑薄膜》，均为推荐性国标，自2027年4月1日实施，前者全部代替2017版。地膜改为按有效使用寿命分类，统一生物降解标识，新增水蒸气透过量与高度关注物质限量。",
+      "source_name": "国家市场监督管理总局",
+      "source_title": "《全生物降解农用地面覆盖薄膜》等2项新版生物降解领域国家标准发布",
+      "url": "https://www.samr.gov.cn/xw/sj/art/2026/art_6db890c46c564fc8b6803fa7028a033a.html",
+      "focus": "材料技术",
+      "region": "中国",
+      "regulatory_status": "已发布；2027-04-01起实施",
+      "date_basis": "标准发布日2026-09-28（全国标准信息公共服务平台）；实施日2027-04-01",
+      "supporting_urls": [
+        "https://std.samr.gov.cn/gb/search/gbDetailed?id=5CB12E0EFA7E2034E06397BE0A0A34FB"
+      ]
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_at": "2026-10-19",
+  "updated_at": "2026-10-23",
   "checked_at": "2026-10-23",
   "items": [
     {
@@ -431,6 +431,173 @@
       "source_title": "Size-dependent catalysis of Ru nanoparticles for selective reductive amination of PET plastic",
       "url": "https://doi.org/10.1038/s41467-026-78873-3",
       "focus": "材料技术"
+    },
+    {
+      "id": "20261021-huaren-rpet-fda-nol",
+      "published_at": "2026-10-21",
+      "added_at": "2026-10-23",
+      "materials": [
+        "PET",
+        "rPET",
+        "食品接触材料"
+      ],
+      "kind": "回收与纯化",
+      "title": "华润化学材料化学法rPET获国内首张FDA无异议函，25%再生料已量产",
+      "summary": "华润化学材料的化学回收工艺获美国FDA无异议函，确认其消费后rPET可用于全品类食品接触场景，为国内企业首张PET化学回收NOL。路线为废瓶解聚、净化后重新聚合，现已实现25%再生料稳定量产，并打通10%、35%—50%再生瓶片占比的“瓶到瓶”技术；50%再生含量产品计划2027年上半年产业化。",
+      "source_name": "常州市人民政府（常州市新闻传媒中心）",
+      "source_title": "8年攻坚！常州这家企业让废弃塑料瓶重回“食品级”",
+      "url": "https://www.changzhou.gov.cn/ns_news/14179255295924",
+      "focus": "材料技术",
+      "region": "中国",
+      "date_basis": "政府网站发布日期2026-10-21；FDA函件时间以“近日”表述"
+    },
+    {
+      "id": "20261022-zhihao-foodgrade-rpet-line",
+      "published_at": "2026-10-22",
+      "added_at": "2026-10-23",
+      "materials": [
+        "PET",
+        "rPET",
+        "再生聚酯切片"
+      ],
+      "kind": "回收与纯化",
+      "title": "志浩科技2.5万吨食品级再生聚酯切片单线投产，配套SSP固相增粘",
+      "summary": "江苏志浩再生科技在盱眙投产一条食品级再生聚酯切片线，引进奥地利EREMA造粒机与SSP固相增粘装置，单线年产2.5万吨食品级rPET切片。原料来自自有6条3A级瓶片线（瓶片产能15万吨/年），产品供可口可乐、屈臣氏等饮料与日化客户。该线属物理回收加增粘提纯路线，不涉及解聚。",
+      "source_name": "盱眙县人民政府",
+      "source_title": "【跨越赶超·项目攻坚】盱眙3个项目竣工即产品下线",
+      "url": "http://www.xuyi.gov.cn/col/938_766423/art/17907840/1792397312284mzXbFp7Y.html",
+      "focus": "材料技术",
+      "region": "中国",
+      "date_basis": "政府网站发布日期2026-10-22"
+    },
+    {
+      "id": "20261016-kemao-ptp-pilot",
+      "published_at": "2026-10-16",
+      "added_at": "2026-10-23",
+      "materials": [
+        "废聚烯烃",
+        "丙烯",
+        "混合废塑料"
+      ],
+      "kind": "回收与纯化",
+      "title": "废塑料制丙烯中试启运：混合废聚烯烃定向转化，丙烯收率逾45%",
+      "summary": "科茂环境废塑料化学循环制丙烯（PTP）中试在沧州燕赵绿色化工实验室启运，进入全流程工程化验证。以混合低值废聚烯烃为原料、无需水洗预处理，经选择性催化裂解与烯烃重组定向产出丙烯，丙烯收率超过45%、丙烯加乙烯近60%，副产丙烷丁烷15%—20%，产物不含汽柴油馏分；中试验证后计划推进60万吨/年项目。",
+      "source_name": "中国经济新闻网",
+      "source_title": "点塑成金！科茂环境废塑料化学循环制丙烯（PTP）中试项目正式启动",
+      "url": "https://www.cet.com.cn/xwsd/10621269.shtml",
+      "focus": "材料技术",
+      "region": "中国",
+      "date_basis": "中试启运发布会2026-10-16；报道发布2026-10-19"
+    },
+    {
+      "id": "20261016-pcl-plasma-depolymerization",
+      "published_at": "2026-10-16",
+      "added_at": "2026-10-23",
+      "materials": [
+        "PCL",
+        "γ-己内酯",
+        "聚酯"
+      ],
+      "kind": "回收与纯化",
+      "title": "甲烷等离子体替代高压氢气，PCL常压无溶剂解聚收率93.1%",
+      "summary": "广东以色列理工学院高希团队在Angewandte Chemie报道，以常压甲烷非热等离子体替代高压氢气、Ni/HY沸石替代贵金属催化剂，在150℃、无溶剂条件下将PCL氢解，转化率100%、己内酯收率93.1%，其中γ-己内酯占88.9%；光伏驱动的100克级放大收率87.3%，解离能垒由2.29 eV降至1.71 eV。",
+      "source_name": "Angewandte Chemie｜科学网论文报道",
+      "source_title": "甲烷等离子体耦合催化将PCL常压无溶剂条件下选择性解聚为γ-CL",
+      "url": "https://paper.sciencenet.cn/htmlpaper/2026/10/2026101695535599156575.shtm",
+      "focus": "材料技术",
+      "region": "中国",
+      "date_basis": "论文推介发布2026-10-16",
+      "verification_scope": "期刊论文摘要与图文解析"
+    },
+    {
+      "id": "20261011-shengquan-ppo-ope-line",
+      "published_at": "2026-10-11",
+      "added_at": "2026-10-23",
+      "materials": [
+        "PPO",
+        "PPE",
+        "OPE"
+      ],
+      "kind": "新品与应用",
+      "title": "电子级PPO/OPE新增2000吨共线产能建成，面向M6—M9覆铜板",
+      "summary": "圣泉集团在机构调研中披露，新建2000吨/年PPO/OPE树脂共线项目已于2026年9月建成投产，叠加现有约1300—1500吨/年产能，产品用于M6—M9级高频高速覆铜板。电子级聚苯醚需在低介电损耗、耐热与溶解性间平衡，OPE为经降解和端基官能化得到的可交联低聚物；公司称已通过多家头部覆铜板厂认证并批量供货。",
+      "source_name": "21世纪经济报道（证券时报·数据宝）",
+      "source_title": "下周1只新股可申购！这些股解禁压力大",
+      "url": "https://www.21jingji.com/article/20261011/herald/1070c7a8f5f32442c9c347b422b5b5dc.html",
+      "focus": "材料技术",
+      "region": "中国",
+      "date_basis": "报道发布2026-10-11；项目投产时间为公司调研口径",
+      "verification_scope": "媒体转述公司机构调研表述"
+    },
+    {
+      "id": "20260922-antai-reed-pla",
+      "published_at": "2026-09-22",
+      "added_at": "2026-10-23",
+      "materials": [
+        "聚乳酸",
+        "PLA",
+        "纤维素聚乳酸",
+        "生物基材料"
+      ],
+      "kind": "新材料与结构",
+      "title": "万吨级芦苇生物炼制投料试车，规划2万吨/年纤维素聚乳酸",
+      "summary": "湖南安碳生物科技（上海汉和生物全资子公司）万吨级芦苇生物炼制项目9月22日投料试车，规划2万吨/年纤维素聚乳酸，年消纳约12.5万吨湿地废弃芦苇。路线为蒸汽爆破预处理、酶解制糖、五碳糖与六碳糖共发酵产乳酸再聚合；副产酶解木质素用于生物树脂与多孔碳，产品面向3C、医疗器械与生物塑料。",
+      "source_name": "CCM化工数据库（行业报道）",
+      "source_title": "Hunan Antan's 10,000 t/a Common Reed Biomanufacturing Project was commissioned & trial production",
+      "url": "https://www.cnchemicals.com/databases/single-report/hunan-antan-s-10-000-t-a-common-reed-biomanufacturing-project-was-commissioned-trial-production_13463_232088?mainProductCategoryCode=A",
+      "focus": "材料技术",
+      "region": "中国",
+      "date_basis": "项目投料试车日2026-09-22",
+      "supporting_urls": [
+        "https://news.hubeidaily.net/pc/c_6006853.html"
+      ],
+      "verification_scope": "行业数据库事件报道与湖北日报现场报道交叉核对"
+    },
+    {
+      "id": "20260928-biodegradable-film-standards",
+      "published_at": "2026-09-28",
+      "added_at": "2026-10-23",
+      "materials": [
+        "全生物降解地膜",
+        "PHA",
+        "生物降解薄膜"
+      ],
+      "kind": "政策与标准",
+      "title": "两项生物降解薄膜国标发布：地膜改按使用寿命分类，2027年4月起实施",
+      "summary": "市场监管总局（国家标准委）9月28日发布GB/T 35795—2026《全生物降解农用地面覆盖薄膜》与GB/T 33897—2026《生物聚酯 聚羟基烷酸酯（PHA）吹塑薄膜》，均为推荐性国标，自2027年4月1日实施，前者全部代替2017版。地膜改为按有效使用寿命分类，统一生物降解标识，新增水蒸气透过量与高度关注物质限量。",
+      "source_name": "国家市场监督管理总局",
+      "source_title": "《全生物降解农用地面覆盖薄膜》等2项新版生物降解领域国家标准发布",
+      "url": "https://www.samr.gov.cn/xw/sj/art/2026/art_6db890c46c564fc8b6803fa7028a033a.html",
+      "focus": "材料技术",
+      "region": "中国",
+      "regulatory_status": "已发布；2027-04-01起实施",
+      "date_basis": "标准发布日2026-09-28（全国标准信息公共服务平台）；实施日2027-04-01",
+      "supporting_urls": [
+        "https://std.samr.gov.cn/gb/search/gbDetailed?id=5CB12E0EFA7E2034E06397BE0A0A34FB"
+      ]
+    },
+    {
+      "id": "20261009-amino-acid-polymer-co2",
+      "published_at": "2026-10-09",
+      "added_at": "2026-10-23",
+      "materials": [
+        "聚氨基酸",
+        "NCA单体",
+        "可回收聚合物"
+      ],
+      "kind": "研究进展",
+      "title": "闭环CO₂介导合成聚氨基酸：1分钟成单体、8分钟聚合，可解聚回收",
+      "summary": "华东理工大学刘润辉、武月铭与上海交通大学合作在JACS报道闭环CO₂介导路线：CO₂与氨基酸生成氨基甲酸盐中间体，1分钟内制得N-羧基环内酸酐单体；氨基甲酸盐引发聚合8分钟转化97.9%，可调分子量4.3—223.3 kDa。聚合释放的CO₂可回收再用，聚合物又能解聚回氨基酸，指向可化学回收的氨基酸基材料。",
+      "source_name": "Journal of the American Chemical Society｜科学网报道",
+      "source_title": "Closed-loop CO2-Mediated Ultrafast and Controlled Synthesis of Amino Acid Polymers Toward a Circular Carbon and Polymer Economy",
+      "url": "https://doi.org/10.1021/jacs.6c17448",
+      "focus": "材料技术",
+      "region": "中国",
+      "date_basis": "论文在线发表2026-10-09；科学网报道2026-10-22",
+      "supporting_urls": [
+        "https://news.sciencenet.cn/htmlnews/2026/10/573412.shtm"
+      ],
+      "verification_scope": "出版社DOI题录与科学网报道交叉核对"
     }
   ]
 }
