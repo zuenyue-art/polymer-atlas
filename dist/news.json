@@ -1,8 +1,30 @@
 {
   "version": 1,
-  "updated_at": "2026-10-23",
-  "checked_at": "2026-10-23",
+  "updated_at": "2026-10-26",
+  "checked_at": "2026-10-26",
   "items": [
+    {
+      "id": "20261021-enzyme-embedded-polyesters-deep-sea",
+      "published_at": "2026-10-21",
+      "added_at": "2026-10-26",
+      "materials": [
+        "PBS",
+        "PBSA",
+        "PCL",
+        "PBAT",
+        "生分解性聚酯"
+      ],
+      "kind": "配方与性能",
+      "title": "PBS等聚酯内包分解酶，在深海低温高压下加速生物降解",
+      "summary": "研究将HiC角质酶或CaLB脂肪酶经90—130℃短时熔融混入PBS、PBSA、PCL和PBAT，所得薄膜与微珠基本保持原材料力学性能。海试中，部分样品在757米深海5个月内近乎完全降解；5503米也观察到中等程度降解，仍需验证长期耐久、安全与规模化成本。",
+      "source_name": "Nature／NEDO",
+      "source_title": "Enzyme-embedded polyesters for accelerated biodegradation in the deep sea",
+      "url": "https://www.nature.com/articles/s41586-026-11192-1",
+      "focus": "材料技术",
+      "region": "日本",
+      "date_basis": "Nature在线发布日期2026-10-21；NEDO与JAMSTEC于2026-10-22发布研究说明",
+      "verification_scope": "Nature论文公开摘要及NEDO、JAMSTEC官方研究说明"
+    },
     {
       "id": "20261014-pet-crystallinity-methanolysis",
       "published_at": "2026-10-14",
