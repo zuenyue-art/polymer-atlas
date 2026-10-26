@@ -371,6 +371,197 @@
         "https://news.sciencenet.cn/htmlnews/2026/10/573412.shtm"
       ],
       "verification_scope": "出版社DOI题录与科学网报道交叉核对"
+    },
+    {
+      "id": "20261015-mee-ccer-waste-plastic-methodology",
+      "published_at": "2026-10-15",
+      "added_at": "2026-10-26",
+      "materials": [
+        "废塑料",
+        "化学再生",
+        "热解",
+        "催化裂解"
+      ],
+      "kind": "政策与标准",
+      "title": "CCER方法学征求意见：《低值废塑料化学再生》纳入自愿减排核算",
+      "summary": "生态环境部办公厅10月15日就5项温室气体自愿减排项目方法学公开征求意见，《低值废塑料化学再生》在列，用于规范该类项目的设计、实施、审定及减排量核算与核查，意见反馈截止10月23日。文件目前仍为征求意见稿，尚未发布实施，不构成补贴、强制使用或已备案资格。",
+      "source_name": "中华人民共和国生态环境部",
+      "source_title": "关于公开征求《温室气体自愿减排项目方法学 可再生能源合成氨（征求意见稿）》等5项方法学意见的函",
+      "url": "https://www.mee.gov.cn/xxgk2018/xxgk/xxgk06/202610/t20261016_1183138.html",
+      "focus": "材料技术",
+      "region": "中国",
+      "date_basis": "生态环境部办公厅2026-10-15印发，网站2026-10-16公开；征求意见截止2026-10-23，尚无正式发布与适用日期",
+      "verification_scope": "生态环境部原文（函件正文及附件目录），未获取附件方法学全文"
+    },
+    {
+      "id": "20261020-jilin-biodegradable-mulch-price-collection",
+      "published_at": "2026-10-20",
+      "added_at": "2026-10-26",
+      "materials": [
+        "全生物降解地膜",
+        "生物降解薄膜",
+        "PBAT",
+        "PLA"
+      ],
+      "kind": "政策与标准",
+      "title": "吉林征集全生物降解地膜产品报价，建2027年价格参考库",
+      "summary": "吉林省农业农村厅10月20日发布询价公告，面向全国合规生产企业征集全生物降解地膜产品与报价，要求符合GB/T 35795—2017全项指标、不得掺混PE，用于建立2027年省级价格参考库，材料须11月5日前报送。公告属公益性信息征集，不是补贴、强制使用或已入选名单。",
+      "source_name": "吉林省农业农村厅",
+      "source_title": "吉林省农业农村厅关于公开征集全生物降解地膜产品及报价的询价公告",
+      "url": "https://agri.jl.gov.cn/hd/yjzj/202610/t20261020_3680072.html",
+      "focus": "材料技术",
+      "region": "中国",
+      "date_basis": "公告发布2026-10-20；申报材料报送截止2026-11-05；引用的GB/T 35795—2017为现行推荐性国标",
+      "verification_scope": "吉林省农业农村厅公告原文"
+    },
+    {
+      "id": "20261022-deepsea-halophilic-petase",
+      "published_at": "2026-10-22",
+      "added_at": "2026-10-26",
+      "materials": [
+        "PET",
+        "PET水解酶",
+        "酶解回收"
+      ],
+      "kind": "研究进展",
+      "title": "深海嗜盐PET水解酶解析结构与改造，高盐条件下持续解聚",
+      "summary": "山东大学李盛英团队在Science Bulletin发表深海来源PET水解酶dsPETase01/05/06的高分辨率晶体结构，确认dsPETase05的氧阴离子穴、二硫键与延伸环区影响活性，C端酸性区及D273决定嗜盐性；经AI预测、定点突变与二硫键工程获得活性与稳定性同步提升的突变体，高盐下可连续水解PET粉末。",
+      "source_name": "山东大学",
+      "source_title": "李盛英教授团队在深海极端嗜盐PET水解酶机制与工程改造方面取得新进展",
+      "url": "https://faculty.sdu.edu.cn/content.jsp?urltype=news.NewsContentUrl&wbnewsid=126011&wbtreeid=1101",
+      "focus": "材料技术",
+      "region": "中国",
+      "date_basis": "山东大学2026-10-22新闻稿；论文为Science Bulletin在线发表",
+      "verification_scope": "高校新闻稿全文，未见论文全文，突变体具体提升倍数未披露"
+    },
+    {
+      "id": "20261023-nico2o4-pet-electrooxidation",
+      "published_at": "2026-10-23",
+      "added_at": "2026-10-26",
+      "materials": [
+        "PET",
+        "乙二醇",
+        "甲酸",
+        "对苯二甲酸"
+      ],
+      "kind": "回收与纯化",
+      "title": "NiCo₂O₄电催化PET水解液：乙二醇氧化制甲酸，法拉第效率约97%",
+      "summary": "大连理工大学彭冲团队在ENG. Chem. Eng.报道泡沫镍原位生长的尖晶石NiCo₂O₄阳极，1.37 V即达100 mA·cm⁻²，1.50 V下甲酸法拉第效率约97.0%，连续电解50 h保持92.7%电流；用真实PET水解液实验，4.8 g废PET与5.6 g KOH回收9.08 g二甲酸钾和3.88 g对苯二甲酸。",
+      "source_name": "ENG. Chem. Eng.｜科学网论文",
+      "source_title": "减塑增效双丰收：NiCo2O4电催化助力PET废弃物资源化",
+      "url": "https://paper.sciencenet.cn/htmlpaper/2026/10/202610232119177156961.shtm",
+      "focus": "材料技术",
+      "region": "中国",
+      "date_basis": "科学网论文报道2026-10-23；论文发表于ENG. Chem. Eng.",
+      "verification_scope": "科学网报道（含摘要与结果数据），未获取期刊全文"
+    },
+    {
+      "id": "20261019-cycloether-ester-recyclable-polyester",
+      "published_at": "2026-10-19",
+      "added_at": "2026-10-26",
+      "materials": [
+        "聚醚酯",
+        "环醚酯单体",
+        "乙醇酸甲酯",
+        "可回收聚合物"
+      ],
+      "kind": "新材料与结构",
+      "title": "环醚酯开环聚合制可化学回收聚醚酯：立构调控与83%单体回收",
+      "summary": "青岛科技大学李峥与浙江大学李志波团队以乙醇酸甲酯分别与环氧丙烷、氧化苯乙烯一锅法制备甲基、苯基取代环醚酯单体，以两阶段催化选择性调控区域异构体与立构结构；两种对映等规聚醚酯混合后形成熔点约142 ℃、结晶度约72%的立构复合结晶相，催化解聚单体回收率76%—85%，苯基体系达83%并可再聚合。",
+      "source_name": "中国聚合物网",
+      "source_title": "青科大李峥/浙大李志波团队：可化学回收聚醚酯的选择性合成与立构调控",
+      "url": "http://polymer.cn/sci/kjxw26140.html",
+      "focus": "材料技术",
+      "region": "中国",
+      "date_basis": "中国聚合物网2026-10-19报道；两篇论文分别发表于Biomacromolecules与Macromolecules",
+      "verification_scope": "中国聚合物网报道全文，含两篇论文题录与DOI",
+      "supporting_urls": [
+        "https://doi.org/10.1021/acs.biomac.5c02468",
+        "https://doi.org/10.1021/acs.macromol.6c01907"
+      ]
+    },
+    {
+      "id": "20261023-biobased-longchain-nylon-pilot",
+      "published_at": "2026-10-23",
+      "added_at": "2026-10-26",
+      "materials": [
+        "生物基聚酰胺",
+        "长碳链尼龙",
+        "B1000",
+        "生物基材料"
+      ],
+      "kind": "新材料与结构",
+      "title": "千吨级生物基长碳链尼龙中试落地淮北，目标对标进口B1000",
+      "summary": "安徽农业大学汪钟凯团队的1000吨/年生物基聚酰胺新材料中试项目入驻淮北临涣化工园区中试基地，总投资2300万元，采用间歇缩聚工艺制备生物基长碳链尼龙B1000，面向汽车、5G通信与航空航天等应用。项目已完成入园手续和项目备案，安评、环评仍在审批，尚未设备安装与投料，属中试建设前期。",
+      "source_name": "安徽（淮北）新型煤化工合成材料基地",
+      "source_title": "安农大生物基尼龙中试项目落地",
+      "url": "https://hbmhg.huaibei.gov.cn/xxfb/qyxw/58058826.html",
+      "focus": "材料技术",
+      "region": "中国",
+      "date_basis": "园区网站2026-10-23发布；项目于2026年三季度签约入驻",
+      "verification_scope": "园区管委会新闻全文"
+    },
+    {
+      "id": "20261026-electronic-pi-industrialization",
+      "published_at": "2026-10-26",
+      "added_at": "2026-10-26",
+      "materials": [
+        "聚酰亚胺",
+        "感光型PI",
+        "光取向材料",
+        "电子级PI"
+      ],
+      "kind": "新品与应用",
+      "title": "电子级PI四类材料产业化：千吨级高洁净线，金属离子控制到ppb级",
+      "summary": "武汉柔显科技宣布电子级聚酰亚胺系列材料实现产业化：今年3月建成国内首条千吨级高洁净度全自动生产线，覆盖柔性OLED基板材料、感光型PI、液晶显示光取向材料和芯片封装保护型PI，采用分段控温逐步缩聚与密闭输送，金属离子控制到十亿分之一级，已供京东方、华星光电等面板与封测企业，更多客户认证仍在推进。",
+      "source_name": "长江日报",
+      "source_title": "芯片封装关键材料在汉实现产业化",
+      "url": "https://cjrb.cjn.cn/html/2026-10/26/content_42488_3952429.htm",
+      "focus": "材料技术",
+      "region": "中国",
+      "date_basis": "长江日报2026-10-26报道；千吨级生产线于2026年3月建成",
+      "verification_scope": "长江日报报道全文，企业方披露"
+    },
+    {
+      "id": "20261019-pi-separator-aqueous-coating",
+      "published_at": "2026-10-19",
+      "added_at": "2026-10-26",
+      "materials": [
+        "聚酰亚胺",
+        "电池隔膜",
+        "水性涂覆"
+      ],
+      "kind": "配方与性能",
+      "title": "PI隔膜改用水性涂覆：针刺不冒烟起火，耐压超1200 kN",
+      "summary": "北京化工大学齐胜利团队把聚酰亚胺引入水性涂覆浆料体系，打通水性浆料制备到隔膜成型的工艺路径，兼顾制造成本、加工适应性与批次稳定性。测评显示隔膜在电芯针刺中不冒烟、不起火、温升小于1 ℃，高温挤压不失效，耐压超过1200 kN；目前处于实验室成果向动力电池产业化开发推进阶段，后续拟拓展固态电池。",
+      "source_name": "中国化工报｜中国石油石化工程信息网",
+      "source_title": "北化大聚酰亚胺隔膜研发获进展",
+      "url": "https://www.cppei.org.cn/lyyshgc/d256677.html",
+      "focus": "材料技术",
+      "region": "中国",
+      "date_basis": "中国化工报2026-10-19报道",
+      "verification_scope": "中国化工报报道全文，性能由团队测评口径给出"
+    },
+    {
+      "id": "20261020-straw-bio-succinic-acid",
+      "published_at": "2026-10-20",
+      "added_at": "2026-10-26",
+      "materials": [
+        "生物基丁二酸",
+        "秸秆",
+        "可降解塑料",
+        "生物制造"
+      ],
+      "kind": "新品与应用",
+      "title": "秸秆制生物基丁二酸一期联调：糖化率近85%，单罐产16吨",
+      "summary": "聚维元创（连云港）以秸秆为原料，经蒸煮、酶解糖化与密闭发酵生产生物基丁二酸，供可降解塑料等下游。企业称AI辅助酶设计使糖化率接近85%、制糖成本较玉米淀粉每吨低近千元，基因编辑耐酸菌种使发酵周期缩至30小时、单罐产能16吨；一期完成联调联试，年产1.2万吨丁二酸，企业口径计划9月达产。",
+      "source_name": "人民网｜株洲市生态环境局转载",
+      "source_title": "换了个新赛道，秸秆变\"更香了\"",
+      "url": "https://sthjj.zhuzhou.gov.cn/c7658/20261020/i2535728.html",
+      "focus": "材料技术",
+      "region": "中国",
+      "date_basis": "人民网稿件，株洲市生态环境局2026-10-20转载；一期达产时间为企业口径",
+      "verification_scope": "转载全文，产能与指标为企业方介绍"
     }
   ]
 }
