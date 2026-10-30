@@ -1,8 +1,90 @@
 {
   "version": 1,
-  "updated_at": "2026-10-26",
-  "checked_at": "2026-10-26",
+  "updated_at": "2026-10-30",
+  "checked_at": "2026-10-30",
   "items": [
+    {
+      "id": "20261026-sumitomo-pmma-chemical-recycling-lca",
+      "published_at": "2026-10-26",
+      "added_at": "2026-10-30",
+      "materials": [
+        "PMMA",
+        "MMA",
+        "化学再生"
+      ],
+      "kind": "回收与纯化",
+      "title": "PMMA热解再生MMA的LCA：两种比较口径下GHG均约降68%",
+      "summary": "日本塑料循环利用协会按既定边界评估住友化学与日本制钢所的PMMA热解回收工艺：与废PMMA焚烧、以及化石原料制PMMA相比，再生MMA路线的温室气体排放均约低68%。结果受原料、能源和运行条件影响；该技术已建实证设备并启动全球许可。",
+      "source_name": "住友化学",
+      "source_title": "プラスチック循環利用協会のLCA調査において、当社PMMAケミカルリサイクル技術によるGHG排出量削減効果を確認",
+      "url": "https://www.sumitomo-chem.co.jp/news/detail/20261026.html",
+      "focus": "材料技术",
+      "region": "日本",
+      "date_basis": "住友化学官方发布于2026-10-26；68%为协会设定边界和比较条件下的LCA结果",
+      "verification_scope": "住友化学官方说明及其中披露的塑料循环利用协会评估口径"
+    },
+    {
+      "id": "20261022-contamination-tolerant-recycled-pet-cellulose",
+      "published_at": "2026-10-22",
+      "added_at": "2026-10-30",
+      "materials": [
+        "PET",
+        "rPET",
+        "纤维素",
+        "聚合物复合材料"
+      ],
+      "kind": "配方与性能",
+      "title": "再生PET容纳10%纤维素废料：控制热降解比彻底除杂更关键",
+      "summary": "美国团队将三类再生PET与10 wt%富纤维素废料共混，比较是否移除加工产生的挥发性降解物。纤维素在PET加工温度下快速降解，而及时排出副产物可减少内部缺陷并改善性能保持；含二氧化钛的原料降解最少，显示难分选混合废物流可转化为实用复合材料。",
+      "source_name": "Communications Sustainability",
+      "source_title": "Contamination tolerant poly(ethylene terephthalate) composites from recycled feedstocks and cellulosic waste",
+      "url": "https://www.nature.com/articles/s44458-026-00173-0",
+      "focus": "材料技术",
+      "region": "美国",
+      "date_basis": "论文在线发表于2026-10-22",
+      "verification_scope": "开放获取论文摘要、方法概述及出版信息"
+    },
+    {
+      "id": "20261021-eu-biobased-plastic-packaging-consultation",
+      "published_at": "2026-10-21",
+      "added_at": "2026-10-30",
+      "materials": [
+        "生物基材料",
+        "生物基塑料",
+        "包装材料"
+      ],
+      "kind": "政策与标准",
+      "title": "欧盟就包装中生物基塑料原料启动公开咨询，截止2027年1月13日",
+      "summary": "欧盟委员会依据《包装和包装废弃物法规》第8条启动公开咨询，征集生物基塑料包装的原料可得性、性能、环境影响、可持续来源及回收技术证据，截止2027年1月13日。此次为政策评估和可能立法的前期程序，不代表已设生物基含量目标或强制使用要求。",
+      "source_name": "欧盟委员会环境总司",
+      "source_title": "Bioeconomy: Commission launches public consultation on bio-based feedstock in plastic packaging",
+      "url": "https://environment.ec.europa.eu/news/commission-opens-consultation-bio-based-plastic-packaging-2026-10-21_en",
+      "focus": "材料技术",
+      "region": "欧盟",
+      "date_basis": "咨询于2026-10-21发布；反馈截止2027-01-13",
+      "verification_scope": "欧盟委员会官方咨询说明"
+    },
+    {
+      "id": "20261020-biodegradable-plastics-landfill-leachate",
+      "published_at": "2026-10-20",
+      "added_at": "2026-10-30",
+      "materials": [
+        "PHB",
+        "PLA",
+        "PBAT",
+        "可降解塑料"
+      ],
+      "kind": "研究进展",
+      "title": "填埋渗滤液厌氧环境下，PHB、PLA与PBAT呈现截然不同的降解轨迹",
+      "summary": "韩国团队在中温填埋渗滤液中按碳转化为沼气评价三种塑料：PHB在17天内完全矿化，PLA在320天达到83.6%，PBAT则基本难降解。多组学结果把PHB和PLA解聚与生物膜—聚合物界面的酶转录联系起来，说明“可降解”标签不能直接预测填埋环境表现。",
+      "source_name": "Nature Communications",
+      "source_title": "Divergent anaerobic fates of biodegradable plastics in landfill leachate",
+      "url": "https://www.nature.com/articles/s41467-026-78850-w",
+      "focus": "材料技术",
+      "region": "韩国",
+      "date_basis": "论文在线发表于2026-10-20",
+      "verification_scope": "开放获取论文摘要、作者单位及出版信息"
+    },
     {
       "id": "20261021-enzyme-embedded-polyesters-deep-sea",
       "published_at": "2026-10-21",
