@@ -1,6 +1,49 @@
 {
   "items": [
     {
+      "id": "20261029-pbat-spiroacetal-programmed-recycling",
+      "published_at": "2026-10-29",
+      "added_at": "2026-11-02",
+      "materials": [
+        "PBAT",
+        "生物基材料",
+        "可降解聚酯",
+        "化学再生"
+      ],
+      "kind": "新材料与结构",
+      "title": "PBAT引入生物基螺缩醛位点，实现性能调节与室温选择性拆解",
+      "summary": "瑞典团队以乙醛酸、生物基季戊四醇和甲醇制备螺缩醛二酯，并将其共聚进PBAT主链。共聚物玻璃化温度可在−20至63℃调节；螺缩醛邻位酯键可在纯甲醇、室温下优先断裂，产物经功能分离后重新聚合，所得材料组成和性能接近原始共聚酯。",
+      "source_name": "Macromolecules／隆德大学",
+      "source_title": "Introducing Spiroacetal Units to Tune the Thermomechanical Properties and Enhance the Chemical Recyclability of Poly(butylene adipate-co-terephthalate)",
+      "url": "https://doi.org/10.1021/acs.macromol.6c01914",
+      "focus": "材料技术",
+      "region": "瑞典",
+      "date_basis": "论文于2026-10-29在线发表",
+      "verification_scope": "ACS出版信息及隆德大学研究成果页面公开摘要"
+    },
+    {
+      "id": "20261029-rpet-adhesive-free-ldpe-sleeve",
+      "published_at": "2026-10-29",
+      "added_at": "2026-11-02",
+      "materials": [
+        "PET",
+        "rPET",
+        "LDPE",
+        "包装材料",
+        "可回收设计"
+      ],
+      "kind": "新品与应用",
+      "title": "无胶LDPE套标配合rPET瓶，利用风选与浮沉分离保持PET料流纯度",
+      "summary": "荷兰OPACKGROUP与Morssinkhof‑Rymoplast展示可回收饮料瓶方案：瓶体采用100% rPET，套标含50%消费后再生料且无需胶黏剂。回收时先风选轻质套标，再以浮沉法分离下沉PET和上浮套标、瓶盖，减少胶残留对清洗及高品质PET再利用的影响。",
+      "source_name": "OPACKGROUP",
+      "source_title": "Circu-sleeve - a sustainable labeling solution for bottles",
+      "url": "https://www.opackgroup.com/news/circu-sleeve-a-sustainable-labeling-solution-forbottles/",
+      "focus": "材料技术",
+      "region": "荷兰",
+      "date_basis": "企业官方技术说明发布于2026-10-29",
+      "verification_scope": "OPACKGROUP官方技术说明；为企业披露的材料与分选路线"
+    },
+    {
       "id": "20261029-huafeng-biobased-ptmeg",
       "published_at": "2026-10-29",
       "added_at": "2026-10-30",
