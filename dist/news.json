@@ -1,8 +1,30 @@
 {
   "version": 1,
-  "updated_at": "2026-11-02",
-  "checked_at": "2026-11-02",
+  "updated_at": "2026-11-06",
+  "checked_at": "2026-11-06",
   "items": [
+    {
+      "id": "20261103-lignin-pla-fluorine-free-coating",
+      "published_at": "2026-11-03",
+      "added_at": "2026-11-06",
+      "materials": [
+        "木质素",
+        "PLA",
+        "生物基材料",
+        "功能涂层",
+        "无氟材料"
+      ],
+      "kind": "新材料与结构",
+      "title": "木质素—脂肪酸颗粒与PLA黏结相构成可降解无氟超疏水涂层",
+      "summary": "美国华盛顿大学团队仿照植物木栓质结构，将木质素颗粒与脂肪酸连接，并加入PLA作为黏结相，制得无氟超疏水涂层SLIP。材料表现出耐水、机械稳定和耐紫外性能，并可被木材腐朽真菌降解；目前正推进工艺放大，并补充耐油、阻燃等功能。",
+      "source_name": "华盛顿大学圣路易斯分校／Matter",
+      "source_title": "Plant-inspired natural coatings can beat forever chemicals",
+      "url": "https://source.washu.edu/2026/11/plant-inspired-natural-coatings-can-beat-forever-chemicals/",
+      "focus": "材料技术",
+      "region": "美国",
+      "date_basis": "学校官方研究说明发布于2026-11-03；对应Matter论文DOI 10.1016/j.matt.2026.103068",
+      "verification_scope": "华盛顿大学官方研究说明及其列明的论文信息；放大与功能扩展为研究团队后续计划"
+    },
     {
       "id": "20261101-gbt47982-recycled-plastic-custody",
       "published_at": "2026-11-01",
