@@ -4,6 +4,171 @@
   "checked_at": "2026-11-09",
   "items": [
     {
+      "id": "20261107-zju-pet-textile-methanolysis-dmt",
+      "published_at": "2026-11-07",
+      "added_at": "2026-11-09",
+      "materials": [
+        "PET",
+        "DMT",
+        "化学回收",
+        "混合纺织品",
+        "甲醇解"
+      ],
+      "kind": "回收与纯化",
+      "title": "温和甲醇解实现混合纺织品中PET高选择性闭环回收：91%产率获聚合级DMT",
+      "summary": "浙江大学谢涛、郑宁团队在Nature Communications报道混合纺织品中PET的闭环回收路线：先将织物熔融水淬把结晶度降至约12%，再以四甲基胍催化甲醇解，在100 ℃、0.35 MPa、1小时温和条件下解聚率约99%，以91%产率获得纯度≥99.92%的聚合级DMT，液体催化剂可回收；技术经济分析显示路线具经济竞争力，成果属实验室验证阶段。",
+      "source_name": "Nature（Nature Communications）",
+      "source_title": "Selective depolymerization of poly(ethylene terephthalate) for economical closed-loop recycling of mixed textiles",
+      "url": "https://www.nature.com/articles/s41467-026-78713-4",
+      "focus": "材料技术",
+      "region": "中国",
+      "date_basis": "论文2026-11-07在线发表于Nature Communications（DOI: 10.1038/s41467-026-78713-4）",
+      "verification_scope": "Nature全文页摘要与致谢信息，关键数据另经浙江大学团队论文解读稿交叉核对；技术经济分析结论为论文自述，未复核其模型",
+      "supporting_urls": [
+        "https://new.qq.com/rain/a/20261108A08QCB00"
+      ]
+    },
+    {
+      "id": "20261106-ruikang-enzymatic-rpet-pilot-platform",
+      "published_at": "2026-11-06",
+      "added_at": "2026-11-09",
+      "materials": [
+        "PET",
+        "rPET",
+        "生物酶解",
+        "化学回收"
+      ],
+      "kind": "回收与纯化",
+      "title": "9000万元生物酶法rPET中试平台立项：常温常压酶解PET路线进入工程验证筹备",
+      "summary": "溢多利公告，全资子公司珠海瑞康拟以9000万元自有资金在珠海金湾建设生物酶法rPET中试平台，依托酶制剂积累开发常温常压下PET酶解与回收工艺，建设内容包括厂房改建及材料预处理、PET酶解、分离纯化等单元，总建筑面积约4180平方米，建设周期约11个月。项目备案2026年10月下旬复核通过、建设期自2026年11月起算，目前处启动建设阶段，尚未产出产品。",
+      "source_name": "中财网（溢多利公告全文）",
+      "source_title": "溢多利：关于全资子公司投资建设生物酶法RPET中试平台的公告（公告编号2026-036）",
+      "url": "https://www.cfi.cn/p20261106001191.html",
+      "focus": "材料技术",
+      "region": "中国",
+      "date_basis": "上市公司公告发布2026-11-06；项目备案2026-10-22申报、10-23复核通过，建设起止自2026-11-01",
+      "verification_scope": "公告全文与废塑料化学循环行业周报对备案信息的交叉核对；仅立项与建设内容，无工艺参数与中试结果",
+      "supporting_urls": [
+        "https://www.replas.org.cn/1914.html"
+      ]
+    },
+    {
+      "id": "20261105-tianjin-circular-economy-plan",
+      "published_at": "2026-11-05",
+      "added_at": "2026-11-09",
+      "materials": [
+        "再生塑料",
+        "再生材料",
+        "再生纤维",
+        "废旧纺织品"
+      ],
+      "kind": "政策与标准",
+      "title": "天津循环经济“十五五”规划：再生塑料进汽车内外饰与电器电子，配套溯源认证",
+      "summary": "天津市发改委印发《天津市循环经济发展“十五五”规划》，对标国家再生材料应用推广行动：引导汽车制造与报废拆解、再生材料加工企业构建闭环供应体系，在内外饰件中实现再生塑料规模化应用；电器电子重点在非运动部件、结构件和包装加大再生塑料用量；轻纺企业使用再生纤维，隔音保温材料加大再生纤维用量；鼓励再生材料数据溯源、碳足迹核算与产品认证。文件已发布，指标为规划期导向，不构成强制使用要求。",
+      "source_name": "天津市发展和改革委员会",
+      "source_title": "市发展改革委关于印发《天津市循环经济发展“十五五”规划》的通知",
+      "url": "https://fzgg.tj.gov.cn/zwgk_47325/zcfg_47338/zcwjx/fgwj/202611/t20261105_7650931.html",
+      "focus": "材料技术",
+      "region": "中国",
+      "date_basis": "市发改委网站2026-11-05公开发布；文中目标为“十五五”规划期导向，未设即时强制义务",
+      "verification_scope": "市发改委网站通知与规划节选正文；未逐条核对全文附件"
+    },
+    {
+      "id": "20261104-shenyuan-tpae-pilot-trial",
+      "published_at": "2026-11-04",
+      "added_at": "2026-11-09",
+      "materials": [
+        "TPAE",
+        "聚酰胺弹性体",
+        "生物基十二碳二酸",
+        "长碳链尼龙"
+      ],
+      "kind": "新材料与结构",
+      "title": "千吨级TPAE中试进入试车：可控缩聚调软硬段配比，引入生物基十二碳二酸",
+      "summary": "江苏申元新材料1000吨/年聚酰胺弹性体（TPAE）中试项目在如东洋口化学工业园中试基地进入试车阶段，预计11月正式试车。技术由东华大学相恒学团队牵头，采用可控缩聚精准调控软硬段摩尔配比，并引入生物基单体十二碳二酸降低石化依赖；中试投资3037.76万元，产品含两个牌号（465吨/年与535吨/年），已向重点下游客户批量送样验证，透明尼龙、耐高温尼龙等规划于后续产业化阶段。",
+      "source_name": "江苏化工网（长三角化工业）",
+      "source_title": "江苏申元新材料年产1000吨聚酰胺弹性体中试项目启动",
+      "url": "http://www.jschemnet.cn/index.php/news/info/31496.html",
+      "focus": "材料技术",
+      "region": "中国",
+      "date_basis": "江苏化工网2026-11-04发布；南通市政府“科创逐新”报道2026-11-04称预计11月进入试车",
+      "verification_scope": "行业媒体项目细节与市政府报道交叉核对；送样验证与性能结论为企业口径，未见第三方检测数据",
+      "supporting_urls": [
+        "https://www.nantong.gov.cn/ntsrmzf/sxcz/content/af47f10a-a3c8-449d-bf5f-7da586e97f0f.html"
+      ]
+    },
+    {
+      "id": "20261103-comprehensive-resource-conservation-plan",
+      "published_at": "2026-11-03",
+      "added_at": "2026-11-09",
+      "materials": [
+        "废塑料",
+        "废旧纺织品",
+        "再生材料",
+        "化学再生"
+      ],
+      "kind": "政策与标准",
+      "title": "五部门印发全面节约战略行动方案：汽车家电日化实施再生材料应用升级行动",
+      "summary": "国家发改委、工信部、自然资源部、水利部、国管局联合印发《实施全面节约战略行动方案》（发改环资〔2026〕1424号），提出促进废塑料、废旧纺织品等回收利用，完善产业侧和社会源废弃物回收网络；在汽车、家电、日化等行业实施再生材料应用升级行动，发挥骨干企业引领作用、提高再生材料应用比例；在确保固体废物零进口前提下有序推进海外优质再生原料进口利用。到2030年主要再生资源年循环利用量达5.1亿吨，属远期目标而非即时义务。",
+      "source_name": "国家发展和改革委员会",
+      "source_title": "国家发展改革委等部门联合印发《实施全面节约战略行动方案》",
+      "url": "https://www.ndrc.gov.cn/xxgk/jd/jd/202611/t20261103_1408529.html",
+      "focus": "材料技术",
+      "region": "中国",
+      "date_basis": "文件签发2026-09-29，发改委网站2026-11-03公开发布；5.1亿吨等指标为2030年目标",
+      "verification_scope": "发改委发布稿与地方发改委转载的通知全文（含第七章再生材料条款）交叉核对",
+      "supporting_urls": [
+        "https://fgw.weinan.gov.cn/zfxxgk/fdzdgknr/zcfg/2118266497016172546.html"
+      ]
+    },
+    {
+      "id": "20261102-xpu-hea-pet-electrocatalysis",
+      "published_at": "2026-11-02",
+      "added_at": "2026-11-09",
+      "materials": [
+        "PET",
+        "高熵合金",
+        "电催化",
+        "乙醇酸",
+        "废塑料升级回收"
+      ],
+      "kind": "研究进展",
+      "title": "PtPdIrRuCu高熵合金电催化废PET升级回收：乙醇酸选择性95.8%，器件运行超240小时",
+      "summary": "西安工程大学孟家光团队在Angewandte Chemie International Edition报道废PET电催化升级回收：以原位氢气共还原制备超小PtPdIrRuCu五元高熵合金纳米颗粒，负载于氮氧共掺杂碳笼纤维，质量活性达商用铂碳的7.3倍，乙醇酸产物选择性95.8%，器件体系连续运行超240小时；原位光谱与计算表明高熵效应与载体锚定抑制活性位中毒与过度氧化。成果属实验室验证，未见放大与成本数据。",
+      "source_name": "西安工程大学",
+      "source_title": "我校科研团队在化学领域国际顶刊《Angewandte Chemie International Edition》发表学术论文",
+      "url": "https://www.xpu.edu.cn/info/1132/29414.htm",
+      "focus": "材料技术",
+      "region": "中国",
+      "date_basis": "校网新闻发布2026-11-02；论文在线发表于Angew，具体DOI与发表日未在校稿中给出",
+      "verification_scope": "高校官方新闻全文（含团队、催化体系与性能数据）；未获取论文原文，未给出DOI"
+    },
+    {
+      "id": "20261101-gbt19811-composting-disintegration",
+      "published_at": "2026-11-01",
+      "added_at": "2026-11-09",
+      "materials": [
+        "可堆肥塑料",
+        "生物降解材料",
+        "崩解率"
+      ],
+      "kind": "政策与标准",
+      "title": "GB/T 19811-2026中试堆肥崩解测定国标11月1日实施：堆肥容器下限降至35 L",
+      "summary": "推荐性国标GB/T 19811-2026《塑料 在定义堆肥化中试条件下塑料材料崩解程度的测定》自2026年11月1日起实施，全部代替2005版，等同采用ISO 16929:2021，由全国生物基材料及降解制品标准化技术委员会归口。新版将堆肥容器最小体积由140 L降至35 L、细化堆肥周期控温区间、简化生态毒性试样要求。该标准仅测定崩解程度，不能单独作为生物降解性判定依据，需配合生物分解率等试验。",
+      "source_name": "全国标准信息公共服务平台",
+      "source_title": "GB/T 19811-2026 塑料 在定义堆肥化中试条件下塑料材料崩解程度的测定",
+      "url": "https://std.samr.gov.cn/gb/search/gbDetailed?id=511EBC5968859318E06397BE0A0AFBD5",
+      "focus": "材料技术",
+      "region": "中国",
+      "regulatory_status": "已发布；2026-11-01起实施",
+      "date_basis": "标准2026-04-30发布、2026-11-01实施；修订要点据行业解读稿，标准文本未在线公开（采标版权限制）",
+      "verification_scope": "全国标准信息公共服务平台详情页与openstd页面互证发布/实施日期与代替关系；修订要点未经标准全文核对",
+      "supporting_urls": [
+        "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=F89688A3C86E82FDAF519CE4A694C0F5",
+        "https://www.chinabiomaterial.com/news/gb-t-19811-2026-officially-implemented-new-na-85693537.html"
+      ]
+    },
+    {
       "id": "20261105-thailand-pet-hydrothermal-saponification",
       "published_at": "2026-11-05",
       "added_at": "2026-11-09",
