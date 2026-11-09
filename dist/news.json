@@ -649,7 +649,8 @@
       "source_name": "Nature Communications",
       "url": "https://www.nature.com/articles/s41467-026-76086-2",
       "focus": "材料技术",
-      "date_basis": "原文发布日期"
+      "date_basis": "原文发布日期",
+      "source_title": "Recoverable macroporous polyanion bead catalysts for scalable continuous chemical depolymerization of polyethylene terephthalate"
     },
     {
       "id": "20260812-eu-ppwr",
@@ -665,7 +666,8 @@
       "source_name": "欧盟理事会｜政策适用节点",
       "url": "https://www.consilium.europa.eu/en/policies/packaging/",
       "focus": "材料技术",
-      "date_basis": "政策适用日期"
+      "date_basis": "政策适用日期",
+      "source_title": "Packaging"
     },
     {
       "id": "20260917-permeable-pa",
@@ -680,7 +682,8 @@
       "source_name": "BASF 产品技术介绍",
       "url": "https://www.basf.com/global/en/media/news-releases/2026/09/p-26-153",
       "focus": "材料技术",
-      "date_basis": "原文发布日期"
+      "date_basis": "原文发布日期",
+      "source_title": "BASF at Fakuma 2026: Resilience, Sustainability, Performance: Why the Plastics Industry No Longer Has to Choose"
     },
     {
       "added_at": "2026-10-15",
