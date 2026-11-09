@@ -1,6 +1,69 @@
 {
   "items": [
     {
+      "id": "20261105-thailand-pet-hydrothermal-saponification",
+      "published_at": "2026-11-05",
+      "added_at": "2026-11-09",
+      "materials": [
+        "PET",
+        "对苯二甲酸",
+        "化学再生",
+        "水热皂化"
+      ],
+      "kind": "研究进展",
+      "title": "消费后无色PET水热碱解：无额外催化剂回收对苯二甲酸",
+      "summary": "泰国孔敬大学团队以水热碱性皂化处理清洗后的消费后无色PET，在135—155 ℃、2—4小时和2—4 M NaOH范围内用响应面法优化。实验中PET降解率为77.98%—100%，对苯二甲酸重量回收率为68.72%—91.41%；成果仍属实验室验证，论文摘要未给出产物纯度、完整物料衡算和放大数据。",
+      "source_name": "Springer Nature／Environmental Science and Pollution Research",
+      "source_title": "Hydrothermal catalyst-free saponification of post-consumer colorless PET: response surface methodology approach",
+      "url": "https://doi.org/10.1007/s11356-026-38365-9",
+      "focus": "材料技术",
+      "region": "泰国",
+      "date_basis": "论文在线发表于2026-11-05",
+      "verification_scope": "依据出版题录与论文摘要整理；未声称读取不可访问的全文，摘要明确指出尚缺产物纯度、完整物料衡算及放大评价"
+    },
+    {
+      "id": "20261104-toyobo-pbt-cti600",
+      "published_at": "2026-11-04",
+      "added_at": "2026-11-09",
+      "materials": [
+        "PBT",
+        "玻纤增强材料",
+        "无卤阻燃",
+        "高压电气材料"
+      ],
+      "kind": "配方与性能",
+      "title": "30%玻纤增强无卤阻燃PBT兼具CTI 600 V与0.8 mm V-0相当性能",
+      "summary": "日本东洋纺MC开发Vylopet PBT新牌号，以30%玻纤增强和无卤阻燃体系实现CTI 600 V及0.8 mm厚度V-0相当水平，弯曲模量代表值12.0 GPa。材料面向EV充电部件、连接器、数据中心及断路器等高压电装用途；目前为开发品，企业目标是在2027财年内上市，数据不等同认证保证值。",
+      "source_name": "东洋纺MC",
+      "source_title": "高耐トラッキング性を実現した難燃PBT樹脂を開発",
+      "url": "https://www.toyobo-mc.jp/news/press_release-261104_2/",
+      "focus": "材料技术",
+      "region": "日本",
+      "date_basis": "企业官方新闻发布于2026-11-04；计划于2027财年内上市",
+      "verification_scope": "企业官方开发公告；性能为代表样品数据，原文明确并非保证值且不保证取得UL 94认证"
+    },
+    {
+      "id": "20261103-envalior-pocan-bfn4135",
+      "published_at": "2026-11-03",
+      "added_at": "2026-11-09",
+      "materials": [
+        "PBT",
+        "玻纤增强材料",
+        "无卤阻燃",
+        "无PFAS材料"
+      ],
+      "kind": "新品与应用",
+      "title": "Pocan BFN4135无卤无PFAS阻燃PBT可直接替换30%玻纤卤系牌号",
+      "summary": "Envalior推出Pocan BFN4135无卤、无PFAS阻燃PBT，机械性能与30%玻纤卤系阻燃PBT相近，断裂伸长率为2.4%；等效UL 94测试在0.75 mm厚度达到V-0，CTI A为450。其收缩和注塑条件接近现用牌号，可沿用模具，面向连接器、线圈骨架、快充设施及AI数据中心部件。",
+      "source_name": "Envalior",
+      "source_title": "Envalior closes performance gap with next-generation Halogen-free flame-retardant PBT",
+      "url": "https://www.envalior.com/en-us/insights/press-release/envalior-closes-performance-gap-with-next-generation-halogen-free-flame-retardant-pbt",
+      "focus": "材料技术",
+      "region": "欧洲",
+      "date_basis": "企业官方新品公告发布于2026-11-03",
+      "verification_scope": "企业官方产品公告；UL 94为等效测试表述，未宣称取得正式认证"
+    },
+    {
       "id": "20261103-lignin-pla-fluorine-free-coating",
       "published_at": "2026-11-03",
       "added_at": "2026-11-06",
