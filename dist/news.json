@@ -1,8 +1,74 @@
 {
   "version": 1,
-  "updated_at": "2026-11-09",
-  "checked_at": "2026-11-09",
+  "updated_at": "2026-11-13",
+  "checked_at": "2026-11-13",
   "items": [
+    {
+      "id": "20261112-manchester-c3-biobased-pmma-pilot",
+      "published_at": "2026-11-12",
+      "added_at": "2026-11-13",
+      "materials": [
+        "PMMA",
+        "MMA",
+        "生物基材料",
+        "生物制造",
+        "废生物质"
+      ],
+      "kind": "新品与应用",
+      "title": "废生物质制生物基MMA/PMMA连续中试运行超过180天",
+      "summary": "英国曼彻斯特大学衍生企业C3 Biotech以马铃薯皮、甜菜浆等废生物质为原料，利用耐盐工程微生物在无需灭菌的塑料反应器中连续运行超过180天，产出逾100 kg高纯中间体，并进一步制得MMA和PMMA制品。该路线已完成中试持续运行验证，商业规模经济性仍待证明。",
+      "source_name": "曼彻斯特大学",
+      "source_title": "Windows made from vegetables? From potato peel to Plexiglas",
+      "url": "https://www.manchester.ac.uk/about/news/c3-biotech-operation-at-pilot-scale/",
+      "focus": "材料技术",
+      "region": "英国",
+      "date_basis": "曼彻斯特大学研究报道发布于2026-11-12；连续中试结果对应此前完成的180天挑战",
+      "verification_scope": "大学官方报道与企业公开结果交叉核对；成本竞争力属于企业模型判断，未表述为商业化量产"
+    },
+    {
+      "id": "20261111-uq-phb-heaa-hydrogel",
+      "published_at": "2026-11-11",
+      "added_at": "2026-11-13",
+      "materials": [
+        "PHB",
+        "PHA",
+        "生物基材料",
+        "可降解材料",
+        "水凝胶"
+      ],
+      "kind": "新材料与结构",
+      "title": "PHB经γ射线接枝HEAA形成高吸水、高韧性水凝胶结构",
+      "summary": "澳大利亚昆士兰大学以钴-60 γ射线将N-羟乙基丙烯酰胺接枝到生物基PHB上，形成P3HB-HEAA双相结构；论文报告接枝量最高156 wt%，断裂韧性提高378%，吸水量达自身质量的610%。材料可望用于组织工程、药物缓释、涂层和润滑剂，但接枝后是否仍保持原PHB的生物降解性尚待验证。",
+      "source_name": "昆士兰大学／Macromolecular Rapid Communications",
+      "source_title": "Researchers transforming bioplastics into ‘superstructure’ medical hydrogels",
+      "url": "https://news.uq.edu.au/2026-11-researchers-transforming-bioplastics-superstructure-medical-hydrogels",
+      "focus": "材料技术",
+      "region": "澳大利亚",
+      "date_basis": "昆士兰大学官方研究说明发布于2026-11-11；对应论文于2026-10-08在线发表",
+      "verification_scope": "大学官方说明与Wiley论文摘要交叉核对；潜在用途尚未等同临床验证或商业化"
+    },
+    {
+      "id": "20261110-fraunhofer-shape-memory-satellite",
+      "published_at": "2026-11-10",
+      "added_at": "2026-11-13",
+      "materials": [
+        "形状记忆聚合物",
+        "增材制造",
+        "4D打印",
+        "高性能高分子",
+        "航天材料"
+      ],
+      "kind": "新品与应用",
+      "title": "增材制造形状记忆聚合物用于卫星太阳翼展开与释放机构",
+      "summary": "德国Fraunhofer IAP开发适用于增材制造的形状记忆聚合物，并制成卫星太阳翼热触发铰链和释放机构。铰链约1.4 g，较常规结构轻约93%，在实验室由23 ℃升至140 ℃后60秒内展开；材料已通过洁净室、热循环、初步真空和放气测试，但实际太空环境中的长期可靠性尚未验证。",
+      "source_name": "Fraunhofer IAP",
+      "source_title": "Shape Memory Polymers for Lightweight Satellite Components",
+      "url": "https://www.iap.fraunhofer.de/en/press_releases/2026/shape-memory-polymers-for-lightweight-satellite-components.html",
+      "focus": "材料技术",
+      "region": "德国",
+      "date_basis": "Fraunhofer IAP官方新闻发布于2026-11-10",
+      "verification_scope": "研究机构官方项目公告；性能为实验室与初步环境测试结果，后续仍拟推进在轨验证"
+    },
     {
       "id": "20261107-zju-pet-textile-methanolysis-dmt",
       "published_at": "2026-11-07",
