@@ -1,8 +1,52 @@
 {
   "version": 1,
-  "updated_at": "2026-11-13",
-  "checked_at": "2026-11-13",
+  "updated_at": "2026-11-16",
+  "checked_at": "2026-11-16",
   "items": [
+    {
+      "id": "20261113-peba-pema-butanol-pervaporation",
+      "published_at": "2026-11-13",
+      "added_at": "2026-11-16",
+      "materials": [
+        "TPAE/PEBA",
+        "PEBA",
+        "PEMA",
+        "渗透汽化膜",
+        "生物丁醇"
+      ],
+      "kind": "配方与性能",
+      "title": "5 wt% PEMA共混使PEBA渗透汽化膜丁醇分离因子约翻倍",
+      "summary": "研究人员以汉森溶解度参数设计PEBA/聚乙基甲基丙烯酸酯（PEMA）共混膜，用于40 ℃、20 g/L水溶液中1-丁醇渗透汽化分离。含5 wt% PEMA的膜通量为0.19 kg·m⁻²·h⁻¹、分离因子15.5，较纯PEBA通量提高50%、分离因子约翻倍；达到8 wt%后相分离并使性能下降。",
+      "source_name": "Scientific Reports",
+      "source_title": "Development of PEBA-PEMA blend membranes for the pervaporation separation of 1-butanol from aqueous solutions",
+      "url": "https://doi.org/10.1038/s41598-026-74025-1",
+      "focus": "材料技术",
+      "region": "印度",
+      "date_basis": "Scientific Reports论文在线发表于2026-11-13",
+      "verification_scope": "依据出版商公开摘要和论文元数据；多组分进料时性能下降，未将单组分结果外推为工业分离性能"
+    },
+    {
+      "id": "20261113-japan-euv-polymer-underlayer",
+      "published_at": "2026-11-13",
+      "added_at": "2026-11-16",
+      "materials": [
+        "光敏高分子",
+        "EUV光刻胶",
+        "聚合物底层膜",
+        "半导体材料",
+        "高性能高分子"
+      ],
+      "kind": "新材料与结构",
+      "title": "聚合物EUV增敏底层膜使正性光刻胶所需曝光剂量降低至少20%",
+      "summary": "日本曹达与关西大学开发EUV光刻胶聚合物底层膜，通过吸收穿过光刻胶的EUV并产生二次电子，促进光酸发生剂反应。正性化学放大型光刻胶初评中，达到相同膜厚损失所需曝光剂量降低至少20%，负性体系也显示增敏趋势；目前仍处组成优化和初期评价阶段，微细图形成、量产及稳定性尚待验证。",
+      "source_name": "关西大学／日本曹达",
+      "source_title": "日本曹達と関西大学、EUVレジストの高感度化につながる下層膜材料を共同開発",
+      "url": "https://www.kansai-u.ac.jp/ja/about/pr/pressrelease_top/2026/11/post_94866.html",
+      "focus": "材料技术",
+      "region": "日本",
+      "date_basis": "关西大学与日本曹达联合新闻稿发布于2026-11-13",
+      "verification_scope": "依据双方联合官方新闻稿；20%以上为正性CAR初期膜厚损失评价结果，未表述为量产或工艺采用"
+    },
     {
       "id": "20261112-manchester-c3-biobased-pmma-pilot",
       "published_at": "2026-11-12",
@@ -186,6 +230,29 @@
       "supporting_urls": [
         "https://fgw.weinan.gov.cn/zfxxgk/fdzdgknr/zcfg/2118266497016172546.html"
       ]
+    },
+    {
+      "id": "20261103-eu-plastic-end-of-waste-positive-opinion",
+      "published_at": "2026-11-03",
+      "added_at": "2026-11-16",
+      "materials": [
+        "再生塑料",
+        "热塑性塑料",
+        "机械回收",
+        "溶剂法回收",
+        "可追溯"
+      ],
+      "kind": "政策与标准",
+      "title": "欧盟塑料“终止废物属性”统一标准草案获委员会积极意见，尚未生效",
+      "summary": "欧盟废物委员会对统一塑料“终止废物属性”标准草案作出积极意见，17国赞成、2国反对、7国弃权。草案拟覆盖经机械或溶剂法再生的热塑性塑料及其共混物，并要求质量、化学合规、追溯和符合性声明；热解等其他化学回收暂不在范围内。该表决仅推进草案，仍待欧委会正式采用及《官方公报》发布，尚无确定适用日期。",
+      "source_name": "欧盟委员会 Comitology Register",
+      "source_title": "OVERALL VOTING RESULT ON A FORMAL OPINION (V118909/01)",
+      "url": "https://ec.europa.eu/transparency/comitology-register/core/api/integration/ers/553033/118909/1/attachment",
+      "focus": "材料技术",
+      "region": "欧盟",
+      "date_basis": "委员会正式意见作出于2026-11-03；属于草案程序节点，不是生效日期",
+      "verification_scope": "以欧盟委员会正式表决记录核对票数，并以G/TBT/N/EU/1229草案通知核对适用范围；正式采用、公报发布和适用日期尚待后续确认",
+      "regulatory_status": "委员会积极意见；尚未正式采用、公布或适用"
     },
     {
       "id": "20261102-xpu-hea-pet-electrocatalysis",
