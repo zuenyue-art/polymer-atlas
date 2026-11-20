@@ -1,8 +1,30 @@
 {
   "version": 1,
-  "updated_at": "2026-11-16",
-  "checked_at": "2026-11-16",
+  "updated_at": "2026-11-20",
+  "checked_at": "2026-11-20",
   "items": [
+    {
+      "id": "20261119-india-bacillus-pha-wheat-bran",
+      "published_at": "2026-11-19",
+      "added_at": "2026-11-20",
+      "materials": [
+        "PHA",
+        "PHB",
+        "生物基材料",
+        "可降解材料",
+        "小麦麸"
+      ],
+      "kind": "研究进展",
+      "title": "盐场菌株以小麦麸发酵PHA，所得材料结晶度约5.7%",
+      "summary": "研究从印度太阳盐场卤水和沉积物分离16株细菌，筛得Bacillus cereus PHB CMST1，并以小麦麸和尿素优化PHA发酵。所得PHA结晶度约5.7%，可能较高结晶PHB更柔韧；PHA本身无明显抗菌性，与香茅精油复合后出现抗菌效果。结果仍为实验室培养与表征，尚未进行中试或成本验证。",
+      "source_name": "Discover Bacteria / Springer Nature",
+      "source_title": "Bacillus cereus PHB CMST1: a potential Halophilic Bacterium for cost-effective and sustainable production of polyhydroxyalkanoates",
+      "url": "https://doi.org/10.1186/s44315-026-00068-8",
+      "focus": "材料技术",
+      "region": "印度",
+      "date_basis": "同行评议论文在线发表于2026-11-19",
+      "verification_scope": "依据出版商公开全文检索片段、摘要与论文元数据；题名中的“低成本”未等同为已完成工业成本验证"
+    },
     {
       "id": "20261113-peba-pema-butanol-pervaporation",
       "published_at": "2026-11-13",
@@ -408,6 +430,28 @@
       "verification_scope": "实施清单与宁波市塑料行业协会解读交叉核对发布/实施日期；五类产销管理模型据标准文本摘要，未获取标准全文"
     },
     {
+      "id": "20261102-pet-trojan-horse-tea-lca",
+      "published_at": "2026-11-02",
+      "added_at": "2026-11-20",
+      "materials": [
+        "PET",
+        "可解聚设计",
+        "化学回收",
+        "生物基对苯二甲酸",
+        "再生对苯二甲酸"
+      ],
+      "kind": "研究进展",
+      "title": "PET引入5 mol%易水解共聚单元的可解聚设计仍受原料成本制约",
+      "summary": "研究以技术经济和生命周期模型评估在PET链中引入5 mol%“特洛伊木马”易水解共聚单元，并配用生物基和再生对苯二甲酸。基准树脂最低售价5.28美元/kg，明显高于仅生产再生TPA路线的1.32美元/kg；柠檬烯与硝化共聚单体贡献约四分之三成本，表明可解聚设计仍受原料经济性制约。",
+      "source_name": "ACS Sustainable Chemistry & Engineering",
+      "source_title": "Trojan Horse Strategy for Sustainable PET Plastics: A Comparative Evaluation of Techno-Economic and Lifecycle Impacts",
+      "url": "https://doi.org/10.1021/acssuschemeng.6c11361",
+      "focus": "材料技术",
+      "region": "美国",
+      "date_basis": "论文于2026-11-02在线发表，2026-11-16编入期刊当期",
+      "verification_scope": "依据ACS出版页面的题录与公开摘要；评价结果来自技术经济和生命周期模型，未表述为新树脂已完成中试或商业化"
+    },
+    {
       "id": "20261030-jiaren-chemical-recycling-polyester-line",
       "published_at": "2026-10-30",
       "added_at": "2026-11-02",
@@ -455,6 +499,29 @@
       ],
       "correction_note": "原来源为同花顺财经2026-10-31三季报报道页（链接已失效，返回404）。2026-11-09改用全景网官方路演平台的投资者关系活动记录作为来源；事实表述与原条目一致，表述时间由三季报披露日（2026-10-31）更正为活动举行日（2026-09-15）。id与added_at保持不变。",
       "corrected_at": "2026-11-09"
+    },
+    {
+      "id": "20261029-eu-food-contact-recycled-plastic-2026-2376",
+      "published_at": "2026-10-29",
+      "added_at": "2026-11-20",
+      "materials": [
+        "PET",
+        "rPET",
+        "食品接触再生塑料",
+        "机械回收",
+        "可追溯"
+      ],
+      "kind": "政策与标准",
+      "title": "欧盟食品接触再生塑料新规11月18日生效，强化PET进料与合规声明",
+      "summary": "欧盟条例(EU) 2026/2376于11月18日生效，重构食品接触再生塑料的P/A/B/C符合性声明、追溯和进口放行文件，并为机械再生PET进料设定杂质检测要求。旧版A/B声明产品可过渡至2027年2月18日，新增C/P声明可过渡至5月18日；该条例针对食品接触再生塑料，不是所有再生料的一般规则。",
+      "source_name": "EUR-Lex / 欧盟官方公报",
+      "source_title": "Commission Regulation (EU) 2026/2376 of 28 October 2026 amending Regulation (EU) 2022/1616",
+      "url": "https://eur-lex.europa.eu/eli/reg/2026/2376/oj",
+      "focus": "材料技术",
+      "region": "欧盟",
+      "date_basis": "法规于2026-10-29在《欧盟官方公报》发布，2026-11-18生效；A/B声明过渡期至2027-02-18，C/P声明过渡期至2027-05-18",
+      "verification_scope": "依据EUR-Lex法规正文核对适用范围、声明类型、PET进料要求及过渡期；未扩大解释为全部再生塑料的一般义务",
+      "regulatory_status": "已发布并于2026-11-18生效；分两档过渡期"
     },
     {
       "id": "20261029-recyclable-ion-conductive-polyester-elastomer",

@@ -23,6 +23,29 @@
       "verification_scope": "企业访谈全文，膜到膜与纯度细节另经雅式橡塑网2026-10-29技术稿核对；未见第三方检测报告"
     },
     {
+      "id": "20261029-eu-food-contact-recycled-plastic-2026-2376",
+      "published_at": "2026-10-29",
+      "added_at": "2026-11-20",
+      "materials": [
+        "PET",
+        "rPET",
+        "食品接触再生塑料",
+        "机械回收",
+        "可追溯"
+      ],
+      "kind": "政策与标准",
+      "title": "欧盟食品接触再生塑料新规11月18日生效，强化PET进料与合规声明",
+      "summary": "欧盟条例(EU) 2026/2376于11月18日生效，重构食品接触再生塑料的P/A/B/C符合性声明、追溯和进口放行文件，并为机械再生PET进料设定杂质检测要求。旧版A/B声明产品可过渡至2027年2月18日，新增C/P声明可过渡至5月18日；该条例针对食品接触再生塑料，不是所有再生料的一般规则。",
+      "source_name": "EUR-Lex / 欧盟官方公报",
+      "source_title": "Commission Regulation (EU) 2026/2376 of 28 October 2026 amending Regulation (EU) 2022/1616",
+      "url": "https://eur-lex.europa.eu/eli/reg/2026/2376/oj",
+      "focus": "材料技术",
+      "region": "欧盟",
+      "date_basis": "法规于2026-10-29在《欧盟官方公报》发布，2026-11-18生效；A/B声明过渡期至2027-02-18，C/P声明过渡期至2027-05-18",
+      "verification_scope": "依据EUR-Lex法规正文核对适用范围、声明类型、PET进料要求及过渡期；未扩大解释为全部再生塑料的一般义务",
+      "regulatory_status": "已发布并于2026-11-18生效；分两档过渡期"
+    },
+    {
       "id": "20261029-recyclable-ion-conductive-polyester-elastomer",
       "published_at": "2026-10-29",
       "added_at": "2026-11-02",
