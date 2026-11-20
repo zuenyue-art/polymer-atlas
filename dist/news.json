@@ -838,13 +838,15 @@
       "kind": "回收与纯化",
       "title": "PMMA热解再生MMA的LCA：两种比较口径下GHG均约降68%",
       "summary": "日本塑料循环利用协会按既定边界评估住友化学与日本制钢所的PMMA热解回收工艺：与废PMMA焚烧、以及化石原料制PMMA相比，再生MMA路线的温室气体排放均约低68%。结果受原料、能源和运行条件影响；该技术已建实证设备并启动全球许可。",
-      "source_name": "住友化学",
-      "source_title": "プラスチック循環利用協会のLCA調査において、当社PMMAケミカルリサイクル技術によるGHG排出量削減効果を確認",
-      "url": "https://www.sumitomo-chem.co.jp/news/detail/20261026.html",
+      "source_name": "废塑料新观察（网易号转载）",
+      "source_title": "废塑料化学循环与化学回收 全球动态周报 2026.10.25—2026.11.1｜ChemRePlas 化学循环周报",
+      "url": "https://www.163.com/dy/article/LAJB5JMR05414HNL_pdya11y.html",
       "focus": "材料技术",
       "region": "日本",
       "date_basis": "住友化学官方发布于2026-10-26；68%为协会设定边界和比较条件下的LCA结果",
-      "verification_scope": "住友化学官方说明及其中披露的塑料循环利用协会评估口径"
+      "verification_scope": "住友化学官方说明及其中披露的塑料循环利用协会评估口径",
+      "correction_note": "原住友化学官网新闻页链接持续无法访问（返回503），已改用网易号转载的ChemRePlas化学循环周报编译稿作为来源链接；条目内容与事件日期不变。",
+      "corrected_at": "2026-11-20"
     },
     {
       "id": "20261022-contamination-tolerant-recycled-pet-cellulose",
