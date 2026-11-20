@@ -310,18 +310,19 @@
       "kind": "政策与标准",
       "title": "GB/T 19811-2026中试堆肥崩解测定国标11月1日实施：堆肥容器下限降至35 L",
       "summary": "推荐性国标GB/T 19811-2026《塑料 在定义堆肥化中试条件下塑料材料崩解程度的测定》自2026年11月1日起实施，全部代替2005版，等同采用ISO 16929:2021，由全国生物基材料及降解制品标准化技术委员会归口。新版将堆肥容器最小体积由140 L降至35 L、细化堆肥周期控温区间、简化生态毒性试样要求。该标准仅测定崩解程度，不能单独作为生物降解性判定依据，需配合生物分解率等试验。",
-      "source_name": "全国标准信息公共服务平台",
+      "source_name": "国家标准全文公开系统",
       "source_title": "GB/T 19811-2026 塑料 在定义堆肥化中试条件下塑料材料崩解程度的测定",
-      "url": "https://std.samr.gov.cn/gb/search/gbDetailed?id=511EBC5968859318E06397BE0A0AFBD5",
+      "url": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=F89688A3C86E82FDAF519CE4A694C0F5",
       "focus": "材料技术",
       "region": "中国",
       "regulatory_status": "已发布；2026-11-01起实施",
       "date_basis": "标准2026-04-30发布、2026-11-01实施；修订要点据行业解读稿，标准文本未在线公开（采标版权限制）",
-      "verification_scope": "全国标准信息公共服务平台详情页与openstd页面互证发布/实施日期与代替关系；修订要点未经标准全文核对",
+      "verification_scope": "国家标准全文公开系统详情页发布/实施日期与代替关系，修订要点据行业解读稿，标准文本未在线公开（采标版权限制）",
       "supporting_urls": [
-        "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=F89688A3C86E82FDAF519CE4A694C0F5",
         "https://www.chinabiomaterial.com/news/gb-t-19811-2026-officially-implemented-new-na-85693537.html"
-      ]
+      ],
+      "correction_note": "原全国标准信息公共服务平台详情页链接对持续集成检查环境长期不可达（先后返回404/502），已改用国家标准全文公开系统详情页作为主链接；条目内容与日期不变。",
+      "corrected_at": "2026-11-20"
     },
     {
       "id": "20261105-thailand-pet-hydrothermal-saponification",
@@ -1505,8 +1506,11 @@
       "regulatory_status": "已发布；2027-04-01起实施",
       "date_basis": "标准发布日2026-09-28（全国标准信息公共服务平台）；实施日2027-04-01",
       "supporting_urls": [
-        "https://std.samr.gov.cn/gb/search/gbDetailed?id=5CB12E0EFA7E2034E06397BE0A0A34FB"
-      ]
+        "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=F7D91A870C70EDE0C9C5B1E203BDF4D4",
+        "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=8E079CF3A93E0586F9D95A33FAE1C9FD"
+      ],
+      "correction_note": "原支撑链接（全国标准信息公共服务平台标准详情页）对持续集成检查环境长期不可达（先后返回404/502），已替换为两项标准在国家标准全文公开系统的详情页；条目内容与日期不变。",
+      "corrected_at": "2026-11-20"
     },
     {
       "id": "20261009-amino-acid-polymer-co2",
@@ -2048,16 +2052,18 @@
       "kind": "新品与应用",
       "title": "利夫生物FDCA/PEF规模化制造获评省级重大成果：万吨级生物基芳香族材料工厂",
       "summary": "第六届国际新材料产业大会（11月13日，蚌埠）将合肥利夫生物“生物基芳香族材料FDCA与PEF规模化制造及产业应用”列为六项重大创新成果之一：公司称已建成全球首座万吨级生物基芳香族材料旗舰工厂，FDCA纯度可达99.99%，PEF包装膜隔氧性能为传统塑料的10倍，覆盖纺织纤维与高阻隔包装应用；该成果获安徽省科学技术奖一等奖。工厂建成与投产的具体日期未披露，隔氧倍数等数据为企业及大会发布口径。",
-      "source_name": "中国商务新闻网",
+      "source_name": "TK生物基材料与能源（微信公众号，转自中国商务新闻网）",
       "source_title": "第六届国际新材料产业大会发布6项重大创新成果",
-      "url": "https://www.comnews.cn/content/2026-11/13/content_69546.html",
+      "url": "https://mp.weixin.qq.com/s?__biz=MzI1ODYyMDkxNw==&mid=2247567819&idx=1&sn=a86d7ee4896c14abb96fbe22561c496c&chksm=ebb59480a56946fc363972febedbaf59c001229a4f14b74fc9a0550e7fdfa59b503e8770d88d",
       "focus": "材料技术",
       "region": "中国",
       "date_basis": "大会2026-11-13开幕并发布成果；万吨级工厂建成时间与产能爬坡状态未披露",
-      "verification_scope": "中国商务新闻网、安徽日报与人民网安徽频道同源报道；隔氧性能倍数、FDCA纯度为企业口径，万吨级工厂投产日期未经官方核实，可能早于本次发布",
+      "verification_scope": "微信公众号转自中国商务新闻网的同源报道，另见安徽日报与人民网安徽频道报道；隔氧性能倍数、FDCA纯度为企业口径，万吨级工厂投产日期未经官方核实，可能早于本次发布",
       "supporting_urls": [
         "https://szb.ahnews.com.cn/ahrb/content/202611/15/c1161820.html"
-      ]
+      ],
+      "correction_note": "原中国商务新闻网报道页链接对持续集成检查环境不可达（返回418反爬），已改用微信公众号转载的同源报道作为主链接；条目内容与日期不变。",
+      "corrected_at": "2026-11-20"
     },
     {
       "id": "20261116-jindan-75kt-pla-trial-run",

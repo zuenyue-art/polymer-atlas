@@ -240,8 +240,11 @@
       "regulatory_status": "已发布；2027-04-01起实施",
       "date_basis": "标准发布日2026-09-28（全国标准信息公共服务平台）；实施日2027-04-01",
       "supporting_urls": [
-        "https://std.samr.gov.cn/gb/search/gbDetailed?id=5CB12E0EFA7E2034E06397BE0A0A34FB"
-      ]
+        "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=F7D91A870C70EDE0C9C5B1E203BDF4D4",
+        "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=8E079CF3A93E0586F9D95A33FAE1C9FD"
+      ],
+      "correction_note": "原支撑链接（全国标准信息公共服务平台标准详情页）对持续集成检查环境长期不可达（先后返回404/502），已替换为两项标准在国家标准全文公开系统的详情页；条目内容与日期不变。",
+      "corrected_at": "2026-11-20"
     }
   ]
 }
